@@ -55,7 +55,7 @@ public class CountryListComponent implements CommandLineRunner {
 
     private void closeStreams() throws IOException {
         fileStream.close();
-        saveToFile.close();
+        saveToFile.close();//
     }
 
     private void saveCountriesIntoFile() throws IOException {
