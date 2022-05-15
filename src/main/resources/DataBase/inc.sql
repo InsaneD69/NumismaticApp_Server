@@ -1,0 +1,1 @@
+SELECT  setval('clients_id_seq', 4);
