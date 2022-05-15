@@ -28,7 +28,7 @@ public class CountryListComponent implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        /*try {
+        try {
             openStreams();
 
             while (true) {
@@ -41,7 +41,7 @@ public class CountryListComponent implements CommandLineRunner {
         } catch (IOException | InterruptedException e) {
             log.error("Error");
             return;
-        }*/
+        }
     }
 
     private void openStreams() throws IOException {
