@@ -27,16 +27,16 @@ public class ClientServiceImpl  {
 
         }
 
-        return User.toModel(userRepo.save(user));
+        return User.toModel(userRepo.save(incomingUser));
 
     }
 
-    public User getOne(String name) throws UserNotFoundException {
+    public UserEntity getOne(String name) throws UserNotFoundException {
         UserEntity user = userRepo.findByUsername(name);
         if (user == null) {
             throw new UserNotFoundException("Пользователь не найден");
         }
-        return User.toModel(user);
+        return user;
     }
 
     public User logInUser(UserEntity incomingUser) throws UserNotFoundException, WrongPasswordException {

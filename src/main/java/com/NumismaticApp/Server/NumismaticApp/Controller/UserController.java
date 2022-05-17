@@ -32,7 +32,6 @@ public class UserController {
 
        log.info("Процесс регистрация пользователя  "+user.getUsername());
         try {
-
             clientServiceImpl.registration(user);
             log.info("Регистрация пользователя  "+user.getUsername()+"успешно завершена");
             return ResponseEntity.ok("пользователь с именем "+user.getUsername()+" успешно сохранен");
@@ -42,6 +41,8 @@ public class UserController {
             return  ResponseEntity.badRequest().body(e.getMessage());
         }
         catch(Exception e) {
+
+            e.printStackTrace();
 
             return  ResponseEntity.badRequest().body("произошла ошибка");
         }
