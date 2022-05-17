@@ -4,7 +4,10 @@
 
 import com.NumismaticApp.Server.NumismaticApp.Entity.UserEntity;
 import com.NumismaticApp.Server.NumismaticApp.Exception.UserAlreadyExistException;
+import com.NumismaticApp.Server.NumismaticApp.Exception.UserNotFoundException;
+import com.NumismaticApp.Server.NumismaticApp.Exception.WrongPasswordException;
 import com.NumismaticApp.Server.NumismaticApp.Service.ClientServiceImpl;
+import com.NumismaticApp.Server.NumismaticApp.repository.Model.User;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/main")
+@RequestMapping("/acc")
 @Log4j2
 public class UserController {
 
@@ -25,6 +28,7 @@ public class UserController {
 
     @PostMapping("/new")
     public ResponseEntity registration(@RequestBody UserEntity user){
+
 
        log.info("Процесс регистрация пользователя  "+user.getUsername());
         try {
@@ -42,10 +46,33 @@ public class UserController {
             return  ResponseEntity.badRequest().body("произошла ошибка");
         }
 
+    }
 
 
+    @GetMapping("/login")
+    public ResponseEntity logInAccount(@RequestBody UserEntity incomingUser){
+
+        User user;
+
+        try {
+
+           user= clientServiceImpl.logInUser(incomingUser);
+        }
+        catch (UserNotFoundException e){
+
+            return  ResponseEntity.badRequest().body(e.getMessage());
+        }
+        catch (WrongPasswordException e){
+
+            return  ResponseEntity.badRequest().body(e.getMessage());
+
+        }
+
+        return  ResponseEntity.ok().body(user);
 
     }
+
+
 
     @GetMapping("/get")
     public ResponseEntity getUser(@RequestParam String username){

@@ -3,6 +3,7 @@ package com.NumismaticApp.Server.NumismaticApp.Service;
 import com.NumismaticApp.Server.NumismaticApp.Entity.UserEntity;
 import com.NumismaticApp.Server.NumismaticApp.Exception.UserAlreadyExistException;
 import com.NumismaticApp.Server.NumismaticApp.Exception.UserNotFoundException;
+import com.NumismaticApp.Server.NumismaticApp.Exception.WrongPasswordException;
 import com.NumismaticApp.Server.NumismaticApp.repository.Model.User;
 import com.NumismaticApp.Server.NumismaticApp.repository.UserRepo;
 import lombok.extern.log4j.Log4j2;
@@ -16,10 +17,14 @@ public class ClientServiceImpl  {
     @Autowired
     private UserRepo userRepo;
 
-    public User registration(UserEntity user) throws UserAlreadyExistException {
+    public User registration(UserEntity incomingUser) throws UserAlreadyExistException {
 
-        if (userRepo.findByUsername(user.getUsername()) != null) {
+        UserEntity user = userRepo.findByUsername(incomingUser.getUsername());
+
+        if (user != null) {
+
             throw new UserAlreadyExistException("Пользователь с таким именем существует");
+
         }
 
         return User.toModel(userRepo.save(user));
@@ -33,6 +38,30 @@ public class ClientServiceImpl  {
         }
         return User.toModel(user);
     }
+
+    public User logInUser(UserEntity incomingUser) throws UserNotFoundException, WrongPasswordException {
+
+        UserEntity user = userRepo.findByUsername(incomingUser.getUsername());
+
+        if (user == null) {
+            throw new UserNotFoundException("Пользователь с таким логином не существует");
+        }
+
+        if (!incomingUser.getPassword().equals(user.getPassword())){
+
+            throw new WrongPasswordException("неверный пароль");
+
+        }
+
+        return User.toModel(user);
+
+
+
+
+
+    }
+
+
 
 
 
