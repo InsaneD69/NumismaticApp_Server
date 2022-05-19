@@ -5,6 +5,8 @@ import com.NumismaticApp.Server.NumismaticApp.UcoinParser.CoinSearcher;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -15,9 +17,9 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-@Component
-@Log4j2
 
+@Log4j2
+@Component
 public class CountryListComponent implements CommandLineRunner {
 
     public static String pathToCountriesList=new File("").getAbsolutePath()+"/src/main/resources/SearcherInformation/countryList.txt";
@@ -26,9 +28,11 @@ public class CountryListComponent implements CommandLineRunner {
     private FileOutputStream fileStream;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args)  {
 
-        /* try {
+         try {
+            log.info("CountryListComponent start");
+
             openStreams();
 
             while (true) {
@@ -40,8 +44,7 @@ public class CountryListComponent implements CommandLineRunner {
 
         } catch (IOException | InterruptedException e) {
             log.error("Error");
-            return;
-        }*/
+        }
     }
 
     private void openStreams() throws IOException {
