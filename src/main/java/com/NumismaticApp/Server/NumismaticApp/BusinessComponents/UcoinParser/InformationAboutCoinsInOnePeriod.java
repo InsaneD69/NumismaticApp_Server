@@ -1,4 +1,4 @@
-package com.NumismaticApp.Server.NumismaticApp.UcoinParser;
+package com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser;
 
 
 import org.jsoup.nodes.Document;
@@ -33,7 +33,7 @@ public class InformationAboutCoinsInOnePeriod   {
 
                     listOnePeriodCountry.add(
                             new liteCoin(
-                                    year.getElementsByTag("div").text(),
+                                    Integer.parseInt(year.getElementsByTag("div").text()),
                                     valueAndCurrency,
                                     value.select("a[href]").attr("href")
                             )

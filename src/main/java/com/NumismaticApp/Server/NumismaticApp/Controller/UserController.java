@@ -10,6 +10,7 @@ import com.NumismaticApp.Server.NumismaticApp.Service.ClientServiceImpl;
 import com.NumismaticApp.Server.NumismaticApp.repository.Model.User;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/acc")
 @Log4j2
-public class UserController {
+public class UserController  {
 
 
     @Autowired

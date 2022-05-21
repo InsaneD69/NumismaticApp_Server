@@ -1,30 +1,21 @@
 package com.NumismaticApp.Server.NumismaticApp.DTO;
 
-import com.NumismaticApp.Server.NumismaticApp.UcoinParser.Coin;
-
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
-public class CollectionDTO {
+public class CollectionDTO implements Serializable {
 
-    private ArrayList<Coin> collection=new ArrayList<>();
-
+    private ArrayList<CoinDto> collection=new ArrayList<>();
     public String nameCollection;
 
 
+
+    public CollectionDTO() {}
+
+    public ArrayList<CoinDto> getCollection() {return collection;}
     public String getNameCollection() {
         return nameCollection;
     }
-
-    public CollectionDTO() {
-
-
-    }
-
-    public ArrayList<Coin> getCollection() {
-        return collection;
-    }
-
 
 }
 

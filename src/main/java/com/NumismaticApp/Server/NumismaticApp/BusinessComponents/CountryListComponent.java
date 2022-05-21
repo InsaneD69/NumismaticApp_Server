@@ -1,14 +1,12 @@
 package com.NumismaticApp.Server.NumismaticApp.BusinessComponents;
 
 
-import com.NumismaticApp.Server.NumismaticApp.UcoinParser.CoinSearcher;
+import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CoinSearcher;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,12 +15,13 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import static com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CoinSearcher.pathToUcoinProperty;
+
 
 @Log4j2
 @Component
 public class CountryListComponent implements CommandLineRunner {
 
-    public static String pathToCountriesList=new File("").getAbsolutePath()+"/src/main/resources/SearcherInformation/countryList.txt";
     private ObjectOutputStream saveToFile;
 
     private FileOutputStream fileStream;
@@ -30,15 +29,17 @@ public class CountryListComponent implements CommandLineRunner {
     @Override
     public void run(String... args)  {
 
+
+
          try {
             log.info("CountryListComponent start");
-
+            necessity();
             openStreams();
 
             while (true) {
-                saveCountriesIntoFile();
                 closeStreams();
                 waitFor();
+                necessity();
                 openStreams();
             }
 
@@ -47,27 +48,55 @@ public class CountryListComponent implements CommandLineRunner {
         }
     }
 
-    private void openStreams() throws IOException {
+    private void openStreams() throws IOException, InterruptedException {
 
-        File countryList = new File(pathToCountriesList);
+        PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
 
-        fileStream = new FileOutputStream(countryList);
 
-        saveToFile = new ObjectOutputStream(fileStream);
+        for(String lang:property.open().getProperty("existLang").split(",")){
+
+
+
+            File countryList = new File(new File("").getAbsolutePath()+property.open().getProperty("countriesList"+lang));
+            fileStream = new FileOutputStream(countryList);
+            saveToFile = new ObjectOutputStream(fileStream);
+            saveCountriesIntoFile(lang);
+
+            waitForLittle();
+
+        }
+
     }
+
+    private void necessity() throws IOException, InterruptedException {
+
+       PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
+       if(property.open().getProperty("enableLoadingCountriesList").equals("false")){
+
+           log.info("Not necessity to load countries list");
+           property.close();
+           waitForMiddle();
+           necessity();
+       }
+
+
+    }
+
 
     private void closeStreams() throws IOException {
         fileStream.close();
         saveToFile.close();//
     }
 
-    private void saveCountriesIntoFile() throws IOException {
+    private void saveCountriesIntoFile(String lang) throws IOException {
 
-        ArrayList<Set<String>> countriesBufferStorage = new ArrayList<>(CoinSearcher.getCountriesFromUcoin());
-        log.info("Country list had been downloaded");
+        ArrayList<Set<String>> countriesBufferStorage = new ArrayList<>(CoinSearcher.getCountriesFromUcoin(lang));
+        log.info("Country  list "+lang+" had been downloaded");
         saveToFile.writeObject(countriesBufferStorage);
         saveToFile.flush();
-        log.info("Country list had been saved");
+        log.info("Country list "+lang+" had been saved");
+
+
 
 
     }
@@ -75,7 +104,12 @@ public class CountryListComponent implements CommandLineRunner {
     private void waitFor() throws InterruptedException {
         TimeUnit.HOURS.sleep(1);
     }
-
+    private void waitForLittle() throws InterruptedException {
+        TimeUnit.MILLISECONDS.sleep(50);
+    }
+    private void waitForMiddle() throws InterruptedException {
+        TimeUnit.SECONDS.sleep(10);
+    }
 
 }
 

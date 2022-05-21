@@ -1,15 +1,15 @@
-package com.NumismaticApp.Server.NumismaticApp.UcoinParser;
+package com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser;
 
+import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.PropertyConnection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.time.Period;
 import java.util.*;
 
-import static com.NumismaticApp.Server.NumismaticApp.UcoinParser.UCoinParserInitialiser.linkOnMainPageUcoin;
+import static com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CoinSearcher.pathToUcoinProperty;
 
 
 public class CountryPeriod { // содержит в себе информацию об одном периоде :
@@ -23,6 +23,10 @@ public class CountryPeriod { // содержит в себе информаци�
     private Set<String> nominalValues;
     private Document periodTablePage; //html код странцы с таблицей всех номиналов и годов периода
 
+    public ArrayList<liteCoin> getListOnePeriodCountry() {
+        return listOnePeriodCountry;
+    }
+
     private ArrayList<liteCoin> listOnePeriodCountry;
 
     public Set<String> getCurrencies() {
@@ -35,7 +39,10 @@ public class CountryPeriod { // содержит в себе информаци�
 
     protected void setCurrenciesAndNominalValues() throws IOException { //излекает из html таблицы значения номиналов и валют в данном периоде
 
-       periodTablePage=Jsoup.connect(linkOnMainPageUcoin+link).get();
+        PropertyConnection property=new PropertyConnection(pathToUcoinProperty);
+
+       periodTablePage=Jsoup.connect(property.open().getProperty("linkRu")+link).get();
+        property.close();
        Elements elWithCurAndVal=periodTablePage.getElementsByAttributeValue("class","legend");
 
        currenciesAndNominalValues =new HashMap<>();

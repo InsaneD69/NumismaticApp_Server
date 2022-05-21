@@ -1,8 +1,8 @@
-package com.NumismaticApp.Server.NumismaticApp.UcoinParser;
+package com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser;
 
+import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.PropertyConnection;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
-import org.hibernate.mapping.Property;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -11,17 +11,16 @@ import org.jsoup.select.Elements;
 import java.io.*;
 import java.util.*;
 
-import static com.NumismaticApp.Server.NumismaticApp.UcoinParser.UCoinParserInitialiser.linkOnMainPageUcoin;
-
-
 
 @Data
 @Log4j2
 public class CoinSearcher {
 
+    public static String pathToUcoinProperty = new File("").getAbsolutePath()+"/src/main/resources/ucoin.properties";
 
     private Document mainPageDoc; //html код главной страницы сайта en.ucoin.net
 
+    private String lang;
 
      private ArrayList<Set<String>> countries; //список со всеми странами
 
@@ -30,11 +29,8 @@ public class CoinSearcher {
 
     public CoinSearcher() throws IOException {  //отвечает за подгрузку нужной инфы для отпимизации поиска
 
-        Properties property = new Properties();
-        FileInputStream fileInputStream = new FileInputStream(new File("").getAbsolutePath()+"/src/main/resources/ucoin.properties");
-        property.load(fileInputStream);
-        System.out.println(property.getProperty("link"));
-        mainPageDoc =Jsoup.connect(property.getProperty("link")).get(); // получает главную страницу сайта ucoin из html кода которой будет извлечаться информация
+        PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
+        mainPageDoc =Jsoup.connect(property.open().getProperty("linkRu")).get(); // получает главную страницу сайта ucoin из html кода которой будет извлечаться информация
         infoAboutCountries =new HashMap<>();
                                                        //подгружает страны в список countries в  пользовательском виде
 
@@ -46,19 +42,20 @@ public class CoinSearcher {
     }
 
 
-    public static ArrayList<Set<String>> getCountriesFromUcoin() throws IOException { //отвечает за получение списка стран с сайта ucoin
+    public static ArrayList<Set<String>> getCountriesFromUcoin(String lang) throws IOException { //отвечает за получение списка стран с сайта ucoin
+
 
         Document mainPageDoc;
-        Properties property = new Properties();
-        FileInputStream fileInputStream = new FileInputStream(new File("").getAbsolutePath()+"/src/main/resources/ucoin.properties");
-        property.load(fileInputStream);
-        mainPageDoc =Jsoup.connect(property.getProperty("link")).get();
+        PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
+
+        mainPageDoc =Jsoup.connect(property.open().getProperty("link"+lang)).get();
+        property.close();
         log.info("Successful connect to Ucoin");
         Elements timeVar = mainPageDoc.getElementsByAttributeValue("class","wrap nopad");
 
           //получаем список стран в пользовательском виде
 
-          return  new ArrayList<Set<String>>( new HashSet(timeVar.eachText()));
+          return  new ArrayList<Set<String>>(new HashSet(timeVar.eachText()));
 
 
     }

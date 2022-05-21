@@ -1,9 +1,11 @@
-package com.NumismaticApp.Server.NumismaticApp.UcoinParser;
+package com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser;
 
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CountryInformation {                           // содержит информацию о стране
 
@@ -32,7 +34,21 @@ public class CountryInformation {                           // содержит 
 
 
     }
+    public List<liteCoin> getCoinFromPeriod(int requiredYear){
 
+
+
+
+        return periods.get(0).getListOnePeriodCountry()
+
+
+                .stream()
+                .filter(elem->elem.getYear()==1899)
+                .collect(Collectors.toList());
+
+
+
+    }
 
 }
 
