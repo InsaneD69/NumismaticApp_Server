@@ -34,14 +34,16 @@ public class CountryListComponent implements CommandLineRunner {
          try {
             log.info("CountryListComponent start");
             necessity();
+
+            deleteOldData();
             openStreams();
 
-
-
             while (true) {
+
                 closeStreams();
                 waitFor();
                 necessity();
+                deleteOldData();
                 openStreams();
             }
 
@@ -99,6 +101,26 @@ public class CountryListComponent implements CommandLineRunner {
         log.info("Country list "+lang+" had been saved");
 
 
+    }
+
+    private  void deleteOldData(){
+
+
+        File countriesInfo = new File(new File("").getAbsolutePath()+"/src/main/resources/SearcherInformation/CountriesInfo");
+        String[] data= countriesInfo.list();
+
+
+        if (data!=null){
+
+
+            for(String nameFile:data){
+                log.info("deleting "+nameFile);
+                File deletingFile =new File(countriesInfo.getPath(),nameFile);
+                deletingFile.delete();
+            }
+        log.info("old data successful deleted");
+
+        }
 
 
     }
