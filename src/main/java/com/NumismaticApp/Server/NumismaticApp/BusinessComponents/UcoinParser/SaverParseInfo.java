@@ -46,6 +46,16 @@ public class SaverParseInfo {
 
         }
     }
+    public  boolean isEmpty()  {
+
+        if(file.length()!=0){
+            log.info("not null");
+            return false;
+        }
+        return true;
+
+    }
+
 
     public  void close() throws IOException {
 

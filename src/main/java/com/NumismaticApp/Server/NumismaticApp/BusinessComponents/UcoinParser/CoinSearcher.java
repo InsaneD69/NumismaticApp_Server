@@ -114,7 +114,23 @@ public class CoinSearcher {
         String partOfLinkCountry = getCountryLink(country); // получает часть ссылки на страну
         String correctCountryName = partOfLinkCountry.substring(18); // извлекает из ссылки название страны для http запрсов и более удобного сравнивания в html коде
 
+        HashMap<String,CountryInformation> infoAboutCountries=new HashMap<>();
         PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
+
+        File file = new File(property.open().getProperty("countriesInfo")+country+"."+Thread.currentThread().getName()+".txt");
+
+        if(file.length()!=0){
+            log.info("info about "+country+" empty");
+
+            GetParseInfo getParseInfo = new GetParseInfo(file.getPath());
+            infoAboutCountries=  (HashMap<String,CountryInformation>)getParseInfo.get();
+            getParseInfo.close();
+
+            return  infoAboutCountries;
+        }
+        log.info("info about"+country+" exist");
+
+
 
         GetParseInfo getParseInfo = new GetParseInfo(
                 property.open().
@@ -124,9 +140,14 @@ public class CoinSearcher {
 
         Element htmlCountryPeriods = mainPage.selectFirst("[data-code="+correctCountryName+"]"); // получает html код, внутри которого информация о периодах в запрашиваемой стране с ссылками
         Elements countryPeriods = htmlCountryPeriods.getElementsByAttributeValue("class","period");
-        HashMap<String,CountryInformation> infoAboutCountries=new HashMap<>();
 
-        if(countryPeriods!=null){infoAboutCountries.put(country,new CountryInformation(countryPeriods));}
+        SaverParseInfo saverParseInfo = new SaverParseInfo(file.getPath());
+        if(countryPeriods!=null){
+            infoAboutCountries.put(country,new CountryInformation(countryPeriods));
+            saverParseInfo.save(infoAboutCountries);
+            saverParseInfo.close();
+
+        }
 
         return infoAboutCountries;
 

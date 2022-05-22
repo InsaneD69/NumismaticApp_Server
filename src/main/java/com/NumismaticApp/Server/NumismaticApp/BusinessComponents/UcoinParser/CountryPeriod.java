@@ -76,11 +76,6 @@ public class CountryPeriod { // содержит в себе информаци�
         listOnePeriodCountry=informationAboutCoinsInOnePeriod.getListOnePeriodCountry();
 
 
-        listOnePeriodCountry.forEach((liteCoin liteCoin)->{
-
-            System.out.println(liteCoin.toString());
-        });
-
 
     }
 

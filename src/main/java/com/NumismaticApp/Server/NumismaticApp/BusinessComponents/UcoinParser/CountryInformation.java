@@ -28,9 +28,6 @@ public class CountryInformation {                           // содержит 
 
         periods.get(0).setCurrenciesAndNominalValues(); //получает список валют самого современного периода страны
 
-        System.out.println(periods.get(0).getNominalValues());
-        System.out.println(periods.get(0).getCurrencies());
-
 
 
     }
