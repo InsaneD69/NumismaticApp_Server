@@ -41,7 +41,11 @@ public class CountryPeriod { // содержит в себе информаци�
 
         PropertyConnection property=new PropertyConnection(pathToUcoinProperty);
 
-       periodTablePage=Jsoup.connect(property.open().getProperty("linkRu")+link).get();
+       periodTablePage=Jsoup.connect(
+               property.open()
+                       .getProperty("link."+Thread.currentThread().getName())
+                  +link)
+               .get();
         property.close();
        Elements elWithCurAndVal=periodTablePage.getElementsByAttributeValue("class","legend");
 

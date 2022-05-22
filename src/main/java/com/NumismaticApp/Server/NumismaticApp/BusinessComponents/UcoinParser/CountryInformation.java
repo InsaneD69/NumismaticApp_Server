@@ -40,10 +40,8 @@ public class CountryInformation {                           // содержит 
 
 
         return periods.get(0).getListOnePeriodCountry()
-
-
                 .stream()
-                .filter(elem->elem.getYear()==1899)
+                .filter(elem->elem.getYear()==requiredYear)
                 .collect(Collectors.toList());
 
 

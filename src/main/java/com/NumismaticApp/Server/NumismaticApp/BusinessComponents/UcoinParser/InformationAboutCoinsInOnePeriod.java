@@ -33,7 +33,7 @@ public class InformationAboutCoinsInOnePeriod   {
 
                     listOnePeriodCountry.add(
                             new liteCoin(
-                                    Integer.parseInt(year.getElementsByTag("div").text()),
+                                    Integer.parseInt(year.getElementsByTag("div").text().replace(" ","")),
                                     valueAndCurrency,
                                     value.select("a[href]").attr("href")
                             )

@@ -36,6 +36,8 @@ public class CountryListComponent implements CommandLineRunner {
             necessity();
             openStreams();
 
+
+
             while (true) {
                 closeStreams();
                 waitFor();
@@ -108,7 +110,7 @@ public class CountryListComponent implements CommandLineRunner {
         TimeUnit.MILLISECONDS.sleep(50);
     }
     private void waitForMiddle() throws InterruptedException {
-        TimeUnit.SECONDS.sleep(10);
+        TimeUnit.MINUTES.sleep(10);
     }
 
 }

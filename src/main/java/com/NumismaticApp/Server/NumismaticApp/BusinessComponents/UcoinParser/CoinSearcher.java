@@ -18,20 +18,19 @@ public class CoinSearcher {
 
     public static String pathToUcoinProperty = new File("").getAbsolutePath()+"/src/main/resources/ucoin.properties";
 
-    private Document mainPageDoc; //html код главной страницы сайта en.ucoin.net
+   // private Document mainPageDoc; //html код главной страницы сайта en.ucoin.net
 
-    private String lang;
 
      private ArrayList<Set<String>> countries; //список со всеми странами
 
-    private HashMap<String,CountryInformation> infoAboutCountries; // содержит в себе название страны и объект CountryInformation, в котором хранится информация о стране
+   // private HashMap<String,CountryInformation> infoAboutCountries; // содержит в себе название страны и объект CountryInformation, в котором хранится информация о стране
     //черная заготовка кэша
 
-    public CoinSearcher() throws IOException {  //отвечает за подгрузку нужной инфы для отпимизации поиска
+    public CoinSearcher(String lang) throws IOException {  //отвечает за подгрузку нужной инфы для отпимизации поиска
 
-        PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
-        mainPageDoc =Jsoup.connect(property.open().getProperty("linkRu")).get(); // получает главную страницу сайта ucoin из html кода которой будет извлечаться информация
-        infoAboutCountries =new HashMap<>();
+
+
+
                                                        //подгружает страны в список countries в  пользовательском виде
 
 
@@ -45,11 +44,16 @@ public class CoinSearcher {
     public static ArrayList<Set<String>> getCountriesFromUcoin(String lang) throws IOException { //отвечает за получение списка стран с сайта ucoin
 
 
-        Document mainPageDoc;
         PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
 
-        mainPageDoc =Jsoup.connect(property.open().getProperty("link"+lang)).get();
+        Document mainPageDoc =Jsoup.connect(property.open().getProperty("link."+lang)).get();
+
+        SaverParseInfo saverInfo = new SaverParseInfo(property.open().getProperty("mainPage."+lang));
+        saverInfo.save(mainPageDoc);
+        saverInfo.close();
         property.close();
+
+
         log.info("Successful connect to Ucoin");
         Elements timeVar = mainPageDoc.getElementsByAttributeValue("class","wrap nopad");
 
@@ -69,10 +73,20 @@ public class CoinSearcher {
 
 
 
-    public String getCounrtyLink(String requiredCountry)  {  //возвращает нужную часть http ссылки на определенную страну
+    public static String getCountryLink(String requiredCountry) throws IOException, ClassNotFoundException {  //возвращает нужную часть http ссылки на определенную страну
         // название стран для пользователей и их название в http ссылке отличается
 
-        Elements  listOfCountries = mainPageDoc.getElementsByAttributeValue("class","country");
+        PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
+
+        GetParseInfo getParseInfo = new GetParseInfo(
+                property.open().
+                        getProperty("mainPage."+Thread.currentThread().getName())
+        );
+        Document mainPage =Jsoup.parse(String.valueOf(getParseInfo.get()));
+
+        Elements  listOfCountries =  mainPage.getElementsByAttributeValue("class","country");
+        getParseInfo.close();
+        property.close();
 
 
         for(Element oneComparedCountry: listOfCountries){
@@ -95,19 +109,26 @@ public class CoinSearcher {
 
 
 
-    public void getInfoAboutCountry(String country) throws IOException {
+    public static   HashMap<String,CountryInformation> getInfoAboutCountry(String country) throws IOException, ClassNotFoundException {
 
-        String partOfLinkCountry = getCounrtyLink(country); // получает часть ссылки на страну
+        String partOfLinkCountry = getCountryLink(country); // получает часть ссылки на страну
         String correctCountryName = partOfLinkCountry.substring(18); // извлекает из ссылки название страны для http запрсов и более удобного сравнивания в html коде
 
+        PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
 
+        GetParseInfo getParseInfo = new GetParseInfo(
+                property.open().
+                        getProperty("mainPage."+Thread.currentThread().getName())
+        );
+        Document mainPage =Jsoup.parse( String.valueOf(getParseInfo.get()));
 
-
-
-        Element htmlCountryPeriods = mainPageDoc.selectFirst("[data-code="+correctCountryName+"]"); // получает html код, внутри которого информация о периодах в запрашиваемой стране с ссылками
+        Element htmlCountryPeriods = mainPage.selectFirst("[data-code="+correctCountryName+"]"); // получает html код, внутри которого информация о периодах в запрашиваемой стране с ссылками
         Elements countryPeriods = htmlCountryPeriods.getElementsByAttributeValue("class","period");
+        HashMap<String,CountryInformation> infoAboutCountries=new HashMap<>();
 
         if(countryPeriods!=null){infoAboutCountries.put(country,new CountryInformation(countryPeriods));}
+
+        return infoAboutCountries;
 
 
         // кладет информацию в мап,
@@ -140,16 +161,9 @@ public class CoinSearcher {
 
 
 
-    public void testgetCounrtyLink() throws IOException {
-
-
+    public void testgetCounrtyLink() throws IOException, ClassNotFoundException {
 
         getInfoAboutCountry("Russia");
-
-
-
-
-
 
 
     }
