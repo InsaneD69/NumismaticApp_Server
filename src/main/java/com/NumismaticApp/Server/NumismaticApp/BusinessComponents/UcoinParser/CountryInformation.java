@@ -11,14 +11,14 @@ public class CountryInformation {                           // содержит 
 
     public ArrayList<CountryPeriod> periods;                 // список с периодами страны
 
-    public CountryInformation(Elements countryPeriods) throws IOException {
+    public CountryInformation(Elements countryPeriods, String country) throws IOException {
 
         periods = new ArrayList<>();
 
         countryPeriods.forEach(period->{                   //на каждый период создается свой объект класса Period
 
             try {
-                periods.add(new CountryPeriod(period));
+                periods.add(new CountryPeriod(period,country));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -42,6 +42,28 @@ public class CountryInformation {                           // содержит 
                 .collect(Collectors.toList());
 
 
+
+    }
+
+    public List<CountryPeriod> getPeriodByYear(int requiredYear){
+
+
+        List<CountryPeriod> requiredPeriods= periods
+                .stream()
+                .filter(elem->elem.compareData(requiredYear))
+                .collect(Collectors.toList());
+
+        periods.forEach((period)->{
+
+            try {
+                period.setCurrenciesAndNominalValues();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        });
+
+        return periods;
 
     }
 

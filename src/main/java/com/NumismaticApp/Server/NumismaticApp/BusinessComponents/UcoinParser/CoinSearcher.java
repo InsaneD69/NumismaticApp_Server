@@ -9,6 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.*;
+import java.net.http.HttpRequest;
 import java.util.*;
 
 
@@ -65,7 +66,7 @@ public class CoinSearcher {
     }
 
 
-    public  void smartCoutrySelection(String country){
+    public  void smartCountrySelection(String country){
 
         System.out.println("im working");
 
@@ -109,12 +110,12 @@ public class CoinSearcher {
 
 
 
-    public static   HashMap<String,CountryInformation> getInfoAboutCountry(String country) throws IOException, ClassNotFoundException {
+    public static   CountryInformation getInfoAboutCountry(String country) throws IOException, ClassNotFoundException {
 
         String partOfLinkCountry = getCountryLink(country); // получает часть ссылки на страну
         String correctCountryName = partOfLinkCountry.substring(18); // извлекает из ссылки название страны для http запрсов и более удобного сравнивания в html коде
 
-        HashMap<String,CountryInformation> infoAboutCountries=new HashMap<>();
+        CountryInformation infoAboutCountries;
         PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
 
         File file = new File(property.open().getProperty("countriesInfo")+country+"."+Thread.currentThread().getName()+".txt");
@@ -123,14 +124,14 @@ public class CoinSearcher {
             log.info("info about "+country+" empty");
 
             GetParseInfo getParseInfo = new GetParseInfo(file.getPath());
-            infoAboutCountries=  (HashMap<String,CountryInformation>)getParseInfo.get();
+            infoAboutCountries=  (CountryInformation)getParseInfo.get();
             getParseInfo.close();
 
             return  infoAboutCountries;
         }
         log.info("info about"+country+" exist");
 
-
+        //HttpRequest.newBuilder().GET().uri("http://localhost:8080/search/info?lang=en").build().
 
         GetParseInfo getParseInfo = new GetParseInfo(
                 property.open().
@@ -143,13 +144,14 @@ public class CoinSearcher {
 
         SaverParseInfo saverParseInfo = new SaverParseInfo(file.getPath());
         if(countryPeriods!=null){
-            infoAboutCountries.put(country,new CountryInformation(countryPeriods));
+
+            infoAboutCountries=new CountryInformation(countryPeriods, country);
             saverParseInfo.save(infoAboutCountries);
             saverParseInfo.close();
-
+            return infoAboutCountries;
         }
 
-        return infoAboutCountries;
+        return null;
 
 
         // кладет информацию в мап,

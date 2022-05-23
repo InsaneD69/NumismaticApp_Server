@@ -7,12 +7,23 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 
 import static com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CoinSearcher.pathToUcoinProperty;
 
 
-public class CountryPeriod { // содержит в себе информацию об одном периоде :
+public class CountryPeriod  { // содержит в себе информацию об одном периоде :
+
+    private  String country;
+
+    public String getCountry() {
+        return country;
+    }
+
+    public Map<String, String> getCurrenciesAndNominalValues() {
+        return currenciesAndNominalValues;
+    }
 
     private String link;             // часть сслыки на таблицу в виде /table/?country=germany&period=1
     private String namePeriod;       // название периода
@@ -21,13 +32,14 @@ public class CountryPeriod { // содержит в себе информаци�
     private Map<String,String> currenciesAndNominalValues; // ключи -  номинал и валюта, значение - обозначение в таблице
     private Set<String> currencies;
     private Set<String> nominalValues;
+    private ArrayList<liteCoin> listOnePeriodCountry;
     private Document periodTablePage; //html код странцы с таблицей всех номиналов и годов периода
 
     public ArrayList<liteCoin> getListOnePeriodCountry() {
         return listOnePeriodCountry;
     }
 
-    private ArrayList<liteCoin> listOnePeriodCountry;
+
 
     public Set<String> getCurrencies() {
         return currencies;
@@ -69,6 +81,7 @@ public class CountryPeriod { // содержит в себе информаци�
 
 
        });
+       System.out.println(currenciesAndNominalValues);
 
 
         InformationAboutCoinsInOnePeriod informationAboutCoinsInOnePeriod = new InformationAboutCoinsInOnePeriod(periodTablePage);
@@ -83,8 +96,9 @@ public class CountryPeriod { // содержит в себе информаци�
 
 
 
-    public CountryPeriod(Element period) throws IOException {
+    public CountryPeriod(Element period,String country) throws IOException {
 
+        this.country=country;
         this.link= period.attr("href");
         this.namePeriod=period.attr("title");
         String[] intervals = period.getElementsByTag("div").text().split(" - ");

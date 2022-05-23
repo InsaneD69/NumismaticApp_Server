@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CoinSearcher.pathToUcoinProperty;
@@ -45,7 +46,7 @@ public class ParseService {
 
 
     }
-    public HashMap<String, CountryInformation> getInfoAboutCountry(String country) throws IOException, ClassNotFoundException, InterruptedException {
+    public  CountryInformation getInfoAboutCountry(String country) throws IOException, ClassNotFoundException, InterruptedException {
 
          return  CoinSearcher.getInfoAboutCountry(country);
 

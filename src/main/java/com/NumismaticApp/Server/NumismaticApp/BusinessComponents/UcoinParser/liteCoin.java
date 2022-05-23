@@ -1,6 +1,8 @@
 package com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser;
 
-public class liteCoin {
+import java.io.Serializable;
+
+public class liteCoin  {
 
 
     private Integer year;
