@@ -1,6 +1,7 @@
 package com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser;
 
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.PropertyConnection;
+import com.NumismaticApp.Server.NumismaticApp.repository.Model.CountryInfoModel;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;
@@ -47,7 +48,7 @@ public class CoinSearcher {
 
         PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
 
-        Document mainPageDoc =Jsoup.connect(property.open().getProperty("link."+lang)).get();
+        Document mainPageDoc =Jsoup.connect(new File("").getAbsolutePath()+property.open().getProperty("link."+lang)).get();
 
         SaverParseInfo saverInfo = new SaverParseInfo(property.open().getProperty("mainPage."+lang));
         saverInfo.save(mainPageDoc);
@@ -79,7 +80,7 @@ public class CoinSearcher {
 
         PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
 
-        GetParseInfo getParseInfo = new GetParseInfo(
+        GetParseInfo getParseInfo = new GetParseInfo(new File("").getAbsolutePath()+
                 property.open().
                         getProperty("mainPage."+Thread.currentThread().getName())
         );
@@ -118,22 +119,24 @@ public class CoinSearcher {
         CountryInformation infoAboutCountries;
         PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
 
-        File file = new File(property.open().getProperty("countriesInfo")+country+"."+Thread.currentThread().getName()+".txt");
+        File file = new File(new File("").getAbsolutePath()+property.open().getProperty("countriesInfo")+country+"_"+Thread.currentThread().getName()+".txt");
+        System.out.println(file.isFile());
 
         if(file.length()!=0){
-            log.info("info about "+country+" empty");
 
+            log.info("exist data about "+country);
             GetParseInfo getParseInfo = new GetParseInfo(file.getPath());
             infoAboutCountries=  (CountryInformation)getParseInfo.get();
             getParseInfo.close();
 
             return  infoAboutCountries;
         }
-        log.info("info about"+country+" exist");
+       // return  infoAboutCountries=null;
+        log.info("info about "+country+" empty");
 
         //HttpRequest.newBuilder().GET().uri("http://localhost:8080/search/info?lang=en").build().
 
-        GetParseInfo getParseInfo = new GetParseInfo(
+        GetParseInfo getParseInfo = new GetParseInfo( new File("").getAbsolutePath()+
                 property.open().
                         getProperty("mainPage."+Thread.currentThread().getName())
         );

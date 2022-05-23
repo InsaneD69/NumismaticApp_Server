@@ -2,34 +2,55 @@ package com.NumismaticApp.Server.NumismaticApp.DTO;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class SearchInformation implements Serializable {
 
     private String country;
-    private Integer year;
-    private String value;
-    private String currency;
-    private String mint;
+    private  ArrayList<Integer> year;
+    private ArrayList<String> value;
+    private ArrayList<String> currency;
+    private ArrayList<String> mint;
 
     public String getCountry() {
         return country;
     }
 
-    public Integer getYear() {
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public ArrayList<Integer> getYear() {
         return year;
     }
 
-    public String getValue() {
+    public void setYear(ArrayList<Integer> year) {
+        this.year = year;
+    }
+
+    public ArrayList<String> getValue() {
         return value;
     }
 
-    public String getCurrency() {
+    public void setValue(ArrayList<String> value) {
+        this.value = value;
+    }
+
+    public ArrayList<String> getCurrency() {
         return currency;
     }
 
-    public String getMint() {
+    public void setCurrency(ArrayList<String> currency) {
+        this.currency = currency;
+    }
+
+    public ArrayList<String> getMint() {
         return mint;
+    }
+
+    public void setMint(ArrayList<String> mint) {
+        this.mint = mint;
     }
 
     public SearchInformation(){

@@ -16,7 +16,7 @@ public class SaverParseInfo {
 
         log.info("start");
         try{
-        file =new File( new File("").getAbsolutePath()+filePath);
+        file =new File( filePath);
         fileOutputStream=new FileOutputStream(file);
         objectOutputStream = new ObjectOutputStream(fileOutputStream);
             log.info("stream created");
@@ -37,7 +37,7 @@ public class SaverParseInfo {
 
         try {
 
-            objectOutputStream.writeObject(String.valueOf(object));
+            objectOutputStream.writeObject(object);
             objectOutputStream.flush();
         }
         catch (IOException e){

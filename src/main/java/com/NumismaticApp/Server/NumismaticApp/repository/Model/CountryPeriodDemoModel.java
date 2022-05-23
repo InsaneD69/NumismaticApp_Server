@@ -4,7 +4,7 @@ import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.Cou
 
 import java.io.Serializable;
 
-public class CountryPeriodDemoModel implements CountryPeriodInterface {
+public class CountryPeriodDemoModel implements CountryPeriodInterface, Serializable {
 
     private  String country;
     private String namePeriod;       // название периода

@@ -13,7 +13,7 @@ import java.util.*;
 import static com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CoinSearcher.pathToUcoinProperty;
 
 
-public class CountryPeriod  { // содержит в себе информацию об одном периоде :
+public class CountryPeriod implements Serializable { // содержит в себе информацию об одном периоде :
 
     private  String country;
 
@@ -33,7 +33,8 @@ public class CountryPeriod  { // содержит в себе информаци
     private Set<String> currencies;
     private Set<String> nominalValues;
     private ArrayList<liteCoin> listOnePeriodCountry;
-    private Document periodTablePage; //html код странцы с таблицей всех номиналов и годов периода
+
+    private transient Document periodTablePage; //html код странцы с таблицей всех номиналов и годов периода
 
     public ArrayList<liteCoin> getListOnePeriodCountry() {
         return listOnePeriodCountry;

@@ -7,11 +7,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CountryPeriodModel implements CountryPeriodInterface {
+public class CountryPeriodModel implements CountryPeriodInterface, Serializable {
 
     private  String country;
     private String namePeriod;       // название периода

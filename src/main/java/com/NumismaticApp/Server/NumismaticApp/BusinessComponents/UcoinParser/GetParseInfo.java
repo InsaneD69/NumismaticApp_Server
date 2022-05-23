@@ -10,7 +10,7 @@ public class GetParseInfo {
 
     public GetParseInfo(String filePath) throws IOException {
 
-        file =new File( new File("").getAbsolutePath()+filePath);
+        file =new File( filePath);
         fileInputStream =new FileInputStream(file);
         objectInputStream = new ObjectInputStream(fileInputStream);
 
