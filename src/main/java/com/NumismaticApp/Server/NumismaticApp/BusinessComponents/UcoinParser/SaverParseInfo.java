@@ -16,10 +16,10 @@ public class SaverParseInfo {
 
         log.info("start");
         try{
-        file =new File( filePath);
+        file =new File(filePath);
         fileOutputStream=new FileOutputStream(file);
         objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            log.info("stream created");
+            log.info("stream was opened");
         }
 
         catch (IOException e){
@@ -39,6 +39,7 @@ public class SaverParseInfo {
 
             objectOutputStream.writeObject(object);
             objectOutputStream.flush();
+            log.info("file was saved");
         }
         catch (IOException e){
 
@@ -57,11 +58,12 @@ public class SaverParseInfo {
     }
 
 
-    public  void close() throws IOException {
-
-        objectOutputStream.close();
-       fileOutputStream.close();
-
+    public  void close()  {
+        try {
+            objectOutputStream.close();
+            fileOutputStream.close();
+        }
+        catch (IOException e){e.printStackTrace();}
     }
 
 

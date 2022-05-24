@@ -48,10 +48,10 @@ public class CoinSearcher {
 
         PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
 
-        Document mainPageDoc =Jsoup.connect(new File("").getAbsolutePath()+property.open().getProperty("link."+lang)).get();
+        Document mainPageDoc =Jsoup.connect(property.open().getProperty("link."+lang)).get();
 
-        SaverParseInfo saverInfo = new SaverParseInfo(property.open().getProperty("mainPage."+lang));
-        saverInfo.save(mainPageDoc);
+        SaverParseInfo saverInfo = new SaverParseInfo(new File("").getAbsolutePath()+property.open().getProperty("mainPage."+lang));
+        saverInfo.save(String.valueOf(mainPageDoc));
         saverInfo.close();
         property.close();
 

@@ -64,7 +64,7 @@ public class CountryInformation implements Serializable {                       
                 .filter(elem->elem.compareData(requiredYear))
                 .collect(Collectors.toList());
 
-        periods.forEach((period)->{
+        requiredPeriods.forEach((period)->{
 
             try {
                 period.setCurrenciesAndNominalValues();
@@ -74,7 +74,7 @@ public class CountryInformation implements Serializable {                       
 
         });
 
-        return periods;
+        return requiredPeriods;
 
     }
 

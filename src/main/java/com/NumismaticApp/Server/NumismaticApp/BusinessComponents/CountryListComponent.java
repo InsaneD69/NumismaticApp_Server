@@ -2,6 +2,7 @@ package com.NumismaticApp.Server.NumismaticApp.BusinessComponents;
 
 
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CoinSearcher;
+import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.SaverParseInfo;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -22,13 +23,10 @@ import static com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinPar
 @Component
 public class CountryListComponent implements CommandLineRunner {
 
-    private ObjectOutputStream saveToFile;
-
-    private FileOutputStream fileStream;
+    private SaverParseInfo saverParseInfo;
 
     @Override
     public void run(String... args)  {
-
 
 
          try {
@@ -59,13 +57,10 @@ public class CountryListComponent implements CommandLineRunner {
 
         for(String lang:property.open().getProperty("existLang").split(",")){
 
-
-
-            File countryList = new File(new File("").getAbsolutePath()+property.open().getProperty("countriesList"+lang));
-            fileStream = new FileOutputStream(countryList);
-            saveToFile = new ObjectOutputStream(fileStream);
+            String countryListWay = new File("").getAbsolutePath()+property.open().getProperty("countriesList."+lang);
+            System.out.println(countryListWay);
+            saverParseInfo  = new SaverParseInfo(countryListWay);
             saveCountriesIntoFile(lang);
-
             waitForLittle();
 
         }
@@ -88,16 +83,15 @@ public class CountryListComponent implements CommandLineRunner {
 
 
     private void closeStreams() throws IOException {
-        fileStream.close();
-        saveToFile.close();//
+       saverParseInfo.close();
     }
 
     private void saveCountriesIntoFile(String lang) throws IOException {
 
         ArrayList<Set<String>> countriesBufferStorage = new ArrayList<>(CoinSearcher.getCountriesFromUcoin(lang));
+        System.out.println(countriesBufferStorage.get(0));
         log.info("Country  list "+lang+" had been downloaded");
-        saveToFile.writeObject(countriesBufferStorage);
-        saveToFile.flush();
+        saverParseInfo.save(countriesBufferStorage);
         log.info("Country list "+lang+" had been saved");
 
 
