@@ -40,7 +40,7 @@ public class CountryPeriod implements Serializable { // содержит в се
         return listOnePeriodCountry;
     }
 
-
+///gdfrzsdfzgdfgdfgd
 
     public Set<String> getCurrencies() {
         return currencies;
