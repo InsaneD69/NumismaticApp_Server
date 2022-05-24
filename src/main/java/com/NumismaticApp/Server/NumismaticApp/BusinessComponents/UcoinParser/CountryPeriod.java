@@ -74,6 +74,8 @@ public class CountryPeriod implements Serializable { // содержит в се
        currencies=new HashSet<>();
        nominalValues = new HashSet<>();
 
+
+
        currenciesAndNominalValues.forEach((nomAndCurKey,tableVal)->{
 
             String [] parts = nomAndCurKey.split(" ",2);

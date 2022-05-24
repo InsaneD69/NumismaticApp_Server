@@ -49,7 +49,7 @@ public class ParseController {
 
     }
 
-    @GetMapping("/info")
+    @PutMapping("/info")
     private ResponseEntity parseIncomingInfo(@RequestBody SearchInformation searchInformation,
                                              @RequestParam String lang) throws IOException, ClassNotFoundException, InterruptedException {
 

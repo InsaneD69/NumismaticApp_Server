@@ -30,7 +30,7 @@ public class CountryInformation implements Serializable {                       
 
         });
 
-        periods.forEach(period->{
+        /*periods.forEach(period->{
 
             try {
                 period.setCurrenciesAndNominalValues(); //получает список каждого периода страны
@@ -38,7 +38,12 @@ public class CountryInformation implements Serializable {                       
                 throw new RuntimeException(e);
             }
         }
-       );
+       );*/
+        periods.get(0).setCurrenciesAndNominalValues();
+        if(periods.get(1)!=null){
+        periods.get(1).setCurrenciesAndNominalValues();
+        }
+
 
 
     }
@@ -73,6 +78,7 @@ public class CountryInformation implements Serializable {                       
             }
 
         });
+
 
         return requiredPeriods;
 

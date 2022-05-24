@@ -4,6 +4,7 @@ import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.Cou
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CountryPeriod;
 
 import java.io.Serializable;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 public class CountryInfoModel implements Serializable {
@@ -32,7 +33,11 @@ public class CountryInfoModel implements Serializable {
 
            }else{
 
-                 periodsModel.add(CountryPeriodModel.getModel(countryPeriod));
+                 try {
+                     periodsModel.add(CountryPeriodModel.getModel(countryPeriod));
+                 } catch (URISyntaxException e) {
+                     throw new RuntimeException(e);
+                 }
 
              }
 

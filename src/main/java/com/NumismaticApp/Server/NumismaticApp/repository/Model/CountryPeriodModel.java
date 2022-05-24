@@ -8,9 +8,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 
 import java.io.Serializable;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 
 public class CountryPeriodModel implements CountryPeriodInterface, Serializable {
 
@@ -28,7 +33,7 @@ public class CountryPeriodModel implements CountryPeriodInterface, Serializable 
 
 
 
-    public void setCurrenciesAndNominalValues(Map<String,String> currenciesAndNominalValuesMap)  {
+    public void setCurrenciesAndNominalValues(Map<String,String> currenciesAndNominalValuesMap) throws URISyntaxException {
         //конвертиция из Map в стринг
        ObjectMapper objectMapper = new ObjectMapper();
        String valAndCur;
@@ -46,6 +51,8 @@ public class CountryPeriodModel implements CountryPeriodInterface, Serializable 
                System.out.println(key+"  :  "+value);
 
            });*/
+
+
 
 
        }
@@ -101,7 +108,7 @@ public class CountryPeriodModel implements CountryPeriodInterface, Serializable 
     }
 
 
-    public CountryPeriodModel toModel(CountryPeriod countryPeriod){
+    public CountryPeriodModel toModel(CountryPeriod countryPeriod) throws URISyntaxException {
 
         CountryPeriodModel countryPeriodModel = new CountryPeriodModel();
 
@@ -116,7 +123,7 @@ public class CountryPeriodModel implements CountryPeriodInterface, Serializable 
 
     }
 
-    static public CountryPeriodModel getModel(CountryPeriod countryPeriod){
+    static public CountryPeriodModel getModel(CountryPeriod countryPeriod) throws URISyntaxException {
 
         CountryPeriodModel countryPeriodModel =new CountryPeriodModel();
 
