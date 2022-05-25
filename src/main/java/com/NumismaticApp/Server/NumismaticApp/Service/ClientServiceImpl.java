@@ -9,6 +9,7 @@ import com.NumismaticApp.Server.NumismaticApp.repository.UserRepo;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +18,9 @@ public class ClientServiceImpl  {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public User registration(UserEntity incomingUser) throws UserAlreadyExistException {
 
@@ -27,6 +31,7 @@ public class ClientServiceImpl  {
             throw new UserAlreadyExistException("Пользователь с таким именем существует");
 
         }
+        incomingUser.setPassword(passwordEncoder.encode(incomingUser.getPassword()));
 
         return User.toModel(userRepo.save(incomingUser));
 
@@ -48,7 +53,7 @@ public class ClientServiceImpl  {
             throw new UserNotFoundException("Пользователь с таким логином не существует");
         }
 
-        if (!incomingUser.getPassword().equals(user.getPassword())){
+        if (!passwordEncoder.encode(incomingUser.getPassword()).equals(user.getPassword())){
 
             throw new WrongPasswordException("неверный пароль");
 

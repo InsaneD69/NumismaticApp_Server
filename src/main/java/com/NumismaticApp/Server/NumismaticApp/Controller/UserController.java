@@ -13,11 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.RequestScope;
 
 
-
-
-@RestController
+ @RestController
 @RequestMapping("/acc")
 @Log4j2
 public class UserController  {
@@ -52,9 +51,9 @@ public class UserController  {
 
 
     @GetMapping("/login")
-    public ResponseEntity logInAccount(@RequestBody UserEntity incomingUser){
+    public ResponseEntity logInAccount(){
 
-        User user;
+        /*User user;
 
         try {
 
@@ -70,7 +69,8 @@ public class UserController  {
 
         }
 
-        return  ResponseEntity.ok().body(user);
+        return  ResponseEntity.ok().body(user);*/
+        return ResponseEntity.ok().body("Successful login");
 
     }
 
