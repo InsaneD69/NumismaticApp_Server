@@ -6,16 +6,17 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class InformationAboutCoinsInOnePeriod   {
 
-    ArrayList<liteCoin> listOnePeriodCountry;
+    ArrayList<LiteCoin> listOnePeriodCountry;
 
-    public ArrayList<liteCoin> getListOnePeriodCountry() {
+    public ArrayList<LiteCoin> getListOnePeriodCountry() {
         return listOnePeriodCountry;
     }
 
-    public  InformationAboutCoinsInOnePeriod(Document periodTablePage){
+    public  InformationAboutCoinsInOnePeriod(Document periodTablePage, Map<String,String> currenciesAndNominalValues){
 
         listOnePeriodCountry=new ArrayList<>();
 
@@ -27,14 +28,17 @@ public class InformationAboutCoinsInOnePeriod   {
 
             year.getElementsByTag("td").forEach((Element value)->{//каждого значения в строчке
 
-                String valueAndCurrency = value.text();
+                String valueAndCurrency =value.text();// currenciesAndNominalValues.get(value.text());
 
                 if(!valueAndCurrency.equals("-")) {
 
+                    System.out.println(value.text());
+                    System.out.println(currenciesAndNominalValues.get(checkUnCorrectTableKey(value.text())));
+
                     listOnePeriodCountry.add(
-                            new liteCoin(
+                            new LiteCoin(
                                     Integer.parseInt(year.getElementsByTag("div").text().replace(" ","")),
-                                    valueAndCurrency,
+                                    currenciesAndNominalValues.get(checkUnCorrectTableKey(value.text())),
                                     value.select("a[href]").attr("href")
                             )
                     );
@@ -52,6 +56,13 @@ public class InformationAboutCoinsInOnePeriod   {
 
 
 
+
+    private String checkUnCorrectTableKey(String text){
+
+       return text.split("/")[0];
+
+
+    }
 
 
 }

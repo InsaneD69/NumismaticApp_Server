@@ -1,19 +1,12 @@
 package com.NumismaticApp.Server.NumismaticApp.Entity;
 
-
-import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
+
 
 @Entity
 @Getter

@@ -28,8 +28,6 @@ private AuthProviderImpl authProvider;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        log.info("Get request "+http);
-
         http.authorizeRequests()
                 .antMatchers("/acc/new","acc/login").anonymous()
                 .antMatchers("/search/countries").authenticated()

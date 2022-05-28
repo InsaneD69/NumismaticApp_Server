@@ -1,19 +1,13 @@
 package com.NumismaticApp.Server.NumismaticApp.repository.Model;
 
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CountryPeriod;
-import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.liteCoin;
+import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.LiteCoin;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -24,7 +18,7 @@ public class CountryPeriodModel implements CountryPeriodInterface, Serializable 
     private short bgYear;            // начало периода
     private short endYear;
     private String currenciesAndNominalValues;  // ключи -  номинал и валюта, значение - обозначение в таблице
-    private ArrayList<liteCoin> listOnePeriodCountry;
+    private ArrayList<LiteCoin> listOnePeriodCountry;
 
     public String getCurrenciesAndNominalValues() {
         return currenciesAndNominalValues;
@@ -82,7 +76,7 @@ public class CountryPeriodModel implements CountryPeriodInterface, Serializable 
         return endYear;
     }
 
-    public ArrayList<liteCoin> getListOnePeriodCountry() {
+    public ArrayList<LiteCoin> getListOnePeriodCountry() {
         return listOnePeriodCountry;
     }
 
@@ -103,7 +97,7 @@ public class CountryPeriodModel implements CountryPeriodInterface, Serializable 
         this.endYear = endYear;
     }
 
-    public void setListOnePeriodCountry(ArrayList<liteCoin> listOnePeriodCountry) {
+    public void setListOnePeriodCountry(ArrayList<LiteCoin> listOnePeriodCountry) {
         this.listOnePeriodCountry = listOnePeriodCountry;
     }
 

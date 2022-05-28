@@ -47,7 +47,7 @@ public class CountryInformation implements Serializable {                       
 
 
     }
-    public List<liteCoin> getCoinFromPeriod(int requiredYear){
+    public List<LiteCoin> getCoinFromPeriod(int requiredYear){
 
 
 

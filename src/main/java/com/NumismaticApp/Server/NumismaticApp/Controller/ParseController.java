@@ -7,6 +7,7 @@ import com.NumismaticApp.Server.NumismaticApp.Exception.CountryNotExistException
 import com.NumismaticApp.Server.NumismaticApp.Exception.LanguageNotExistException;
 import com.NumismaticApp.Server.NumismaticApp.Service.ParseService;
 import com.NumismaticApp.Server.NumismaticApp.Validator.IncomingCountryValidator;
+import com.NumismaticApp.Server.NumismaticApp.Validator.IncomingSearcherValidator;
 import com.NumismaticApp.Server.NumismaticApp.Validator.IncomingValidator;
 import com.NumismaticApp.Server.NumismaticApp.repository.Model.CountryInfoModel;
 import lombok.extern.log4j.Log4j2;
@@ -15,7 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.Set;
 
 
 @RestController
@@ -83,6 +86,37 @@ public class ParseController {
 
     }
 
+    @PutMapping()
+
+    private ResponseEntity findRequiredCoin(@RequestBody SearchInformation searchInformation, @RequestParam String lang) throws  IOException, ClassNotFoundException, CountryNotExistException {
+
+
+        try {
+            IncomingValidator.checkExistLanguage(lang);
+            Thread.currentThread().setName(lang);
+            IncomingSearcherValidator val=new IncomingSearcherValidator();
+
+            return ResponseEntity.ok().body(
+                    parseService.getRequiredCoins(
+                            searchInformation.getCountry()
+                            ,searchInformation.getYear()
+                            ,val.validate(searchInformation)
+                    )
+            );
+        }
+        catch (LanguageNotExistException e){
+
+            return  ResponseEntity.badRequest().body(e.getMessage());
+
+        }
+        catch (CountryNotExistException e){
+
+            return  ResponseEntity.badRequest().body(e.getMessage());
+
+        }
+
+
+    }
 
 
 

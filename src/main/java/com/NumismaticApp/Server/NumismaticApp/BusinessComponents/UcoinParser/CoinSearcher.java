@@ -1,6 +1,7 @@
 package com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser;
 
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.PropertyConnection;
+import com.NumismaticApp.Server.NumismaticApp.DTO.CoinDto;
 import com.NumismaticApp.Server.NumismaticApp.repository.Model.CountryInfoModel;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
@@ -109,14 +110,28 @@ public class CoinSearcher {
     }
 
 
+    public static ArrayList<CoinDto> getCoin(String country, ArrayList<Integer> year, ArrayList<String> curAndValue) throws IOException, ClassNotFoundException {
+
+       FindCoin findCoin = new FindCoin(getInfoAboutCountry(country),year,curAndValue);
+
+       System.out.println("From CoinSearch.getCoin:"+findCoin.getLiteCoins());
+
+       return null/*findCoin.getCoins()*/;
 
 
-    public static   CountryInformation getInfoAboutCountry(String country) throws IOException, ClassNotFoundException {
+
+
+    }
+
+
+
+
+    public static CountryInformation getInfoAboutCountry(String country) throws IOException, ClassNotFoundException {
 
         String partOfLinkCountry = getCountryLink(country); // получает часть ссылки на страну
         String correctCountryName = partOfLinkCountry.substring(18); // извлекает из ссылки название страны для http запрсов и более удобного сравнивания в html коде
 
-        CountryInformation infoAboutCountries;
+        CountryInformation infoAboutCountry;
         PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
 
         File file = new File(new File("").getAbsolutePath()+property.open().getProperty("countriesInfo")+country+"_"+Thread.currentThread().getName()+".txt");
@@ -126,12 +141,12 @@ public class CoinSearcher {
 
             log.info("exist data about "+country);
             GetParseInfo getParseInfo = new GetParseInfo(file.getPath());
-            infoAboutCountries=  (CountryInformation)getParseInfo.get();
+            infoAboutCountry= (CountryInformation)getParseInfo.get();
             getParseInfo.close();
 
-            return  infoAboutCountries;
+            return  infoAboutCountry;
         }
-       // return  infoAboutCountries=null;
+       // return  infoAboutCountry=null;
         log.info("info about "+country+" empty");
 
         //HttpRequest.newBuilder().GET().uri("http://localhost:8080/search/info?lang=en").build().
@@ -148,10 +163,10 @@ public class CoinSearcher {
         SaverParseInfo saverParseInfo = new SaverParseInfo(file.getPath());
         if(countryPeriods!=null){
 
-            infoAboutCountries=new CountryInformation(countryPeriods, country);
-            saverParseInfo.save(infoAboutCountries);
+            infoAboutCountry=new CountryInformation(countryPeriods, country);
+            saverParseInfo.save(infoAboutCountry);
             saverParseInfo.close();
-            return infoAboutCountries;
+            return infoAboutCountry;
         }
 
         return null;
@@ -187,6 +202,8 @@ public class CoinSearcher {
 
 
 
+
+
     public void testgetCounrtyLink() throws IOException, ClassNotFoundException {
 
         getInfoAboutCountry("Russia");
@@ -211,5 +228,11 @@ public class CoinSearcher {
 
     }
 
+
+    public static String replaceAmpersand(String text){
+
+        return text.replace("&amp;","&");
+
+    }
 
 }

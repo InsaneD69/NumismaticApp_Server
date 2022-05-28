@@ -7,11 +7,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.awt.*;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -21,7 +18,7 @@ import static com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinPar
 
 @Log4j2
 @Component
-public class CountryListComponent implements CommandLineRunner {
+public class UCoinComponent implements CommandLineRunner {
 
     private SaverParseInfo saverParseInfo;
 

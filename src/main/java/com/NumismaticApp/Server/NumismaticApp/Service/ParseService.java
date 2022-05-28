@@ -4,6 +4,7 @@ package com.NumismaticApp.Server.NumismaticApp.Service;
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.PropertyConnection;
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CoinSearcher;
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CountryInformation;
+import com.NumismaticApp.Server.NumismaticApp.DTO.CoinDto;
 import com.NumismaticApp.Server.NumismaticApp.Exception.LanguageNotExistException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CoinSearcher.pathToUcoinProperty;
@@ -52,6 +54,14 @@ public class ParseService {
 
     }
 
+    public ArrayList<CoinDto> getRequiredCoins(String country, Optional<ArrayList<Integer>> year, Optional<ArrayList<String>> curAndVal ) throws IOException, ClassNotFoundException {
+
+
+        log.info("curAndVal: "+curAndVal);
+
+        return  CoinSearcher.getCoin(country,year.get(),curAndVal.get());
+
+    }
 
 
 

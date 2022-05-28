@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 
 
- @RestController
+@RestController
 @RequestMapping("/acc")
 @Log4j2
 public class UserController  {

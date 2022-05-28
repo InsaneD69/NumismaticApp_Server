@@ -1,6 +1,7 @@
 package com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser;
 
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.PropertyConnection;
+import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,7 +13,7 @@ import java.util.*;
 
 import static com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CoinSearcher.pathToUcoinProperty;
 
-
+@Log4j2
 public class CountryPeriod implements Serializable { // содержит в себе информацию об одном периоде :
 
     private  String country;
@@ -32,11 +33,11 @@ public class CountryPeriod implements Serializable { // содержит в се
     private Map<String,String> currenciesAndNominalValues; // ключи -  номинал и валюта, значение - обозначение в таблице
     private Set<String> currencies;
     private Set<String> nominalValues;
-    private ArrayList<liteCoin> listOnePeriodCountry;
+    private ArrayList<LiteCoin> listOnePeriodCountry;
 
     private transient Document periodTablePage; //html код странцы с таблицей всех номиналов и годов периода
 
-    public ArrayList<liteCoin> getListOnePeriodCountry() {
+    public ArrayList<LiteCoin> getListOnePeriodCountry() {
         return listOnePeriodCountry;
     }
 
@@ -65,9 +66,10 @@ public class CountryPeriod implements Serializable { // содержит в се
        currenciesAndNominalValues =new HashMap<>();
 
        elWithCurAndVal.forEach((text)->{                         //разделяет полученный текст вида 1pf - 1 penning на значение в таблице и номинал с валютой
-                                                                // затем помещает их в мапу
-            String[] parts = text.text().split(" - ");
-            currenciesAndNominalValues.put(parts[1],parts[0]);
+                                                                 // затем помещает их в мапу
+               String[] parts = text.text().split(" - ");
+               currenciesAndNominalValues.put(parts[0], parts[1]);
+
 
        });
 
@@ -76,9 +78,9 @@ public class CountryPeriod implements Serializable { // содержит в се
 
 
 
-       currenciesAndNominalValues.forEach((nomAndCurKey,tableVal)->{
+       currenciesAndNominalValues.forEach((tableKey,nomAndCurVal)->{
 
-            String [] parts = nomAndCurKey.split(" ",2);
+            String [] parts = nomAndCurVal.split(" ",2);
             nominalValues.add(parts[0]);
             currencies.add(parts[1]);
 
@@ -87,7 +89,7 @@ public class CountryPeriod implements Serializable { // содержит в се
        System.out.println(currenciesAndNominalValues);
 
 
-        InformationAboutCoinsInOnePeriod informationAboutCoinsInOnePeriod = new InformationAboutCoinsInOnePeriod(periodTablePage);
+        InformationAboutCoinsInOnePeriod informationAboutCoinsInOnePeriod = new InformationAboutCoinsInOnePeriod(periodTablePage,currenciesAndNominalValues);
 
         listOnePeriodCountry=informationAboutCoinsInOnePeriod.getListOnePeriodCountry();
 
@@ -113,6 +115,8 @@ public class CountryPeriod implements Serializable { // содержит в се
 
     public boolean compareData(int year){ // дает ответ на вопрос: принадлежит ли входящий год к этому периоду
 
+        log.info("Comparing"+year+" with"+bgYear+"-"+endYear);
+
         if((year>=bgYear)&&(year<=endYear)){
             return true;
         } else return false;
@@ -133,5 +137,26 @@ public class CountryPeriod implements Serializable { // содержит в се
 
     public short getEndYear() {
         return endYear;
+    }
+
+    @Override
+    public String toString() {
+        return "CountryPeriod{" +
+                "country='" + country + '\'' +
+                ", link='" + link + '\'' +
+                ", namePeriod='" + namePeriod + '\'' +
+                ", bgYear=" + bgYear +
+                ", endYear=" + endYear +
+                ", currenciesAndNominalValues=" + currenciesAndNominalValues +
+                ", currencies=" + currencies +
+                ", nominalValues=" + nominalValues +
+                ", listOnePeriodCountry=" + listOnePeriodCountry +
+                ", periodTablePage=" + periodTablePage +
+                '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return namePeriod.hashCode();
     }
 }

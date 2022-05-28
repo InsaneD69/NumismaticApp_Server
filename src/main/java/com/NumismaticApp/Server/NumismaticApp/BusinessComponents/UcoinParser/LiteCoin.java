@@ -2,7 +2,7 @@ package com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser;
 
 import java.io.Serializable;
 
-public class liteCoin implements Serializable {
+public class LiteCoin implements Serializable {
 
 
     private Integer year;
@@ -11,6 +11,9 @@ public class liteCoin implements Serializable {
 
     public Integer getYear() {
         return year;
+    }
+
+    public LiteCoin() {
     }
 
     public void setYear(Integer year) {
@@ -33,7 +36,7 @@ public class liteCoin implements Serializable {
         this.url = url;
     }
 
-    public liteCoin(Integer year, String valueAndCurrency, String url) {
+    public LiteCoin(Integer year, String valueAndCurrency, String url) {
 
         this.year = year;
         this.valueAndCurrency=valueAndCurrency;
@@ -46,6 +49,11 @@ public class liteCoin implements Serializable {
         return " значение: "+valueAndCurrency+
                 " url: "+url+
                 " год: "+ year;
+    }
+
+    @Override
+    public int hashCode() {
+        return url.hashCode();
     }
 
 }
