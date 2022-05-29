@@ -164,7 +164,7 @@ public class FindCoin {
         });
 
 
-        System.out.println(tableCoins);
+
         return null;
 
 
@@ -177,22 +177,14 @@ public class FindCoin {
 
         Document doc = Jsoup.connect(property.open().getProperty("link."+Thread.currentThread().getName())+url).get();
         property.close();
-        //System.out.println("----------------------------");
-        // Element ment=doc.select("table").get(0);
-        //System.out.println(0+"----------------------------");
-      //  System.out.println(ment);
 
         Element ement=doc.select("table").get(1);
-        System.out.println("----------------------------");
-        System.out.println(ement);
-        System.out.println("----------------------------");
-       // Element lement=doc.select("table").get(2);
-       // System.out.println(2+"----------------------------");
-       // System.out.println(lement);
-       // Element table=doc.select("table").get(3);
-       // System.out.println(3+"----------------------------");
-        //System.out.println(table);
+        Elements rty = ement.getElementsByTag("tr");
 
+        System.out.println("----------------------------");
+        rty.forEach(r->
+                System.out.println(r.getElementsByTag("th").text()+":"+r.getElementsByTag("td").text()));
+        System.out.println("----------------------------");
 
 
 
