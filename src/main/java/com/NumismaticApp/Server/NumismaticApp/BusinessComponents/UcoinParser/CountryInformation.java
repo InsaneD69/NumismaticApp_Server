@@ -13,8 +13,12 @@ public class CountryInformation implements Serializable {                       
 
     public ArrayList<CountryPeriod> periods;                 // список с периодами страны
 
+    private String nameCountry;
+
 
     public CountryInformation(Elements countryPeriods, String country) throws IOException {
+
+        this.nameCountry=country;
 
         periods = new ArrayList<>();
 
@@ -88,5 +92,8 @@ public class CountryInformation implements Serializable {                       
         TimeUnit.MILLISECONDS.sleep(10);
     }
 
+    public String getNameCountry() {
+        return nameCountry;
+    }
 }
 

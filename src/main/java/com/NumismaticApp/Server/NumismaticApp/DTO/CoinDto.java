@@ -10,7 +10,6 @@ public class CoinDto implements Serializable {
 
     private String country;
     private String currency;
-    private String category;
     private Integer years;
     private String cost;
     private String linkUcoin;
@@ -25,10 +24,9 @@ public class CoinDto implements Serializable {
 
     }
 
-    public CoinDto(String country, String currency, String category, Integer years, String cost, String linkUcoin, LocalDate dataOfCreate, String value, String mint) {
+    public CoinDto(String country, String currency, Integer years, String cost, String linkUcoin, LocalDate dataOfCreate, String value, String mint) {
         this.country = country;
         this.currency = currency;
-        this.category = category;
         this.years = years;
         this.cost = cost;
         this.linkUcoin = linkUcoin;
@@ -62,12 +60,7 @@ public class CoinDto implements Serializable {
     public void setCurrency(String currency) {
         this.currency = currency;
     }
-    public String getCategory() {
-        return category;
-    }
-    public void setCategory(String category) {
-        this.category = category;
-    }
+
     public  Integer getYears() {
         return years;
     }
@@ -117,7 +110,7 @@ public class CoinDto implements Serializable {
                 "Примерная стоимость: "+getCost()+'\''+
                 "ссылка: "+getLinkUcoin()+'\''+
                 "Дата создания: "+getDataOfCreate()+'\''+
-                "Категория: "+getCategory()+'\''
+                "Таблица с данными: \n"+getInfoTable()
                 ;
 
 

@@ -8,6 +8,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
@@ -21,7 +22,7 @@ import static com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinPar
 public class FindCoin {
 
 
-    private  ArrayList<Integer> year;
+    private  ArrayList<Integer> years;
     private  ArrayList<String> corAndValue;
     private CountryInformation countryInformation;
     private Set<CountryPeriod> countryPeriods;
@@ -32,9 +33,10 @@ public class FindCoin {
 
     public FindCoin(CountryInformation countryInfo, ArrayList<Integer> year, ArrayList<String> corAndValue){
 
-        this.year=year;
+        this.years =year;
         this.corAndValue=corAndValue;
         this.countryInformation=countryInfo;
+        coins=new HashSet<>();
 
         System.out.println("countryInfo:"+countryInfo.periods.get(0).getNamePeriod());
         System.out.println("years: "+year);
@@ -63,7 +65,7 @@ public class FindCoin {
 
         countryInformation.periods.forEach((period)->{
 
-            year.forEach(year->{
+            years.forEach(year->{
 
                 if(period.compareData(year)){
 
@@ -98,7 +100,7 @@ public class FindCoin {
                          liteCoin.getValueAndCurrency().equals(elem)
                        )
                          &&
-                         year.contains(liteCoin.getYear())
+                         years.contains(liteCoin.getYear())
 
                  ){
 
@@ -123,7 +125,7 @@ public class FindCoin {
 
             try {
 
-              getCoins(liteCoin.getUrl(),liteCoin.getYear());
+              getCoins(liteCoin.getUrl(),liteCoin.getYear(),liteCoin.getValueAndCurrency());
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -137,7 +139,7 @@ public class FindCoin {
 
     }
 
-    public  CoinDto getCoins(String url, Integer year ) throws IOException {
+    public  CoinDto getCoins(String url, Integer year ,String valueAndCurrency) throws IOException {
 
         PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
 
@@ -156,7 +158,9 @@ public class FindCoin {
         tableCoins.forEach(coin->{
 
             try {
-                getCoin(coin.attr("data-href"));
+                String value=valueAndCurrency.split(" ",2)[0];
+                String currency=valueAndCurrency.split(" ",2)[1];
+                getCoin(coin.attr("data-href"),value,currency,year);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -172,7 +176,7 @@ public class FindCoin {
     }
 
 
-    public  CoinDto getCoin(String url ) throws IOException {
+    public  void getCoin(String url, String value, String currency, Integer year) throws IOException {
 
         CoinDto coinDto = new CoinDto();
 
@@ -195,6 +199,9 @@ public class FindCoin {
                         );
         });
 
+        coinDto.setCurrency(currency);
+        coinDto.setValue(value);
+        coinDto.setYears(year);
 
 
        coinDto.setCost(
@@ -213,19 +220,21 @@ public class FindCoin {
                         .orElse("")
         );
 
-        return coinDto;
+        coinDto.setCountry(countryInformation.getNameCountry());
+        coinDto.setDataOfCreate(LocalDate.now());
+        coins.add(coinDto);
 
     }
 
 
 
 
-    public ArrayList<Integer> getYear() {
-        return year;
+    public ArrayList<Integer> getYears() {
+        return years;
     }
 
-    public void setYear(ArrayList<Integer> year) {
-        this.year = year;
+    public void setYears(ArrayList<Integer> years) {
+        this.years = years;
     }
 
     public ArrayList<String> getCorAndValue() {

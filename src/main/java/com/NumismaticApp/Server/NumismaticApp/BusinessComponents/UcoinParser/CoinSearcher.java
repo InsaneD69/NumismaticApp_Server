@@ -118,8 +118,7 @@ public class CoinSearcher {
 
        System.out.println("From CoinSearch.getCoin:"+findCoin.getLiteCoins());
 
-       return null/*findCoin.getCoins()*/;
-
+       return new ArrayList<CoinDto>( findCoin.getCoins());
 
 
 
