@@ -1,37 +1,27 @@
 package com.NumismaticApp.Server.NumismaticApp.BusinessComponents;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 public class PropertyConnection {
 
     Properties property;
-    FileInputStream fileInputStream;
+    InputStreamReader inputStreamReader;
 
     public PropertyConnection(String pathToProperty) throws IOException {
-
-
         property = new Properties();
-        fileInputStream = new FileInputStream(pathToProperty);
-        property.load(fileInputStream);
-
+        inputStreamReader = new InputStreamReader(new FileInputStream(pathToProperty), Charset.forName("UTF-8"));
+        property.load(inputStreamReader);
     }
 
     public Properties open() throws IOException {
-
         return property;
-
     }
 
     public void close() throws IOException {
-
-        fileInputStream.close();
-        fileInputStream=null;
-
+        inputStreamReader.close();
+        inputStreamReader =null;
     }
-
 
 }

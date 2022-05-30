@@ -3,6 +3,7 @@ package com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser;
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.PropertyConnection;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.google.gson.Gson;
+import org.hibernate.criterion.Property;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -10,8 +11,10 @@ import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.json.GsonTester;
 
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import static com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CoinSearcher.pathToUcoinProperty;
@@ -52,7 +55,19 @@ class FindCoinTest {
         PropertyConnection property1 = new PropertyConnection(pathToUcoinProperty);
 
         Document docx = Jsoup.connect(property1.open().getProperty("link."+"en")+s.get(0)).get();
+
         property1.close();
+
+
+        //Properties property2 = new Properties();
+       // FileOutputStream fileOutputStream = new FileOutputStream(pathToUcoinProperty);
+       // property2.setProperty("fjgfgjh","dfbdfgh");
+
+    // property2.storeToXML(fileOutputStream,"set language", Charset.forName("UTF-8"));
+
+
+
+
         System.out.println("----------------------------");
         Element ment=docx.select("table").get(0);
         System.out.println(0+"----------------------------");

@@ -10,6 +10,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -173,6 +174,8 @@ public class FindCoin {
 
     public  CoinDto getCoin(String url ) throws IOException {
 
+        CoinDto coinDto = new CoinDto();
+
         PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
 
         Document doc = Jsoup.connect(property.open().getProperty("link."+Thread.currentThread().getName())+url).get();
@@ -181,16 +184,41 @@ public class FindCoin {
         Element ement=doc.select("table").get(1);
         Elements rty = ement.getElementsByTag("tr");
 
-        System.out.println("----------------------------");
-        rty.forEach(r->
-                System.out.println(r.getElementsByTag("th").text()+":"+r.getElementsByTag("td").text()));
-        System.out.println("----------------------------");
+
+        rty.remove(0); //удаляем ненужный krause number
+        coinDto.setInfoTable();
+
+        rty.forEach(r->{
+                        coinDto.addToInfoTable(
+                                r.getElementsByTag("th").text(),
+                                r.getElementsByTag("td").text()
+                        );
+        });
 
 
 
+       coinDto.setCost(
+               doc.getElementsByAttributeValue("href","#price").first()
+                       .text()
+                       .split(": ")[1]
+       );
 
-    return null;
+
+        coinDto.setMint(
+                Optional.ofNullable(
+                        doc.getElementsByAttributeValue("class","sodd").first()
+                                .getElementsByTag("td").first()
+                                .text()
+                        )
+                        .orElse("")
+        );
+
+        return coinDto;
+
     }
+
+
+
 
     public ArrayList<Integer> getYear() {
         return year;

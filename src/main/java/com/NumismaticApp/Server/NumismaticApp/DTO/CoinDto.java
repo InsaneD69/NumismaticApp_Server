@@ -2,6 +2,7 @@ package com.NumismaticApp.Server.NumismaticApp.DTO;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.*;
 
 
 public class CoinDto implements Serializable {
@@ -17,6 +18,13 @@ public class CoinDto implements Serializable {
     private String value;
     private String mint;
 
+    private LinkedHashMap<String,String> infoTable;
+
+    public CoinDto() {
+
+
+    }
+
     public CoinDto(String country, String currency, String category, Integer years, String cost, String linkUcoin, LocalDate dataOfCreate, String value, String mint) {
         this.country = country;
         this.currency = currency;
@@ -28,6 +36,20 @@ public class CoinDto implements Serializable {
         this.value = value;
         this.mint=mint;
     }
+
+    public Map<String, String> getInfoTable() {
+        return infoTable;
+    }
+
+    public void setInfoTable() {
+        this.infoTable=new LinkedHashMap<>();
+    }
+
+    public void addToInfoTable(String firstElem, String secondElem) {
+
+        this.infoTable.put(firstElem,secondElem);
+    }
+
     public String getCountry() {
         return country;
     }
