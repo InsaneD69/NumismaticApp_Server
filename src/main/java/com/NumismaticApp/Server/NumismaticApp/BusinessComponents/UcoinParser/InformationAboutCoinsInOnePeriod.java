@@ -20,19 +20,13 @@ public class InformationAboutCoinsInOnePeriod   {
 
         listOnePeriodCountry=new ArrayList<>();
 
-        //если на странице с таблицей сселка указаеная не с type=1, то это означает, что таблица на этой странице не с монетами регулярного выпуска
-       if(!periodTablePage.getElementsByAttributeValue("class","switcher active").attr("href").contains("type=1"))
-       { System.out.println("not exist period, circulation coin is empty"); return;}
+
 
 
 
         Element table=periodTablePage.select("table").attr("class","year").get(1);// таблица с годами и валютой в html виде
 
         Elements years= table.getElementsByTag("tr");
-
-       table.getElementsByAttributeValue("class","cell marked-0");
-
-
 
 
         years.forEach((Element year)->{ // для каждой строчки
@@ -42,9 +36,6 @@ public class InformationAboutCoinsInOnePeriod   {
                 String valueAndCurrency =value.text();// currenciesAndNominalValues.get(value.text());
 
                 if(!valueAndCurrency.equals("-")) {
-
-                    System.out.println(value.text());
-                    System.out.println(currenciesAndNominalValues.get(checkUnCorrectTableKey(value.text())));
 
                     listOnePeriodCountry.add(
                             new LiteCoin(

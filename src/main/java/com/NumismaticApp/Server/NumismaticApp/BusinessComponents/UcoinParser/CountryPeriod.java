@@ -53,6 +53,9 @@ public class CountryPeriod implements Serializable { // содержит в се
 
     protected void setCurrenciesAndNominalValues() throws IOException { //излекает из html таблицы значения номиналов и валют в данном периоде
 
+        //если на странице с таблицей сселка указаеная не с type=1, то это означает, что таблица на этой странице не с монетами регулярного выпуска
+
+
         PropertyConnection property=new PropertyConnection(pathToUcoinProperty);
 
        periodTablePage=Jsoup.connect(
@@ -61,6 +64,11 @@ public class CountryPeriod implements Serializable { // содержит в се
                   +link)
                .get();
         property.close();
+
+        if(!periodTablePage.getElementsByAttributeValue("class","switcher active").attr("href").contains("type=1"))
+        { System.out.println("not exist period, circulation coin is empty"); return;}
+
+
        Elements elWithCurAndVal=periodTablePage.getElementsByAttributeValue("class","legend");
 
        currenciesAndNominalValues =new HashMap<>();

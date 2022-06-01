@@ -35,8 +35,25 @@ public class CountryInformation implements Serializable {                       
         });
 
         periods.get(0).setCurrenciesAndNominalValues();
-        if(periods.get(1)!=null){
-        periods.get(1).setCurrenciesAndNominalValues();
+
+        if (periods.size()>1) {
+
+            if (periods.get(1) != null) {
+
+                periods.get(1).setCurrenciesAndNominalValues();
+
+                if (periods.get(1).getCurrenciesAndNominalValues() == null) {
+
+                    if(periods.size()>2) {
+
+                        if (periods.get(2) != null) {
+
+                            periods.get(2).setCurrenciesAndNominalValues();
+
+                        }
+                    }
+                }
+            }
         }
 
 
