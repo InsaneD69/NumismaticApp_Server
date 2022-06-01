@@ -2,7 +2,6 @@ package com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser;
 
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.PropertyConnection;
 import com.NumismaticApp.Server.NumismaticApp.DTO.CoinDto;
-import com.NumismaticApp.Server.NumismaticApp.repository.Model.CountryInfoModel;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;
@@ -11,7 +10,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.*;
-import java.net.http.HttpRequest;
 import java.util.*;
 
 

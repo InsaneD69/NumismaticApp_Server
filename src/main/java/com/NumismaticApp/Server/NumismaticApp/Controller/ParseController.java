@@ -8,17 +8,14 @@ import com.NumismaticApp.Server.NumismaticApp.Exception.LanguageNotExistExceptio
 import com.NumismaticApp.Server.NumismaticApp.Service.ParseService;
 import com.NumismaticApp.Server.NumismaticApp.Validator.IncomingCountryValidator;
 import com.NumismaticApp.Server.NumismaticApp.Validator.IncomingSearcherValidator;
-import com.NumismaticApp.Server.NumismaticApp.Validator.IncomingValidator;
-import com.NumismaticApp.Server.NumismaticApp.repository.Model.CountryInfoModel;
+import com.NumismaticApp.Server.NumismaticApp.Validator.IncomingLangValidator;
+import com.NumismaticApp.Server.NumismaticApp.Model.CountryInfoModel;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.Set;
 
 
 @RestController
@@ -35,7 +32,7 @@ public class ParseController {
     private ResponseEntity getCountries(@RequestParam String lang) throws IOException, ClassNotFoundException {
 
         try {
-            IncomingValidator.checkExistLanguage(lang);
+            IncomingLangValidator.checkExistLanguage(lang);
 
             Thread.currentThread().setName(lang);
             log.info("taken Get request /search/countries: given to thread  "+Thread.currentThread().getName()+" id: "+Thread.currentThread().getId());
@@ -55,15 +52,17 @@ public class ParseController {
     @PutMapping("/info")
     private ResponseEntity parseIncomingInfo(@RequestBody SearchInformation searchInformation,
                                              @RequestParam String lang) throws IOException, ClassNotFoundException, InterruptedException {
-
         try{
+            IncomingLangValidator
+                    .checkExistLanguage(lang);
 
-            IncomingValidator.checkExistLanguage(lang);
             Thread.currentThread().setName(lang);
-            IncomingCountryValidator.checkExistCountry(searchInformation.getCountry());
-            log.info("taken Get request /search/info:"+searchInformation.getCountry()+" given to thread  "+Thread.currentThread().getName()+" id: "+Thread.currentThread().getId());
 
-
+            IncomingCountryValidator.
+                    checkExistCountry(searchInformation.getCountry());
+            log.info("taken Get request /search/info:"+searchInformation.getCountry()
+                    +" given to thread  "+Thread.currentThread().getName()
+                    +" id: "+Thread.currentThread().getId());
 
 
             return ResponseEntity.ok().body(
@@ -92,7 +91,7 @@ public class ParseController {
 
 
         try {
-            IncomingValidator.checkExistLanguage(lang);
+            IncomingLangValidator.checkExistLanguage(lang);
             Thread.currentThread().setName(lang);
             IncomingSearcherValidator val=new IncomingSearcherValidator();
 

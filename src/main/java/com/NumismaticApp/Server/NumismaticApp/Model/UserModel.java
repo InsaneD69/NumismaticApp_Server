@@ -1,21 +1,19 @@
-package com.NumismaticApp.Server.NumismaticApp.repository.Model;
+package com.NumismaticApp.Server.NumismaticApp.Model;
 
 import com.NumismaticApp.Server.NumismaticApp.Entity.UserEntity;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class User {
+public class UserModel {
     private Long id;
     private String username;
 
-    public List<Collection> getCollections() {
+    public List<CollectionModel> getCollections() {
         return collections;
     }
 
-    private List<Collection> collections;
+    private List<CollectionModel> collections;
 
     public Long getId() {
         return id;
@@ -25,7 +23,7 @@ public class User {
         return username;
     }
 
-    public void setCollections(List<Collection> collections) {
+    public void setCollections(List<CollectionModel> collections) {
 
         this.collections = collections;
 
@@ -39,15 +37,15 @@ public class User {
         this.username = username;
     }
 
-    public static User toModel(UserEntity entity){
+    public static UserModel toModel(UserEntity entity){
 
-        User model = new User();
+        UserModel model = new UserModel();
         model.setId(entity.getId());
         model.setUsername(entity.getUsername());
         if(entity.getCollectionEntities()==null){
             model.setCollections(null);
         }else {
-            model.setCollections(entity.getCollectionEntities().stream().map(Collection::toModel).collect(Collectors.toList()));
+            model.setCollections(entity.getCollectionEntities().stream().map(CollectionModel::toModel).collect(Collectors.toList()));
         }
 
         return  model;

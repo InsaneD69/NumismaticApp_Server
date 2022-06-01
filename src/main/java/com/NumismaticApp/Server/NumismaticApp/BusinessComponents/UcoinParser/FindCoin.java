@@ -69,6 +69,17 @@ public class FindCoin {
 
                 if(period.compareData(year)){
 
+                    if (period.getListOnePeriodCountry()==null){
+
+                        try {
+                            period.setCurrenciesAndNominalValues();
+                            log.info("loaded full info about "+period.getCountry()+" period: "+period.getNamePeriod());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                    }
+
                     countryPeriods.add(period);
                     log.info("period "+period.getNamePeriod()+" was added");
 
@@ -145,17 +156,25 @@ public class FindCoin {
 
         Document doc = Jsoup.connect(property.open().getProperty("link."+Thread.currentThread().getName())+url).get();
         property.close();
-        Element table=doc.select("table").get(3);  //таблица
+        Elements table=doc.getElementsByAttributeValue("class","tbl");  //таблица
 
-        Elements  tableCoins = table.getElementsByAttributeValue("class","tr-hr")
-                .stream()
+
+
+
+        Element  tableCoins = table.tagName("body").first();
+
+        Elements er = tableCoins.getElementsByAttributeValue("class","tr-hr");
+
+        er.forEach(a->System.out.println("coin html\n\n"+a));
+
+              er .stream()
                 .filter(coin->
                          Integer.compare(Integer.parseInt(coin.getElementsByTag("strong").text()),year)==0
                  )
                 .collect(Collectors.toCollection(Elements::new));
 
 
-        tableCoins.forEach(coin->{
+       er.forEach(coin->{
 
             try {
                 String value=valueAndCurrency.split(" ",2)[0];
@@ -178,6 +197,7 @@ public class FindCoin {
 
     public  void getCoin(String url, String value, String currency, Integer year) throws IOException {
 
+
         CoinDto coinDto = new CoinDto();
 
         PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
@@ -185,14 +205,16 @@ public class FindCoin {
         Document doc = Jsoup.connect(property.open().getProperty("link."+Thread.currentThread().getName())+url).get();
         property.close();
 
-        Element ement=doc.select("table").get(1);
-        Elements rty = ement.getElementsByTag("tr");
+        Elements infoTableColumns = doc
+                .select("table")
+                .get(1)
+                .getElementsByTag("tr");
 
 
-        rty.remove(0); //удаляем ненужный krause number
+        infoTableColumns.remove(0); //удаляем ненужный krause number
         coinDto.setInfoTable();
 
-        rty.forEach(r->{
+        infoTableColumns.forEach(r->{
                         coinDto.addToInfoTable(
                                 r.getElementsByTag("th").text(),
                                 r.getElementsByTag("td").text()
@@ -212,16 +234,19 @@ public class FindCoin {
 
 
         coinDto.setMint(
-                Optional.ofNullable(
-                        doc.getElementsByAttributeValue("class","sodd").first()
-                                .getElementsByTag("td").first()
+
+                        Optional.ofNullable(Optional.ofNullable(doc.getElementsByAttributeValue("class","sodd")
+                                                .first())
+                                        .orElse(
+                                                new Element("<th></th>")
+                                        ).getElementsByTag("td").first()).orElse(new Element("<th></th>"))
                                 .text()
-                        )
-                        .orElse("")
+
         );
 
         coinDto.setCountry(countryInformation.getNameCountry());
         coinDto.setDataOfCreate(LocalDate.now());
+        coinDto.setLinkUcoin(url);
         coins.add(coinDto);
 
     }

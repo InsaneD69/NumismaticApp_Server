@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@Table(name = "clients")
+
 public class UserEntity  {
 
     @Id
@@ -28,14 +28,14 @@ public class UserEntity  {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<CollectionEntity> collectionEntities;
 
-   // @Transient
-   // private String passwordConfirm;
-    //@ManyToMany(fetch = FetchType.EAGER)
-   // private Set<Role> roles;
 
     public CollectionEntity getCollectionByCollectionName(String collectionname){
 
-       return (CollectionEntity)collectionEntities.stream().filter(collection-> collection.getCollectionname()==collectionname);
+       return (CollectionEntity)collectionEntities
+               .stream()
+               .filter(collection->
+                       collection.getCollectionname()==collectionname
+               );
 
     }
 

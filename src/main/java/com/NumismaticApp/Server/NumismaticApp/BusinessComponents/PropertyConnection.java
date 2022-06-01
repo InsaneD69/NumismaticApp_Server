@@ -22,6 +22,7 @@ public class PropertyConnection {
     public void close() throws IOException {
         inputStreamReader.close();
         inputStreamReader =null;
+
     }
 
 }

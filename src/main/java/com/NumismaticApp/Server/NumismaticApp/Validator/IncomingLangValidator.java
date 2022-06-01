@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import static com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CoinSearcher.pathToUcoinProperty;
 
-public class IncomingValidator {
+public class IncomingLangValidator {
 
     public static void checkExistLanguage(String lang) throws IOException, LanguageNotExistException {
 

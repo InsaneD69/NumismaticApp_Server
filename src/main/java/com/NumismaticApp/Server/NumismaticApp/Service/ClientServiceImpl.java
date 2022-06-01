@@ -4,7 +4,7 @@ import com.NumismaticApp.Server.NumismaticApp.Entity.UserEntity;
 import com.NumismaticApp.Server.NumismaticApp.Exception.UserAlreadyExistException;
 import com.NumismaticApp.Server.NumismaticApp.Exception.UserNotFoundException;
 import com.NumismaticApp.Server.NumismaticApp.Exception.WrongPasswordException;
-import com.NumismaticApp.Server.NumismaticApp.repository.Model.User;
+import com.NumismaticApp.Server.NumismaticApp.Model.UserModel;
 import com.NumismaticApp.Server.NumismaticApp.repository.UserRepo;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class ClientServiceImpl  {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public User registration(UserEntity incomingUser) throws UserAlreadyExistException {
+    public UserModel registration(UserEntity incomingUser) throws UserAlreadyExistException {
 
         UserEntity user = userRepo.findByUsername(incomingUser.getUsername());
 
@@ -33,7 +33,7 @@ public class ClientServiceImpl  {
         }
         incomingUser.setPassword(passwordEncoder.encode(incomingUser.getPassword()));
 
-        return User.toModel(userRepo.save(incomingUser));
+        return UserModel.toModel(userRepo.save(incomingUser));
 
     }
 
@@ -45,7 +45,7 @@ public class ClientServiceImpl  {
         return user;
     }
 
-    public User logInUser(UserEntity incomingUser) throws UserNotFoundException, WrongPasswordException {
+    public UserModel logInUser(UserEntity incomingUser) throws UserNotFoundException, WrongPasswordException {
 
         UserEntity user = userRepo.findByUsername(incomingUser.getUsername());
 
@@ -59,7 +59,7 @@ public class ClientServiceImpl  {
 
         }
 
-        return User.toModel(user);
+        return UserModel.toModel(user);
 
 
 

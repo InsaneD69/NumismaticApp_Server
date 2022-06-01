@@ -64,4 +64,53 @@ public class SearchInformation implements Serializable {
 
    }
 
+   public  String stringArrayToString(ArrayList<String> array){
+
+        String string="[";
+
+        for(String elem:array){
+            string=string+"\""+elem+"\",";
+
+        }
+        string.substring(string.length());
+
+        return  string;
+   }
+    public  String integerArrayToString(ArrayList<Integer> array){
+
+        String string="[";
+
+        for(Integer elem:array){
+            string=+elem+",";
+
+        }
+        string.substring(string.length());
+
+        return  string;
+    }
+
+
+
+   public String  toJSON(){
+       return "{" +
+               "\"country\":\"" + country +"\"" +
+               ", \"year\":[" + integerArrayToString(year) +"]"+
+               ", \"value\":" + stringArrayToString(value) +"]"+
+               ", \"currency\":" + stringArrayToString(currency) +"]"+
+               ", \"mint\":" + stringArrayToString(mint) +"]"+
+               '}';
+
+   }
+
+
+    @Override
+    public String toString() {
+        return "SearchInformation{" +
+                "country='" + country + '\'' +
+                ", year=" + year +
+                ", value=" + value +
+                ", currency=" + currency +
+                ", mint=" + mint +
+                '}';
+    }
 }

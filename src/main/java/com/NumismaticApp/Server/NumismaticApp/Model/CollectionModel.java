@@ -1,8 +1,8 @@
-package com.NumismaticApp.Server.NumismaticApp.repository.Model;
+package com.NumismaticApp.Server.NumismaticApp.Model;
 
 import com.NumismaticApp.Server.NumismaticApp.Entity.CollectionEntity;
 
-public class Collection {
+public class CollectionModel {
 
     private String collectionname;
 
@@ -14,13 +14,13 @@ public class Collection {
         this.collectionname = collectionname;
     }
 
-    public static Collection toModel(CollectionEntity entity){
+    public static CollectionModel toModel(CollectionEntity entity){
 
-        Collection model = new Collection();
+        CollectionModel model = new CollectionModel();
         model.setCollectionname(entity.getCollectionname());
         return model;
     }
 
-    public  Collection(){}
+    public CollectionModel(){}
 
 }

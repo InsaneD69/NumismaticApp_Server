@@ -1,6 +1,7 @@
-package com.NumismaticApp.Server.NumismaticApp.BusinessComponents;
+package com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser;
 
 
+import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.PropertyConnection;
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CoinSearcher;
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.SaverParseInfo;
 import lombok.extern.log4j.Log4j2;

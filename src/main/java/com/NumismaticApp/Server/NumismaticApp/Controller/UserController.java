@@ -4,19 +4,14 @@
 
 import com.NumismaticApp.Server.NumismaticApp.Entity.UserEntity;
 import com.NumismaticApp.Server.NumismaticApp.Exception.UserAlreadyExistException;
-import com.NumismaticApp.Server.NumismaticApp.Exception.UserNotFoundException;
-import com.NumismaticApp.Server.NumismaticApp.Exception.WrongPasswordException;
 import com.NumismaticApp.Server.NumismaticApp.Service.ClientServiceImpl;
-import com.NumismaticApp.Server.NumismaticApp.repository.Model.User;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.annotation.RequestScope;
 
 
-@RestController
+ @RestController
 @RequestMapping("/acc")
 @Log4j2
 public class UserController  {

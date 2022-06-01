@@ -14,12 +14,11 @@ public class SaverParseInfo {
 
     public SaverParseInfo(String filePath)  {
 
-        log.info("start");
         try{
         file =new File(filePath);
         fileOutputStream=new FileOutputStream(file);
         objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            log.info("stream was opened");
+
         }
 
         catch (IOException e){
@@ -30,8 +29,6 @@ public class SaverParseInfo {
 
 
     }
-
-
 
     public  void save(Object object)  {
 
