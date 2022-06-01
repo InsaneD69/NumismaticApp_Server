@@ -53,7 +53,7 @@ public class LiteCoin implements Serializable {
 
     @Override
     public int hashCode() {
-        return url.hashCode();
+        return url.hashCode()+year.hashCode();
     }
 
 }

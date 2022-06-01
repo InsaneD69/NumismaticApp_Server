@@ -86,7 +86,6 @@ public class CountryPeriod implements Serializable { // содержит в се
 
 
        });
-       System.out.println(currenciesAndNominalValues);
 
 
         InformationAboutCoinsInOnePeriod informationAboutCoinsInOnePeriod = new InformationAboutCoinsInOnePeriod(periodTablePage,currenciesAndNominalValues);
@@ -157,6 +156,6 @@ public class CountryPeriod implements Serializable { // содержит в се
 
     @Override
     public int hashCode() {
-        return namePeriod.hashCode();
+        return namePeriod.hashCode()+Optional.ofNullable(getListOnePeriodCountry()).orElse(new ArrayList<LiteCoin>()).hashCode();
     }
 }

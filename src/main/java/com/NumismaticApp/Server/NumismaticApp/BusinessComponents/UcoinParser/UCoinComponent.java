@@ -87,7 +87,7 @@ public class UCoinComponent implements CommandLineRunner {
     private void saveCountriesIntoFile(String lang) throws IOException {
 
         ArrayList<Set<String>> countriesBufferStorage = new ArrayList<>(CoinSearcher.getCountriesFromUcoin(lang));
-        System.out.println(countriesBufferStorage.get(0));
+
         log.info("Country  list "+lang+" had been downloaded");
         saverParseInfo.save(countriesBufferStorage);
         log.info("Country list "+lang+" had been saved");

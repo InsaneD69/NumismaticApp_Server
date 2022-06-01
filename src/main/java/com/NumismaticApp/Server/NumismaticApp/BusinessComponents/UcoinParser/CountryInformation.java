@@ -34,15 +34,6 @@ public class CountryInformation implements Serializable {                       
 
         });
 
-        /*periods.forEach(period->{
-
-            try {
-                period.setCurrenciesAndNominalValues(); //получает список каждого периода страны
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-       );*/
         periods.get(0).setCurrenciesAndNominalValues();
         if(periods.get(1)!=null){
         periods.get(1).setCurrenciesAndNominalValues();
@@ -94,6 +85,12 @@ public class CountryInformation implements Serializable {                       
 
     public String getNameCountry() {
         return nameCountry;
+    }
+
+
+    @Override
+    public int hashCode() {
+        return nameCountry.hashCode()+periods.hashCode();
     }
 }
 

@@ -145,10 +145,8 @@ public class CoinSearcher {
 
             return  infoAboutCountry;
         }
-       // return  infoAboutCountry=null;
-        log.info("info about "+country+" empty");
 
-        //HttpRequest.newBuilder().GET().uri("http://localhost:8080/search/info?lang=en").build().
+        log.info("info about "+country+" empty");
 
         GetParseInfo getParseInfo = new GetParseInfo( new File("").getAbsolutePath()+
                 property.open().
@@ -170,62 +168,9 @@ public class CoinSearcher {
 
         return null;
 
-
-        // кладет информацию в мап,
-
-
-       /*infoAboutCountry.put(correctCountryName ,
-                                               Jsoup.connect("https://en.ucoin.net"+partOfLinkCountry)
-                                                                                                                 .get());
-        String adasd= String.valueOf(infoAboutCountry.get(correctCountryName)
-                                                     .getElementsByAttributeValue("class","switcher active")
-                                                     .attr("href"));
-        System.out.println(adasd);
-        infoAboutCountry.put(correctCountryName ,
-                                               Jsoup.connect("https://en.ucoin.net/table/"+replaceAmpersand(adasd))
-                                                                                                                        .get());
-
-        */
-
-
-
-
-
-
-
-
-
-
-
     }
 
 
-
-
-
-    public void testgetCounrtyLink() throws IOException, ClassNotFoundException {
-
-        getInfoAboutCountry("Russia");
-
-
-    }
-
-
-    public void testCountries(Elements countries) {
-
-        System.out.println(countries.size());
-
-        countries.forEach(scope->{
-
-            String rwer=scope.text();
-
-            System.out.print(rwer+", ");
-
-
-        });
-        System.out.println();
-
-    }
 
 
     public static String replaceAmpersand(String text){

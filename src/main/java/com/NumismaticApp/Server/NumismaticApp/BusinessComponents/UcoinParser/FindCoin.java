@@ -7,6 +7,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -31,7 +33,7 @@ public class FindCoin {
     private Set<CoinDto> coins;
 
 
-    public FindCoin(CountryInformation countryInfo, ArrayList<Integer> year, ArrayList<String> corAndValue){
+    public FindCoin(CountryInformation countryInfo, ArrayList<Integer> year, ArrayList<String> corAndValue) throws IOException {
 
         this.years =year;
         this.corAndValue=corAndValue;
@@ -59,9 +61,11 @@ public class FindCoin {
     }
 
 
-    private void findSuitablePeriods(){
+    private void findSuitablePeriods() throws IOException {
 
         countryPeriods=new HashSet<>();
+
+       int countryStatus = countryInformation.hashCode();
 
         countryInformation.periods.forEach((period)->{
 
@@ -73,7 +77,7 @@ public class FindCoin {
 
                         try {
                             period.setCurrenciesAndNominalValues();
-                            log.info("loaded full info about "+period.getCountry()+" period: "+period.getNamePeriod());
+
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -81,7 +85,7 @@ public class FindCoin {
                     }
 
                     countryPeriods.add(period);
-                    log.info("period "+period.getNamePeriod()+" was added");
+
 
                 }
 
@@ -89,6 +93,24 @@ public class FindCoin {
 
 
         });
+
+        if(countryStatus!=countryInformation.hashCode()){
+
+            PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
+
+            SaverParseInfo saverParseInfo = new SaverParseInfo(
+                    new File("").getAbsolutePath()+
+                            property.open().getProperty("countriesInfo")
+                            +countryInformation.getNameCountry()
+                            +"_"+Thread.currentThread().getName()+".txt"
+            );
+
+            saverParseInfo.save(countryInformation);
+            saverParseInfo.close();
+            log.info("update info about "+countryInformation.getNameCountry());
+
+
+        }
 
     }
 
@@ -156,32 +178,31 @@ public class FindCoin {
 
         Document doc = Jsoup.connect(property.open().getProperty("link."+Thread.currentThread().getName())+url).get();
         property.close();
-        Elements table=doc.getElementsByAttributeValue("class","tbl");  //таблица
+
+        Element  tableCoins = doc.getElementsByAttributeValue("class","tbl").tagName("body").first(); // html таблица с монетами
+
+
+        Elements coinHtml = tableCoins
+                .getElementsByAttributeValue("class","tr-hr")
+                .stream()
+               .filter(coin->
+                     Integer.compare(
+                             Integer.parseInt(coin.getElementsByTag("strong").text())
+                             ,year
+                     )==0
+               )
+            .collect(Collectors.toCollection(Elements::new));
 
 
 
-
-        Element  tableCoins = table.tagName("body").first();
-
-        Elements er = tableCoins.getElementsByAttributeValue("class","tr-hr");
-
-        er.forEach(a->System.out.println("coin html\n\n"+a));
-
-              er .stream()
-                .filter(coin->
-                         Integer.compare(Integer.parseInt(coin.getElementsByTag("strong").text()),year)==0
-                 )
-                .collect(Collectors.toCollection(Elements::new));
-
-
-       er.forEach(coin->{
+       coinHtml.forEach(coin->{
 
             try {
                 String value=valueAndCurrency.split(" ",2)[0];
                 String currency=valueAndCurrency.split(" ",2)[1];
                 getCoin(coin.attr("data-href"),value,currency,year);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+           } catch (IOException e) {
+               throw new RuntimeException(e);
             }
 
 
