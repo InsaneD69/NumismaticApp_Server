@@ -54,12 +54,18 @@ public class ParseService {
 
     }
 
-    public ArrayList<CoinDto> getRequiredCoins(String country, Optional<ArrayList<Integer>> year, Optional<ArrayList<String>> curAndVal ) throws IOException, ClassNotFoundException {
+    public Object getRequiredCoins(String country, Optional<ArrayList<Integer>> year, Optional<ArrayList<String>> curAndVal ) throws IOException, ClassNotFoundException {
 
 
         log.info("curAndVal: "+curAndVal);
+        ArrayList<CoinDto> coinDtos = CoinSearcher.getCoin(country,year.get(),curAndVal.get());
 
-        return  CoinSearcher.getCoin(country,year.get(),curAndVal.get());
+        if(coinDtos.isEmpty()){
+
+            return "coins with the specified parameters were not found";
+
+        }
+        else  return  coinDtos;
 
     }
 

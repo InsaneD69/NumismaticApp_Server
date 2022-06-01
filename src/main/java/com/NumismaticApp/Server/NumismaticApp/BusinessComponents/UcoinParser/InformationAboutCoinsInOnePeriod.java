@@ -24,9 +24,14 @@ public class InformationAboutCoinsInOnePeriod   {
 
         Elements years= table.getElementsByTag("tr");
 
+       table.getElementsByAttributeValue("class","cell marked-0");
+
+
+
+
         years.forEach((Element year)->{ // для каждой строчки
 
-            year.getElementsByTag("td").forEach((Element value)->{//каждого значения в строчке
+            year.getElementsByAttributeValue("class","cell marked-0").forEach((Element value)->{//каждого значения в строчке
 
                 String valueAndCurrency =value.text();// currenciesAndNominalValues.get(value.text());
 
@@ -50,6 +55,8 @@ public class InformationAboutCoinsInOnePeriod   {
 
 
         });
+
+
 
     }
 

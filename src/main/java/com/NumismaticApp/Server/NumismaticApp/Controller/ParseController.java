@@ -2,7 +2,9 @@ package com.NumismaticApp.Server.NumismaticApp.Controller;
 
 
 
+import com.NumismaticApp.Server.NumismaticApp.DTO.CountryInfoDTO;
 import com.NumismaticApp.Server.NumismaticApp.DTO.SearchInformation;
+import com.NumismaticApp.Server.NumismaticApp.Exception.AllPeriodsWasParsing;
 import com.NumismaticApp.Server.NumismaticApp.Exception.CountryNotExistException;
 import com.NumismaticApp.Server.NumismaticApp.Exception.LanguageNotExistException;
 import com.NumismaticApp.Server.NumismaticApp.Service.ParseService;
@@ -10,12 +12,15 @@ import com.NumismaticApp.Server.NumismaticApp.Validator.IncomingCountryValidator
 import com.NumismaticApp.Server.NumismaticApp.Validator.IncomingSearcherValidator;
 import com.NumismaticApp.Server.NumismaticApp.Validator.IncomingLangValidator;
 import com.NumismaticApp.Server.NumismaticApp.Model.CountryInfoModel;
+import com.fasterxml.jackson.core.io.UTF8Writer;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 
 @RestController
@@ -50,25 +55,25 @@ public class ParseController {
     }
 
     @PutMapping("/info")
-    private ResponseEntity parseIncomingInfo(@RequestBody SearchInformation searchInformation,
-                                             @RequestParam String lang) throws IOException, ClassNotFoundException, InterruptedException {
+    private ResponseEntity parseIncomingInfo(@RequestBody CountryInfoDTO countryInfoDTO, @RequestParam String lang)  {
+
         try{
-            IncomingLangValidator
-                    .checkExistLanguage(lang);
+                IncomingLangValidator
+                        .checkExistLanguage(lang);
 
-            Thread.currentThread().setName(lang);
+                Thread.currentThread().setName(lang);
 
-            IncomingCountryValidator.
-                    checkExistCountry(searchInformation.getCountry());
-            log.info("taken Get request /search/info:"+searchInformation.getCountry()
-                    +" given to thread  "+Thread.currentThread().getName()
-                    +" id: "+Thread.currentThread().getId());
+                IncomingCountryValidator.
+                        checkExistCountry(countryInfoDTO.getCountry());
+              log.info("taken Get request /search/info:"+countryInfoDTO.getCountry()
+                       +" given to thread  "+Thread.currentThread().getName()
+                       +" id: "+Thread.currentThread().getId());
 
 
             return ResponseEntity.ok().body(
                     CountryInfoModel.toModel(
                             parseService.getInfoAboutCountry(
-                                    searchInformation.getCountry()
+                                    countryInfoDTO.getCountry()
                             )
                     )
             );
@@ -80,6 +85,15 @@ public class ParseController {
         catch (CountryNotExistException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+       // catch (AllPeriodsWasParsing e) {
+         //   return ResponseEntity.badRequest().body(e.getMessage());
+
+       // }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body(500);
+
+        }
+
 
 
 

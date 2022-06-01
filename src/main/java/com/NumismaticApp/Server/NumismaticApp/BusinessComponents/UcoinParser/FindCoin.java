@@ -226,16 +226,15 @@ public class FindCoin {
         Document doc = Jsoup.connect(property.open().getProperty("link."+Thread.currentThread().getName())+url).get();
         property.close();
 
-        Elements infoTableColumns = doc
-                .select("table")
-                .get(1)
-                .getElementsByTag("tr");
+        Element infoTableColumns = doc.getElementsByAttributeValue("class","tbl coin-info").first();
+
+        Elements infoTables=infoTableColumns.getElementsByTag("tr");
 
 
-        infoTableColumns.remove(0); //удаляем ненужный krause number
+        infoTables.remove(0); //удаляем ненужный krause number
         coinDto.setInfoTable();
 
-        infoTableColumns.forEach(r->{
+        infoTables.forEach(r->{
                         coinDto.addToInfoTable(
                                 r.getElementsByTag("th").text(),
                                 r.getElementsByTag("td").text()
