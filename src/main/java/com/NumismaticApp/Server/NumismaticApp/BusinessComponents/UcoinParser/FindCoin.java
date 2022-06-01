@@ -40,7 +40,7 @@ public class FindCoin {
         this.countryInformation=countryInfo;
         coins=new HashSet<>();
 
-        System.out.println("countryInfo:"+countryInfo.periods.get(0).getNamePeriod());
+        System.out.println("countryInfo:"+countryInfo.getPeriods().get(0).getNamePeriod());
         System.out.println("years: "+year);
         System.out.println("corAndValue: "+corAndValue);
 
@@ -67,7 +67,7 @@ public class FindCoin {
 
        int countryStatus = countryInformation.hashCode();
 
-        countryInformation.periods.forEach((period)->{
+        countryInformation.getPeriods().forEach((period)->{
 
             years.forEach(year->{
 

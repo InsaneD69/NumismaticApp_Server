@@ -19,7 +19,7 @@ public class GetParseInfoTest {
 
        CountryInformation object =(CountryInformation)getParseInfo.get();
 
-       object.periods.forEach((period)->{
+       object.getPeriods().forEach((period)->{
 
            System.out.println(period);
        });

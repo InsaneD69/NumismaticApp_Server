@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class CountryInformation implements Serializable {                           // содержит информацию о стране
 
-    public ArrayList<CountryPeriod> periods;                 // список с периодами страны
+    private ArrayList<CountryPeriod> periods;                 // список с периодами страны
 
     private String nameCountry;
 
@@ -87,6 +87,17 @@ public class CountryInformation implements Serializable {                       
         return nameCountry;
     }
 
+    public ArrayList<CountryPeriod> getPeriods() {
+        return periods;
+    }
+
+    public void setPeriods(ArrayList<CountryPeriod> periods) {
+        this.periods = periods;
+    }
+
+    public void setNameCountry(String nameCountry) {
+        this.nameCountry = nameCountry;
+    }
 
     @Override
     public int hashCode() {

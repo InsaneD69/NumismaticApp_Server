@@ -7,6 +7,7 @@ import com.NumismaticApp.Server.NumismaticApp.DTO.SearchInformation;
 import com.NumismaticApp.Server.NumismaticApp.Exception.AllPeriodsWasParsing;
 import com.NumismaticApp.Server.NumismaticApp.Exception.CountryNotExistException;
 import com.NumismaticApp.Server.NumismaticApp.Exception.LanguageNotExistException;
+import com.NumismaticApp.Server.NumismaticApp.Model.CountryDenominationInfo;
 import com.NumismaticApp.Server.NumismaticApp.Service.ParseService;
 import com.NumismaticApp.Server.NumismaticApp.Validator.IncomingCountryValidator;
 import com.NumismaticApp.Server.NumismaticApp.Validator.IncomingSearcherValidator;
@@ -71,7 +72,7 @@ public class ParseController {
 
 
             return ResponseEntity.ok().body(
-                    CountryInfoModel.toModel(
+                    CountryDenominationInfo.toModel(
                             parseService.getInfoAboutCountry(
                                     countryInfoDTO.getCountry()
                             )
@@ -84,15 +85,18 @@ public class ParseController {
         }
         catch (CountryNotExistException e){
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
-       // catch (AllPeriodsWasParsing e) {
+        // catch (AllPeriodsWasParsing e) {
          //   return ResponseEntity.badRequest().body(e.getMessage());
 
        // }
-        catch (Exception e){
-            return ResponseEntity.badRequest().body(500);
 
-        }
 
 
 

@@ -24,7 +24,7 @@ public class CountryInfoModel implements Serializable {
         CountryInfoModel countryInfoModel = new CountryInfoModel();
         ArrayList<CountryPeriodInterface> periodsModel=new ArrayList<>();
 
-        countryInformation.periods.forEach((countryPeriod -> {
+        countryInformation.getPeriods().forEach((countryPeriod -> {
 
              if(countryPeriod.getCurrencies()==null){
 
