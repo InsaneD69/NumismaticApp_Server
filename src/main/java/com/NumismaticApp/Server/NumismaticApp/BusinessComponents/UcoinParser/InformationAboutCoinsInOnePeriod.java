@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class InformationAboutCoinsInOnePeriod   {
 
-    ArrayList<LiteCoin> listOnePeriodCountry;
+    private ArrayList<LiteCoin> listOnePeriodCountry;
 
     public ArrayList<LiteCoin> getListOnePeriodCountry() {
         return listOnePeriodCountry;
@@ -19,6 +19,12 @@ public class InformationAboutCoinsInOnePeriod   {
     public  InformationAboutCoinsInOnePeriod(Document periodTablePage, Map<String,String> currenciesAndNominalValues){
 
         listOnePeriodCountry=new ArrayList<>();
+
+        //если на странице с таблицей сселка указаеная не с type=1, то это означает, что таблица на этой странице не с монетами регулярного выпуска
+       if(!periodTablePage.getElementsByAttributeValue("class","switcher active").attr("href").contains("type=1"))
+       { System.out.println("not exist period, circulation coin is empty"); return;}
+
+
 
         Element table=periodTablePage.select("table").attr("class","year").get(1);// таблица с годами и валютой в html виде
 

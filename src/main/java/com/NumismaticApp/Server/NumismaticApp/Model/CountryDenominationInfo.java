@@ -2,15 +2,18 @@ package com.NumismaticApp.Server.NumismaticApp.Model;
 
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CountryInformation;
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CountryPeriod;
+import org.apache.commons.collections4.MultiMap;
+import org.apache.commons.collections4.map.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+
 public class CountryDenominationInfo {
     private String country;
-    private Map<String,String> curAndValues;
+    private MultiMap<String,String> curAndValues;
     private boolean allInfo;
 
     public CountryDenominationInfo() {
@@ -24,13 +27,13 @@ public class CountryDenominationInfo {
         this.country = country;
     }
 
-    public Map<String, String> getCurAndValues() {
+    public MultiMap<String, String> getCurAndValues() {
         return curAndValues;
     }
 
     public void setCurAndValues() {
 
-        this.curAndValues = new HashMap<>();
+        this.curAndValues = new MultiValueMap<>();
     }
     public void addToCurAndValues(String f, String s){
 
@@ -75,7 +78,7 @@ public class CountryDenominationInfo {
               }else{
 
                   denominationInfo.setAllInfo(false);
-                  break;
+
 
               }
 
