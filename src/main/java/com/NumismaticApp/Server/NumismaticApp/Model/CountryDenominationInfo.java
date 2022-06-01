@@ -5,16 +5,21 @@ import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.Cou
 import org.apache.commons.collections4.MultiMap;
 import org.apache.commons.collections4.map.MultiValueMap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 
 public class CountryDenominationInfo {
     private String country;
-    private MultiMap<String,String> curAndValues;
+    private MultiMap<String,ArrayList<String>> curAndValues;
     private boolean allInfo;
+
+    public MultiMap<String, ArrayList<String>> getCurAndValues() {
+        return curAndValues;
+    }
+
+    public void setCurAndValues(MultiMap<String, ArrayList<String>> curAndValues) {
+        this.curAndValues = curAndValues;
+    }
 
     public CountryDenominationInfo() {
     }
@@ -27,9 +32,7 @@ public class CountryDenominationInfo {
         this.country = country;
     }
 
-    public MultiMap<String, String> getCurAndValues() {
-        return curAndValues;
-    }
+
 
     public void setCurAndValues() {
 
