@@ -2,23 +2,29 @@ package com.NumismaticApp.Server.NumismaticApp.Model;
 
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CountryInformation;
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CountryPeriod;
+import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.ValAndCurPair;
 import org.apache.commons.collections4.MultiMap;
 import org.apache.commons.collections4.map.MultiValueMap;
+import org.springframework.data.util.Pair;
+
 
 import java.io.Serializable;
+import java.security.KeyPair;
 import java.util.*;
 
 
 public class CountryDenominationInfo implements Serializable {
     private String country;
-    private MultiMap<String,ArrayList<String>> curAndValues;
+    private HashSet<ValAndCurPair> curAndValues;
     private boolean allInfo;
 
-    public MultiMap<String, ArrayList<String>> getCurAndValues() {
+
+
+    public HashSet<ValAndCurPair> getCurAndValues() {
         return curAndValues;
     }
 
-    public void setCurAndValues(MultiMap<String, ArrayList<String>> curAndValues) {
+    public void setCurAndValues(HashSet<ValAndCurPair> curAndValues) {
         this.curAndValues = curAndValues;
     }
 
@@ -33,17 +39,6 @@ public class CountryDenominationInfo implements Serializable {
         this.country = country;
     }
 
-
-
-    public void setCurAndValues() {
-
-        this.curAndValues = new MultiValueMap<>();
-    }
-    public void addToCurAndValues(String f, String s){
-
-        curAndValues.put(f,s);
-
-    }
 
     public boolean isAllInfo() {
         return allInfo;
@@ -61,9 +56,11 @@ public class CountryDenominationInfo implements Serializable {
 
         denominationInfo.setCountry(countryInformation.getNameCountry());
 
-        denominationInfo.setCurAndValues();
+
 
         denominationInfo.setAllInfo(true);
+
+        HashSet<ValAndCurPair> arPair = new HashSet<>();
 
         for(CountryPeriod period: countryInformation.getPeriods()){
 
@@ -73,11 +70,15 @@ public class CountryDenominationInfo implements Serializable {
 
                   map.forEach((key,value)->{
 
-                     String [] parts = value.split(" ",2);
+                   String[] part= value.split(" ",2);
 
-                     denominationInfo.addToCurAndValues(parts[0],parts[1]);
+                   System.out.println(part[0]+" : "+part[1]);
+
+                     arPair.add(new ValAndCurPair(part[0],part[1]));
 
                   });
+
+
 
               }else{
 
@@ -87,6 +88,8 @@ public class CountryDenominationInfo implements Serializable {
               }
 
         }
+
+        denominationInfo.setCurAndValues(arPair);
 
         return denominationInfo;
 
