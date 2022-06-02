@@ -18,6 +18,7 @@ public class SaverParseInfo {
         file =new File(filePath);
         fileOutputStream=new FileOutputStream(file);
         objectOutputStream = new ObjectOutputStream(fileOutputStream);
+        log.info("preparing for preservation to "+file.getPath());
 
         }
 
@@ -36,7 +37,7 @@ public class SaverParseInfo {
 
             objectOutputStream.writeObject(object);
             objectOutputStream.flush();
-            log.info("file was saved");
+            log.info("file was saved:"+file.getPath());
         }
         catch (IOException e){
 
@@ -47,7 +48,6 @@ public class SaverParseInfo {
     public  boolean isEmpty()  {
 
         if(file.length()!=0){
-            log.info("not null");
             return false;
         }
         return true;

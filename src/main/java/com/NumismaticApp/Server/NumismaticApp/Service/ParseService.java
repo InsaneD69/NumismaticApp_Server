@@ -4,8 +4,11 @@ package com.NumismaticApp.Server.NumismaticApp.Service;
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.PropertyConnection;
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CoinSearcher;
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CountryInformation;
+import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.GetParseInfo;
+import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.SaverParseInfo;
 import com.NumismaticApp.Server.NumismaticApp.DTO.CoinDto;
 import com.NumismaticApp.Server.NumismaticApp.Exception.LanguageNotExistException;
+import com.NumismaticApp.Server.NumismaticApp.Exception.SiteConnectionError;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,35 +35,46 @@ public class ParseService {
     public ArrayList<String> getCountryList() throws IOException, ClassNotFoundException, InterruptedException {
         waitForLittle();
         log.info("taken list of country: given to "+Thread.currentThread().getName()+" id: "+Thread.currentThread().getId());
+
         PropertyConnection property=new PropertyConnection(pathToUcoinProperty);
+        GetParseInfo getParseInfo = new GetParseInfo(new File("").getAbsolutePath()+property.open().getProperty("countriesList."+Thread.currentThread().getName()));
 
-        File list = new File(new File("").getAbsolutePath()+property.open().getProperty("countriesList."+Thread.currentThread().getName()));
-        FileInputStream fileInputStream = new FileInputStream(list);
-        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+        property.close();
 
-        ArrayList<String> countryList =(ArrayList<String>) objectInputStream.readObject();
+        ArrayList<String> countryList =(ArrayList<String>) getParseInfo.get();
 
-        objectInputStream.close();
-        fileInputStream.close();
-
+       getParseInfo.close();
 
         return countryList;
 
+    }
+    public  CountryInformation getInfoAboutCountry(String country) throws SiteConnectionError {
+
+        try {
+            return  CoinSearcher.getInfoAboutCountry(country);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (SiteConnectionError e) {
+            throw new SiteConnectionError(e.getMessage());
+        }
 
     }
-    public  CountryInformation getInfoAboutCountry(String country) throws IOException, ClassNotFoundException, InterruptedException {
 
-         return  CoinSearcher.getInfoAboutCountry(country);
-
-    }
-
-    public Object getRequiredCoins(String country, Optional<ArrayList<Integer>> year, Optional<ArrayList<String>> curAndVal ) throws IOException, ClassNotFoundException {
+    public Object getRequiredCoins(String country, Optional<ArrayList<Integer>> year, Optional<ArrayList<String>> curAndVal ) throws IOException, ClassNotFoundException, SiteConnectionError {
 
 
         log.info("curAndVal: "+curAndVal);
-        ArrayList<CoinDto> coinDtos = CoinSearcher.getCoin(country,year.get(),curAndVal.get());
+        ArrayList<CoinDto> coinDtos = null;
+        try {
+            coinDtos = CoinSearcher.getCoin(country,year.get(),curAndVal.get());
+        } catch (SiteConnectionError e) {
+            throw new SiteConnectionError(e.getMessage());
+        }
 
         if(coinDtos.isEmpty()){
+
 
             return "coins with the specified parameters were not found";
 

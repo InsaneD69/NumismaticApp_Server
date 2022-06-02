@@ -9,19 +9,22 @@ import static com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinPar
 
 public class IncomingLangValidator {
 
-    public static void checkExistLanguage(String lang) throws IOException, LanguageNotExistException {
+    public static void checkExistLanguage(String lang) throws LanguageNotExistException {
 
 
-        PropertyConnection property=new PropertyConnection(pathToUcoinProperty);
-        boolean status =property.open().getProperty("existLang").contains(lang);
-        property.close();
+        try {
+            PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
+            boolean status = property.open().getProperty("existLang").contains(lang);
+            property.close();
 
-        if (!status){
+            if (!status) {
 
-            throw new LanguageNotExistException("Wrong language");
+                throw new LanguageNotExistException("Wrong language");
 
+            }
+        }  catch (IOException e) {
+            throw new RuntimeException(e);
         }
-
 
 
     }

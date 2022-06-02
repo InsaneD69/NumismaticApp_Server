@@ -21,9 +21,6 @@ public class InformationAboutCoinsInOnePeriod   {
         listOnePeriodCountry=new ArrayList<>();
 
 
-
-
-
         Element table=periodTablePage.select("table").attr("class","year").get(1);// таблица с годами и валютой в html виде
 
         Elements years= table.getElementsByTag("tr");

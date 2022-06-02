@@ -1,5 +1,6 @@
 package com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser;
 
+import com.NumismaticApp.Server.NumismaticApp.Exception.SiteConnectionError;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ public class CountryInformation implements Serializable {                       
     private String nameCountry;
 
 
-    public CountryInformation(Elements countryPeriods, String country) throws IOException {
+    public CountryInformation(Elements countryPeriods, String country) throws IOException, SiteConnectionError {
 
         this.nameCountry=country;
 
@@ -33,29 +34,31 @@ public class CountryInformation implements Serializable {                       
 
 
         });
+        try {
+            periods.get(0).setCurrenciesAndNominalValues();
 
-        periods.get(0).setCurrenciesAndNominalValues();
+            if (periods.size() > 1) {
 
-        if (periods.size()>1) {
+                if (periods.get(1) != null) {
 
-            if (periods.get(1) != null) {
+                    periods.get(1).setCurrenciesAndNominalValues();
 
-                periods.get(1).setCurrenciesAndNominalValues();
+                    if (periods.get(1).getCurrenciesAndNominalValues() == null) {
 
-                if (periods.get(1).getCurrenciesAndNominalValues() == null) {
+                        if (periods.size() > 2) {
 
-                    if(periods.size()>2) {
+                            if (periods.get(2) != null) {
 
-                        if (periods.get(2) != null) {
+                                periods.get(2).setCurrenciesAndNominalValues();
 
-                            periods.get(2).setCurrenciesAndNominalValues();
-
+                            }
                         }
                     }
                 }
             }
+        } catch (SiteConnectionError e) {
+            throw new SiteConnectionError(e.getMessage());
         }
-
 
 
     }
@@ -73,7 +76,7 @@ public class CountryInformation implements Serializable {                       
 
     }
 
-    public List<CountryPeriod> getPeriodByYear(int requiredYear){
+    /*public List<CountryPeriod> getPeriodByYear(int requiredYear){
 
 
         List<CountryPeriod> requiredPeriods= periods
@@ -87,6 +90,8 @@ public class CountryInformation implements Serializable {                       
                 period.setCurrenciesAndNominalValues();
             } catch (IOException e) {
                 throw new RuntimeException(e);
+            } catch (SiteConnectionError e) {
+                throw new SiteConnectionError(e.getMessage());
             }
 
         });
@@ -94,7 +99,7 @@ public class CountryInformation implements Serializable {                       
 
         return requiredPeriods;
 
-    }
+    }*/
 
     private void waitForLittle() throws InterruptedException {
         TimeUnit.MILLISECONDS.sleep(10);

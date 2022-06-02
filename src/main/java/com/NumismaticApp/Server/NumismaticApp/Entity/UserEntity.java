@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @RequiredArgsConstructor
-
+@Table(name = "clients")
 public class UserEntity  {
 
     @Id

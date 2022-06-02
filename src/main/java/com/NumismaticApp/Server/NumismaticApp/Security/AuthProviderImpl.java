@@ -24,6 +24,9 @@ public class AuthProviderImpl implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
+        System.out.println(authentication.getName());
+        System.out.println(authentication.getCredentials());
+
         UserEntity user = userRepo.findByUsername(authentication.getName());
 
         if (user == null) {

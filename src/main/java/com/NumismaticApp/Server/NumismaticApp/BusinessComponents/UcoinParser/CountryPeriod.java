@@ -1,6 +1,7 @@
 package com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser;
 
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.PropertyConnection;
+import com.NumismaticApp.Server.NumismaticApp.Exception.SiteConnectionError;
 import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -51,19 +52,28 @@ public class CountryPeriod implements Serializable { // содержит в се
         return nominalValues;
     }
 
-    protected void setCurrenciesAndNominalValues() throws IOException { //излекает из html таблицы значения номиналов и валют в данном периоде
+    protected void setCurrenciesAndNominalValues() throws IOException, SiteConnectionError { //излекает из html таблицы значения номиналов и валют в данном периоде
 
         //если на странице с таблицей сселка указаеная не с type=1, то это означает, что таблица на этой странице не с монетами регулярного выпуска
 
 
-        PropertyConnection property=new PropertyConnection(pathToUcoinProperty);
+       PropertyConnection property=new PropertyConnection(pathToUcoinProperty);
 
-       periodTablePage=Jsoup.connect(
-               property.open()
-                       .getProperty("link."+Thread.currentThread().getName())
-                  +link)
-               .get();
-        property.close();
+       try {
+           periodTablePage = UcoinConnection.getUcoinPage(property.open()
+                   .getProperty("link." + Thread.currentThread().getName())
+                   + link);
+       } catch (SiteConnectionError e) {
+
+           log.info("CurrenciesAndNominalValues not set for "+namePeriod);
+           throw new SiteConnectionError(e.getMessage());
+
+       }
+       finally {
+           property.close();
+       }
+
+
 
         if(!periodTablePage.getElementsByAttributeValue("class","switcher active").attr("href").contains("type=1"))
         { System.out.println("not exist period, circulation coin is empty"); return;}
@@ -77,7 +87,6 @@ public class CountryPeriod implements Serializable { // содержит в се
                                                                  // затем помещает их в мапу
                String[] parts = text.text().split(" - ");
                currenciesAndNominalValues.put(parts[0], parts[1]);
-
 
        });
 

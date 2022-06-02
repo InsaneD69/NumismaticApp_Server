@@ -2,25 +2,26 @@ package com.NumismaticApp.Server.NumismaticApp.Controller;
 
 
 
+import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CountryInformation;
 import com.NumismaticApp.Server.NumismaticApp.DTO.CountryInfoDTO;
 import com.NumismaticApp.Server.NumismaticApp.DTO.SearchInformation;
-import com.NumismaticApp.Server.NumismaticApp.Exception.AllPeriodsWasParsing;
-import com.NumismaticApp.Server.NumismaticApp.Exception.CountryNotExistException;
-import com.NumismaticApp.Server.NumismaticApp.Exception.LanguageNotExistException;
+import com.NumismaticApp.Server.NumismaticApp.Exception.*;
 import com.NumismaticApp.Server.NumismaticApp.Model.CountryDenominationInfo;
 import com.NumismaticApp.Server.NumismaticApp.Service.ParseService;
 import com.NumismaticApp.Server.NumismaticApp.Validator.IncomingCountryValidator;
+import com.NumismaticApp.Server.NumismaticApp.Validator.IncomingDegreeValidator;
 import com.NumismaticApp.Server.NumismaticApp.Validator.IncomingSearcherValidator;
 import com.NumismaticApp.Server.NumismaticApp.Validator.IncomingLangValidator;
 import com.NumismaticApp.Server.NumismaticApp.Model.CountryInfoModel;
 import com.fasterxml.jackson.core.io.UTF8Writer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.Charset;
 
 
@@ -62,11 +63,16 @@ public class ParseController {
                 IncomingLangValidator
                         .checkExistLanguage(lang);
 
-                Thread.currentThread().setName(lang);
+                 Thread.currentThread().setName(lang);
+                IncomingCountryValidator
+                        .checkExistCountry(countryInfoDTO.getCountry());
 
-                IncomingCountryValidator.
-                        checkExistCountry(countryInfoDTO.getCountry());
-              log.info("taken Get request /search/info:"+countryInfoDTO.getCountry()
+                IncomingDegreeValidator
+                    .checkDegree(countryInfoDTO.getDegree());
+
+
+
+            log.info("taken Get request /search/info:"+countryInfoDTO.getCountry()
                        +" given to thread  "+Thread.currentThread().getName()
                        +" id: "+Thread.currentThread().getId());
 
@@ -85,17 +91,16 @@ public class ParseController {
         }
         catch (CountryNotExistException e){
             return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        // catch (AllPeriodsWasParsing e) {
-         //   return ResponseEntity.badRequest().body(e.getMessage());
 
-       // }
+        } catch (DegreeErrorException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (SiteConnectionError e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+        // catch (Exception e) {
+          //  return ResponseEntity.status(500).build();
+
+      //  }
 
 
 
@@ -130,6 +135,8 @@ public class ParseController {
 
             return  ResponseEntity.badRequest().body(e.getMessage());
 
+        } catch (SiteConnectionError e) {
+            return  ResponseEntity.badRequest().body(e.getMessage());
         }
 
 

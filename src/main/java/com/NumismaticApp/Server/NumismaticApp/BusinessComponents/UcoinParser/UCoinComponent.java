@@ -4,6 +4,7 @@ package com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser;
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.PropertyConnection;
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CoinSearcher;
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.SaverParseInfo;
+import com.NumismaticApp.Server.NumismaticApp.Exception.SiteConnectionError;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -29,18 +30,19 @@ public class UCoinComponent implements CommandLineRunner {
 
          try {
             log.info("CountryListComponent start");
-            necessity();
 
-            deleteOldData();
-            openStreams();
 
             while (true) {
 
+                necessity();
+                try {
+                    openStreams();
+                } catch (SiteConnectionError e) {
+                    log.error(e.getMessage());
+
+                }
                 closeStreams();
                 waitFor();
-                necessity();
-                deleteOldData();
-                openStreams();
             }
 
         } catch (IOException | InterruptedException e) {
@@ -48,20 +50,29 @@ public class UCoinComponent implements CommandLineRunner {
         }
     }
 
-    private void openStreams() throws IOException, InterruptedException {
+        private void openStreams() throws IOException, InterruptedException, SiteConnectionError {
 
-        PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
+            PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
+        try{
 
+            for(String lang:property.open().getProperty("existLang").split(",")){
 
-        for(String lang:property.open().getProperty("existLang").split(",")){
+             String countryListWay = new File("").getAbsolutePath()+property.open().getProperty("countriesList."+lang);
+             saverParseInfo  = new SaverParseInfo(countryListWay);
+             saveCountriesIntoFile(lang);
+             waitForLittle();
 
-            String countryListWay = new File("").getAbsolutePath()+property.open().getProperty("countriesList."+lang);
-            System.out.println(countryListWay);
-            saverParseInfo  = new SaverParseInfo(countryListWay);
-            saveCountriesIntoFile(lang);
-            waitForLittle();
+         }
+        }
+        catch (SiteConnectionError e){
+
+            throw new SiteConnectionError(e.getMessage());
 
         }
+        finally {
+            property.close();
+        }
+
 
     }
 
@@ -84,9 +95,11 @@ public class UCoinComponent implements CommandLineRunner {
        saverParseInfo.close();
     }
 
-    private void saveCountriesIntoFile(String lang) throws IOException {
+    private void saveCountriesIntoFile(String lang) throws IOException, SiteConnectionError {
 
         ArrayList<Set<String>> countriesBufferStorage = new ArrayList<>(CoinSearcher.getCountriesFromUcoin(lang));
+
+        deleteOldData();
 
         log.info("Country  list "+lang+" had been downloaded");
         saverParseInfo.save(countriesBufferStorage);

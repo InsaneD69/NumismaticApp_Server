@@ -2,6 +2,7 @@ package com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser;
 
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.PropertyConnection;
 import com.NumismaticApp.Server.NumismaticApp.DTO.CoinDto;
+import com.NumismaticApp.Server.NumismaticApp.Exception.SiteConnectionError;
 import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -33,7 +34,7 @@ public class FindCoin {
     private Set<CoinDto> coins;
 
 
-    public FindCoin(CountryInformation countryInfo, ArrayList<Integer> year, ArrayList<String> corAndValue) throws IOException {
+    public FindCoin(CountryInformation countryInfo, ArrayList<Integer> year, ArrayList<String> corAndValue) throws IOException, SiteConnectionError {
 
         this.years =year;
         this.corAndValue=corAndValue;
@@ -44,19 +45,23 @@ public class FindCoin {
         System.out.println("years: "+year);
         System.out.println("corAndValue: "+corAndValue);
 
+        try{
+              findSuitablePeriods();
 
-        findSuitablePeriods();
+             if(countryPeriods!=null){
 
-        if(countryPeriods!=null){
+                  findSuitableLiteCoins();
 
-            findSuitableLiteCoins();
+                      if( liteCoins!=null) {
+                          log.info(liteCoins.toString());
+                          findSuitableCoins();
 
-                if( liteCoins!=null) {
-                    log.info(liteCoins.toString());
-                    findSuitableCoins();
-
-                   }
+                         }
+             }
+        } catch (SiteConnectionError e) {
+         throw new SiteConnectionError(e.getMessage());
         }
+
 
     }
 
@@ -80,7 +85,10 @@ public class FindCoin {
 
                         } catch (IOException e) {
                             throw new RuntimeException(e);
+                        } catch (SiteConnectionError e) {
+                            return;
                         }
+
 
                     }
 
@@ -136,48 +144,53 @@ public class FindCoin {
                          years.contains(liteCoin.getYear())
 
                  ){
-
                      liteCoins.add(liteCoin);
                  }
 
                });
 
-
-
            });
 
-
         });
 
 
     }
 
-    private void findSuitableCoins(){
-
-        liteCoins.forEach(liteCoin->{
-
-            try {
-
-              getCoins(liteCoin.getUrl(),liteCoin.getYear(),liteCoin.getValueAndCurrency());
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    private void findSuitableCoins()throws SiteConnectionError{
 
 
-        });
+         liteCoins.forEach(liteCoin->{
 
+             try {
+                 getCoins(liteCoin.getUrl(),liteCoin.getYear(),liteCoin.getValueAndCurrency());
+             } catch (IOException e) {
+                 throw new RuntimeException(e);
+             } catch (SiteConnectionError e) {
+                 log.info("Failed connect to"+liteCoin.getUrl());
+                 return;
+             }
+
+         });
 
 
 
     }
 
-    public  CoinDto getCoins(String url, Integer year ,String valueAndCurrency) throws IOException {
+    public  CoinDto getCoins(String url, Integer year ,String valueAndCurrency) throws IOException, SiteConnectionError {
 
         PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
 
-        Document doc = Jsoup.connect(property.open().getProperty("link."+Thread.currentThread().getName())+url).get();
-        property.close();
+        Document doc ;
+        try {
+            doc = UcoinConnection.getUcoinPage(property.open().getProperty("link."+Thread.currentThread().getName())+url);
+
+        } catch (SiteConnectionError e) {
+           throw new SiteConnectionError(e.getMessage());
+        }
+        finally {
+            property.close();
+        }
+
 
         Element  tableCoins = doc.getElementsByAttributeValue("class","tbl").tagName("body").first(); // html таблица с монетами
 
@@ -203,10 +216,12 @@ public class FindCoin {
                 getCoin(coin.attr("data-href"),value,currency,year);
            } catch (IOException e) {
                throw new RuntimeException(e);
+            } catch (SiteConnectionError e) {
+                return;
             }
 
 
-        });
+       });
 
 
 
@@ -216,15 +231,22 @@ public class FindCoin {
     }
 
 
-    public  void getCoin(String url, String value, String currency, Integer year) throws IOException {
+    public  void getCoin(String url, String value, String currency, Integer year) throws IOException, SiteConnectionError {
 
 
         CoinDto coinDto = new CoinDto();
 
         PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
 
-        Document doc = Jsoup.connect(property.open().getProperty("link."+Thread.currentThread().getName())+url).get();
-        property.close();
+        Document doc = null;
+        try {
+            doc = UcoinConnection.getUcoinPage(property.open().getProperty("link."+Thread.currentThread().getName())+url);
+        } catch (SiteConnectionError e) {
+            throw new SiteConnectionError(e.getMessage());
+        }finally {
+            property.close();
+        }
+
 
         Element infoTableColumns = doc.getElementsByAttributeValue("class","tbl coin-info").first();
 

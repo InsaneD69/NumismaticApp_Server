@@ -2,6 +2,7 @@ package com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser;
 
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.PropertyConnection;
 import com.NumismaticApp.Server.NumismaticApp.DTO.CoinDto;
+import com.NumismaticApp.Server.NumismaticApp.Exception.SiteConnectionError;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;
@@ -19,62 +20,45 @@ public class CoinSearcher {
 
     public static String pathToUcoinProperty = new File("").getAbsolutePath()+"/src/main/resources/ucoin.properties";
 
-   // private Document mainPageDoc; //html код главной страницы сайта en.ucoin.net
-
 
      private ArrayList<Set<String>> countries; //список со всеми странами
 
-   // private HashMap<String,CountryInformation> infoAboutCountries; // содержит в себе название страны и объект CountryInformation, в котором хранится информация о стране
-    //черная заготовка кэша
 
-    public CoinSearcher(String lang) throws IOException {  //отвечает за подгрузку нужной инфы для отпимизации поиска
-
-
-
-
-                                                       //подгружает страны в список countries в  пользовательском виде
-
-
-    }
+    public CoinSearcher()  {}
 
      public ArrayList<Set<String>> getCountries(){
         return countries;
     }
 
 
-    public static ArrayList<Set<String>> getCountriesFromUcoin(String lang) throws IOException { //отвечает за получение списка стран с сайта ucoin
+    public static ArrayList<Set<String>> getCountriesFromUcoin(String lang) throws IOException, SiteConnectionError { //отвечает за получение списка стран с сайта ucoin
+
+        try {
+
+            PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
 
 
-        PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
-
-        Document mainPageDoc =Jsoup.connect(
-                property.open().getProperty("link."+lang)
-        ).get();
-
-        SaverParseInfo saverInfo = new SaverParseInfo(new File("").getAbsolutePath()+property.open().getProperty("mainPage."+lang));
-        saverInfo.save(String.valueOf(mainPageDoc));
-        saverInfo.close();
-        property.close();
+            Document mainPageDoc = UcoinConnection.getUcoinPage(property.open().getProperty("link." + lang));
 
 
-        log.info("Successful connect to Ucoin");
-        Elements timeVar = mainPageDoc.getElementsByAttributeValue("class","wrap nopad");
-
-          //получаем список стран в пользовательском виде
-
-          return  new ArrayList<Set<String>>(new HashSet(timeVar.eachText()));
+            SaverParseInfo saverInfo = new SaverParseInfo(new File("").getAbsolutePath() + property.open().getProperty("mainPage." + lang));
+            saverInfo.save(String.valueOf(mainPageDoc));
+            saverInfo.close();
+            property.close();
 
 
-    }
+            log.info("Successful connect to Ucoin");
+            Elements timeVar = mainPageDoc.getElementsByAttributeValue("class", "wrap nopad");
 
+            //получаем список стран в пользовательском виде
 
-    public  void smartCountrySelection(String country){
+            return new ArrayList<Set<String>>(new HashSet(timeVar.eachText()));
 
-        System.out.println("im working");
+        } catch (SiteConnectionError e) {
+            throw new SiteConnectionError(e.getMessage());
+        }
 
     }
-
-
 
     public static String getCountryLink(String requiredCountry) throws IOException, ClassNotFoundException {  //возвращает нужную часть http ссылки на определенную страну
         // название стран для пользователей и их название в http ссылке отличается
@@ -110,14 +94,16 @@ public class CoinSearcher {
     }
 
 
-    public static ArrayList<CoinDto> getCoin(String country, ArrayList<Integer> year, ArrayList<String> curAndValue) throws IOException, ClassNotFoundException {
+    public static ArrayList<CoinDto> getCoin(String country, ArrayList<Integer> year, ArrayList<String> curAndValue) throws IOException, ClassNotFoundException, SiteConnectionError {
 
-       FindCoin findCoin = new FindCoin(getInfoAboutCountry(country),year,curAndValue);
+        FindCoin findCoin = null;
+        try {
+            findCoin = new FindCoin(getInfoAboutCountry(country),year,curAndValue);
+        } catch (SiteConnectionError e) {
+            throw new SiteConnectionError(e.getMessage());
+        }
 
-       System.out.println("From CoinSearch.getCoin:"+findCoin.getLiteCoins());
-
-       return new ArrayList<CoinDto>( findCoin.getCoins());
-
+        return new ArrayList<CoinDto>(findCoin.getCoins());
 
 
     }
@@ -125,7 +111,7 @@ public class CoinSearcher {
 
 
 
-    public static CountryInformation getInfoAboutCountry(String country) throws IOException, ClassNotFoundException {
+    public static CountryInformation getInfoAboutCountry(String country) throws IOException, ClassNotFoundException, SiteConnectionError {
 
         String partOfLinkCountry = getCountryLink(country); // получает часть ссылки на страну
         String correctCountryName = partOfLinkCountry.substring(18); // извлекает из ссылки название страны для http запрсов и более удобного сравнивания в html коде
@@ -133,8 +119,12 @@ public class CoinSearcher {
         CountryInformation infoAboutCountry;
         PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
 
-        File file = new File(new File("").getAbsolutePath()+property.open().getProperty("countriesInfo")+country+"_"+Thread.currentThread().getName()+".txt");
-        System.out.println(file.isFile());
+        File file = new File(new File("").getAbsolutePath()
+                +property.open().getProperty("countriesInfo")
+                +country+"_"+Thread.currentThread().getName()+".txt"
+        );
+
+
 
         if(file.length()!=0){
 
@@ -158,9 +148,14 @@ public class CoinSearcher {
         Elements countryPeriods = htmlCountryPeriods.getElementsByAttributeValue("class","period");
 
         SaverParseInfo saverParseInfo = new SaverParseInfo(file.getPath());
+
         if(countryPeriods!=null){
 
-            infoAboutCountry=new CountryInformation(countryPeriods, country);
+            try {
+                infoAboutCountry=new CountryInformation(countryPeriods, country);
+            } catch (SiteConnectionError e) {
+                throw new SiteConnectionError(e.getMessage());
+            }
             saverParseInfo.save(infoAboutCountry);
             saverParseInfo.close();
             return infoAboutCountry;

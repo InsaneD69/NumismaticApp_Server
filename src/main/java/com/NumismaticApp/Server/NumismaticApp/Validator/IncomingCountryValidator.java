@@ -13,34 +13,42 @@ import static com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinPar
 @Log4j2
 public class IncomingCountryValidator {
 
-    public static void checkExistCountry(String country) throws IOException, ClassNotFoundException, CountryNotExistException {
+    public static void checkExistCountry(String country) throws  CountryNotExistException {
 
         log.info("Checking "+country);
-        PropertyConnection property=new PropertyConnection(pathToUcoinProperty);
 
-        File file =new File( new File("").getAbsolutePath()+
-                (property.open()
-                        .getProperty("countriesList."
-                +Thread.currentThread().getName()))
-        );
-        log.info("Way to check"+file.getName());
-        property.close();
-        FileInputStream fileInputStream = new FileInputStream(file);
+        try {
+            PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
 
-        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            File file = new File(new File("").getAbsolutePath() +
+                    (property.open()
+                            .getProperty("countriesList."
+                                    + Thread.currentThread().getName()))
+            );
+            log.info("Way to check" + file.getName());
+            property.close();
+            FileInputStream fileInputStream = new FileInputStream(file);
 
-        ArrayList<Set<String>> listCountries= (ArrayList<Set<String>>) objectInputStream.readObject();
-        objectInputStream.close();
-        fileInputStream.close();
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
-        boolean status= listCountries.contains(country);
+            ArrayList<Set<String>> listCountries = (ArrayList<Set<String>>) objectInputStream.readObject();
+            objectInputStream.close();
+            fileInputStream.close();
 
-        if (!status){
+            boolean status = listCountries.contains(country);
 
-            throw new CountryNotExistException("Wrong country");
+            if (!status) {
 
+                throw new CountryNotExistException("Wrong country");
+
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
-
 
 
     }

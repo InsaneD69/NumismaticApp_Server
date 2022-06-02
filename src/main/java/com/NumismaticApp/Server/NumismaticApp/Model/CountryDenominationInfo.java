@@ -5,10 +5,11 @@ import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.Cou
 import org.apache.commons.collections4.MultiMap;
 import org.apache.commons.collections4.map.MultiValueMap;
 
+import java.io.Serializable;
 import java.util.*;
 
 
-public class CountryDenominationInfo {
+public class CountryDenominationInfo implements Serializable {
     private String country;
     private MultiMap<String,ArrayList<String>> curAndValues;
     private boolean allInfo;
