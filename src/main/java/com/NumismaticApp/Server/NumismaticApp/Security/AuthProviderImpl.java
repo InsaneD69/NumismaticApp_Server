@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -20,7 +21,8 @@ public class AuthProviderImpl implements AuthenticationProvider {
 
     @Autowired
     private UserRepo userRepo;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
@@ -29,15 +31,18 @@ public class AuthProviderImpl implements AuthenticationProvider {
 
         UserEntity user = userRepo.findByUsername(authentication.getName());
 
-        if (user == null) {
+        if (user==null) {
             throw new UsernameNotFoundException("Пользователь с таким логином не существует");
         }
 
-        if (!user.getPassword().equals(user.getPassword())){
 
+        if (!passwordEncoder.matches(authentication.getCredentials().toString(),user.getPassword())){
+
+            System.out.println("неверный пароль");
             throw new BadCredentialsException("неверный пароль");
 
         }
+        System.out.println("верный пароль");
         List<GrantedAuthority> authorities = new ArrayList<>();
 
         return new UsernamePasswordAuthenticationToken(user,null,authorities);
