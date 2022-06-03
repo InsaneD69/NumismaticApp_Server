@@ -1,6 +1,7 @@
 package com.NumismaticApp.Server.NumismaticApp.DTO;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,26 +23,33 @@ public class SearchInformation implements Serializable {
         this.country = country;
     }
 
-    public Optional<ArrayList<Integer>> getYear() {
-        return  Optional.ofNullable(year);
+    public ArrayList<Integer> getYear() {
+        return  Optional.ofNullable(year).orElse(new ArrayList<>(1));
     }
 
 
 
-    public Optional<ArrayList<String>> getValue() {
-        return Optional.ofNullable(value);
+    public ArrayList<String> getValue() {
+        ArrayList<String> el = new ArrayList<>();
+        el.add("");
+        return Optional.ofNullable(value).orElse(el);
     }
 
 
 
-    public Optional<ArrayList<String>> getCurrency() {
-        return Optional.ofNullable(currency);
+    public ArrayList<String> getCurrency() {
+        ArrayList<String> el = new ArrayList<>();
+        el.add("");
+        return Optional.ofNullable(currency).orElse(el);
     }
 
 
 
-    public Optional<ArrayList<String>> getMint() {
-        return Optional.ofNullable(mint);
+    public ArrayList<String> getMint() {
+
+        ArrayList<String> el = new ArrayList<>();
+        el.add("");
+        return Optional.ofNullable(mint).orElse(el);
     }
 
     public void setYear(ArrayList<Integer> year) {

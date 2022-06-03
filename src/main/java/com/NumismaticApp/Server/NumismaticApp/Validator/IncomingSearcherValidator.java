@@ -15,11 +15,11 @@ public class IncomingSearcherValidator {
 
     private  ArrayList<String> currenciesAndValues=new ArrayList<>();
 
-    public Optional<ArrayList<String>> getCurrenciesAndValues() {
-        return Optional.ofNullable(currenciesAndValues);
+    public ArrayList<String> getCurrenciesAndValues() {
+        return Optional.ofNullable(currenciesAndValues).orElse(new ArrayList<>(Arrays.asList("")));
     }
 
-    public   Optional<ArrayList<String>> validate(SearchInformation searchInformation) throws IOException, ClassNotFoundException, CountryNotExistException, LanguageNotExistException {
+    public   ArrayList<String> validate(SearchInformation searchInformation) throws IOException, ClassNotFoundException, CountryNotExistException, LanguageNotExistException {
 
        IncomingCountryValidator.checkExistCountry(searchInformation.getCountry());
 
@@ -36,16 +36,32 @@ public class IncomingSearcherValidator {
 
     public   void validateCurrenciesAndValues(SearchInformation searchInformation){
 
-        ArrayList<String> values = searchInformation.getValue().orElse(new ArrayList<>(Arrays.asList("")));
-        ArrayList<String> currencies = searchInformation.getCurrency().orElse(new ArrayList<>(Arrays.asList("")));
+        ArrayList<String> values = searchInformation.getValue();
+        ArrayList<String> currencies = searchInformation.getCurrency();
+        ArrayList<Integer> years = searchInformation.getYear();
 
+        System.out.println("values "+values);
+        System.out.println("currencies "+currencies);
 
-         values.forEach(value->{
-            currencies.forEach(currency-> {
-                        currenciesAndValues.add(value+" "+currency);
-            }
+        System.out.println(values.size());
+        System.out.println(currencies.size());
+         values.forEach(oneValue->{
+            currencies.forEach(oneCurrency-> {
+
+                String fs=  Optional.ofNullable(oneValue).orElse("")+
+                        " "+
+                        Optional.ofNullable(oneCurrency).orElse("");
+                System.out.println("fs "+fs);
+                        currenciesAndValues.add(
+                                Optional.ofNullable(oneValue).orElse("")+
+                                        " "+
+                                        Optional.ofNullable(oneCurrency).orElse("")
+                        );
+                  }
             );
         });
+
+         System.out.println( currenciesAndValues);
 
     }
 

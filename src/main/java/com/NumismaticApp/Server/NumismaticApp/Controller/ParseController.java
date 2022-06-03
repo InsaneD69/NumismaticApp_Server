@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 
 
 @RestController
@@ -114,6 +115,7 @@ public class ParseController {
 
 
         try {
+
             IncomingLangValidator.checkExistLanguage(lang);
             Thread.currentThread().setName(lang);
             IncomingSearcherValidator val=new IncomingSearcherValidator();

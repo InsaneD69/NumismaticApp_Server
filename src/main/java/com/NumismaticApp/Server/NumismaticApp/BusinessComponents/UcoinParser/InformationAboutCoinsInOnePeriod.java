@@ -28,7 +28,7 @@ public class InformationAboutCoinsInOnePeriod   {
 
         years.forEach((Element year)->{ // для каждой строчки
 
-            year.getElementsByAttributeValue("class","cell marked-0").forEach((Element value)->{//каждого значения в строчке
+            year.getElementsByAttributeValueContaining("class","cell marked-").forEach((Element value)->{//каждого значения в строчке
 
                 String valueAndCurrency =value.text();// currenciesAndNominalValues.get(value.text());
 

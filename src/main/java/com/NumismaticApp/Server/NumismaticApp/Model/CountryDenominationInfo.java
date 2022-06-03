@@ -3,13 +3,9 @@ package com.NumismaticApp.Server.NumismaticApp.Model;
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CountryInformation;
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.CountryPeriod;
 import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.UcoinParser.ValAndCurPair;
-import org.apache.commons.collections4.MultiMap;
-import org.apache.commons.collections4.map.MultiValueMap;
-import org.springframework.data.util.Pair;
 
 
 import java.io.Serializable;
-import java.security.KeyPair;
 import java.util.*;
 
 
@@ -53,10 +49,7 @@ public class CountryDenominationInfo implements Serializable {
 
         CountryDenominationInfo denominationInfo = new CountryDenominationInfo();
 
-
         denominationInfo.setCountry(countryInformation.getNameCountry());
-
-
 
         denominationInfo.setAllInfo(true);
 
@@ -78,12 +71,9 @@ public class CountryDenominationInfo implements Serializable {
 
                   });
 
-
-
               }else{
 
                   denominationInfo.setAllInfo(false);
-
 
               }
 
@@ -94,5 +84,14 @@ public class CountryDenominationInfo implements Serializable {
         return denominationInfo;
 
 
+    }
+
+    @Override
+    public String toString() {
+        return "CountryDenominationInfo{" +
+                "country='" + country + '\'' +
+                //", curAndValues=" + curAndValues +
+                ", allInfo=" + allInfo +
+                '}';
     }
 }

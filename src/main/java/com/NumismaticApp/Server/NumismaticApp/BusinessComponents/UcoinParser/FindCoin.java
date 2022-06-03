@@ -5,8 +5,11 @@ import com.NumismaticApp.Server.NumismaticApp.DTO.CoinDto;
 import com.NumismaticApp.Server.NumismaticApp.Exception.SiteConnectionError;
 import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
 
 import java.io.File;
@@ -48,7 +51,7 @@ public class FindCoin {
         try{
               findSuitablePeriods();
 
-             if(countryPeriods!=null){
+             if(!countryPeriods.isEmpty()){
 
                   findSuitableLiteCoins();
 
@@ -70,18 +73,34 @@ public class FindCoin {
 
         countryPeriods=new HashSet<>();
 
+        ArrayList<CountryPeriod> errorPeriods = new ArrayList<>();
+
        int countryStatus = countryInformation.hashCode();
 
         countryInformation.getPeriods().forEach((period)->{
 
+
+
+
+
             years.forEach(year->{
 
+
+
                 if(period.compareData(year)){
+
+                    log.debug("Exist::Checking info about"+countryInformation.getNameCountry()+" period "+period);
 
                     if (period.getListOnePeriodCountry()==null){
 
                         try {
                             period.setCurrenciesAndNominalValues();
+
+                            if(period.getCurrenciesAndNominalValues()==null){
+                                errorPeriods.add(period);
+                           }
+
+
 
                         } catch (IOException e) {
                             throw new RuntimeException(e);
@@ -99,6 +118,12 @@ public class FindCoin {
 
             });
 
+
+        });
+
+        errorPeriods.forEach(countryPeriod -> {
+
+            countryPeriods.remove(countryPeriod);
 
         });
 
@@ -162,6 +187,7 @@ public class FindCoin {
          liteCoins.forEach(liteCoin->{
 
              try {
+
                  getCoins(liteCoin.getUrl(),liteCoin.getYear(),liteCoin.getValueAndCurrency());
              } catch (IOException e) {
                  throw new RuntimeException(e);
@@ -206,7 +232,18 @@ public class FindCoin {
                )
             .collect(Collectors.toCollection(Elements::new));
 
-
+        if(coinHtml.isEmpty()){
+            try{
+            String value=valueAndCurrency.split(" ",2)[0];
+            String currency=valueAndCurrency.split(" ",2)[1];
+            getCoin(url,value,currency,year);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (SiteConnectionError e) {
+            throw new SiteConnectionError(e.getMessage());
+        }
+            return null;
+        }
 
        coinHtml.forEach(coin->{
 
@@ -264,14 +301,19 @@ public class FindCoin {
         });
 
         coinDto.setCurrency(currency);
-        coinDto.setValue(value);
+        coinDto.setValue(value);//new Element("<a href=\"#price\" class=\"gray-12 right pricewj\">Value:&nbsp;<span>none</span></a>")
         coinDto.setYears(year);
 
 
-       coinDto.setCost(
-               doc.getElementsByAttributeValue("href","#price").first()
-                       .text()
-                       .split(": ")[1]
+       coinDto.setCost(Optional.ofNullable(doc
+                       .getElementsByAttributeValue("href","#price")
+                       .first()
+               ).orElse(new Element("a")
+                       .prepend("Value:&nbsp;<span>none</span>")
+               )
+               .text()
+               .split(": ",2)[1]
+
        );
 
 

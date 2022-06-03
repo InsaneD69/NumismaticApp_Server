@@ -62,13 +62,13 @@ public class ParseService {
 
     }
 
-    public Object getRequiredCoins(String country, Optional<ArrayList<Integer>> year, Optional<ArrayList<String>> curAndVal ) throws IOException, ClassNotFoundException, SiteConnectionError {
+    public Object getRequiredCoins(String country, ArrayList<Integer> year, ArrayList<String> curAndVal ) throws IOException, ClassNotFoundException, SiteConnectionError {
 
 
         log.info("curAndVal: "+curAndVal);
         ArrayList<CoinDto> coinDtos = null;
         try {
-            coinDtos = CoinSearcher.getCoin(country,year.get(),curAndVal.get());
+            coinDtos = CoinSearcher.getCoin(country,year,curAndVal);
         } catch (SiteConnectionError e) {
             throw new SiteConnectionError(e.getMessage());
         }
