@@ -48,24 +48,8 @@ public class UserController  {
     @GetMapping("/login")
     public ResponseEntity logInAccount(){
 
-        /*User user;
 
-        try {
-
-           user= clientServiceImpl.logInUser(incomingUser);
-        }
-        catch (UserNotFoundException e){
-
-            return  ResponseEntity.badRequest().body(e.getMessage());
-        }
-        catch (WrongPasswordException e){
-
-            return  ResponseEntity.badRequest().body(e.getMessage());
-
-        }
-
-        return  ResponseEntity.ok().body(user);*/
-        return ResponseEntity.ok().body("Successful login");
+        return  ResponseEntity.ok().body("successful login");
 
     }
 
