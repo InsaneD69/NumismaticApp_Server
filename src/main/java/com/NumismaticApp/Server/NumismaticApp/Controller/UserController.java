@@ -8,6 +8,8 @@ import com.NumismaticApp.Server.NumismaticApp.Service.ClientServiceImpl;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -45,8 +47,10 @@ public class UserController  {
     }
 
 
-    @GetMapping("/login")
+    @PutMapping("/login")
     public ResponseEntity logInAccount(){
+
+       // Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 
         return  ResponseEntity.ok().body("successful login");

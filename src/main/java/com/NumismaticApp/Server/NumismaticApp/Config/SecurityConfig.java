@@ -29,8 +29,8 @@ private AuthProviderImpl authProvider;
     protected void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
-                .antMatchers("/acc/new","acc/login").anonymous()
-                .antMatchers("/search/countries").authenticated()
+                .antMatchers("/acc/new").anonymous()
+                .antMatchers("/search/countries","acc/login").authenticated()
                 .and().csrf().disable()
                .logout()
                 .and().httpBasic();

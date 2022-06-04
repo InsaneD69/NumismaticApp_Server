@@ -8,6 +8,8 @@ import com.NumismaticApp.Server.NumismaticApp.Service.CollectionService;
 import com.NumismaticApp.Server.NumismaticApp.repository.CollectionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,6 +25,13 @@ public class CollectionController {
     private ResponseEntity createNewCollection(  @RequestBody CollectionEntity collectionEntity,
                                                  @RequestParam String username){
 
+
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        String name = auth.getName();
+
+        System.out.println("SecurityContextHolder   "+name);
         try {
             return ResponseEntity.ok(service.createCollection(collectionEntity,username));
         }
@@ -38,7 +47,7 @@ public class CollectionController {
     }
 
 
-    @GetMapping("/get")
+    @PutMapping("/get")
     private ResponseEntity getCollection(@RequestParam String username,
                                          @RequestParam String collectionname
                                          ){
