@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -30,7 +31,7 @@ private AuthProviderImpl authProvider;
 
         http.authorizeRequests()
                 .antMatchers("/acc/new").anonymous()
-                .antMatchers("/search/countries","acc/login").authenticated()
+                .antMatchers("/search/countries","acc/login","collection/new","collection/get").authenticated()
                 .and().csrf().disable()
                .logout()
                 .and().httpBasic();
@@ -49,7 +50,6 @@ private AuthProviderImpl authProvider;
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
-
     }
 
 

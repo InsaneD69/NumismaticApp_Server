@@ -53,7 +53,7 @@ public class UserController  {
        // Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 
-        return  ResponseEntity.ok().body("successful login");
+        return  ResponseEntity.status(200).body("successful login");
 
     }
 

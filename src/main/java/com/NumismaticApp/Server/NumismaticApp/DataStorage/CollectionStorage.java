@@ -1,5 +1,6 @@
 package com.NumismaticApp.Server.NumismaticApp.DataStorage;
 
+import com.NumismaticApp.Server.NumismaticApp.BusinessComponents.PropertyConnection;
 import com.NumismaticApp.Server.NumismaticApp.DTO.CollectionDTO;
 
 import java.io.File;
@@ -13,15 +14,16 @@ public class CollectionStorage {
 
     private CollectionStorage(){}
 
+    private static String pathToUserDataProp =  new File("").getAbsolutePath()+"/src/main/resources/userData.properties";
 
     private static Semaphore semaphore = new Semaphore(1);
 
-    public static void saveData(CollectionDTO collectionDTODTO){
+    public static void saveData(CollectionDTO collectionDTO, String place){
         try {
             semaphore.acquire();
 
             // сохраняем данные DTO в файл
-            savePlayerDTOInFile(collectionDTODTO);
+            savePlayerDTOInFile(collectionDTO, place);
 
         } catch (InterruptedException e){
             e.printStackTrace();
@@ -30,24 +32,23 @@ public class CollectionStorage {
         }
     }
 
-    private static void savePlayerDTOInFile(CollectionDTO collectionDTO){
+    private static void savePlayerDTOInFile(CollectionDTO collectionDTO, String place){
 
-/*
-        byte[] hashName = HashGen.getHash(playerDTO.getPlayerName());
 
         try {
+            PropertyConnection prop = new PropertyConnection(pathToUserDataProp);
 
-             File file = new File("C:\\Users\\dimas\\Downloads\\LitteraWorlds-dev (1)\\LitteraWorlds-dev\\DTO_files\\"+HashToString.convert(hashName)+ ".pdto");
+             File file = new File(new File("").getAbsolutePath()+prop.open().getProperty("collectionPath")+place+".pdto");
              FileOutputStream fileOutputStream = new FileOutputStream(file);
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-             objectOutputStream.writeObject(playerDTO);
+             objectOutputStream.writeObject(collectionDTO);
 
             objectOutputStream.close();
             fileOutputStream.close();
 
         } catch(IOException e ){
             e.printStackTrace();
-        }*/
+        }
     }
 
 }

@@ -1,14 +1,26 @@
 package com.NumismaticApp.Server.NumismaticApp.DTO;
 
+import lombok.Data;
+import org.springframework.context.annotation.Bean;
+
+import javax.persistence.Entity;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Objects;
+
 
 public class CollectionDTO implements Serializable {
 
-    private ArrayList<CoinDto> collection=new ArrayList<>();
+    private ArrayList<CoinDto> collection;
     public String nameCollection;
 
+    public void setCollection(ArrayList<CoinDto> collection) {
+        this.collection = collection;
+    }
 
+    public void setNameCollection(String nameCollection) {
+        this.nameCollection = nameCollection;
+    }
 
     public CollectionDTO() {}
 
@@ -17,5 +29,17 @@ public class CollectionDTO implements Serializable {
         return nameCollection;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CollectionDTO that = (CollectionDTO) o;
+        return collection.equals(that.collection) && nameCollection.equals(that.nameCollection);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(collection, nameCollection);
+    }
 }
 

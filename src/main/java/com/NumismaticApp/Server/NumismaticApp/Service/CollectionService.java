@@ -1,5 +1,7 @@
 package com.NumismaticApp.Server.NumismaticApp.Service;
 
+import com.NumismaticApp.Server.NumismaticApp.DTO.CollectionDTO;
+import com.NumismaticApp.Server.NumismaticApp.DataStorage.CollectionStorage;
 import com.NumismaticApp.Server.NumismaticApp.Entity.CollectionEntity;
 import com.NumismaticApp.Server.NumismaticApp.Entity.UserEntity;
 import com.NumismaticApp.Server.NumismaticApp.Exception.CollectionNotFoundException;
@@ -9,6 +11,9 @@ import com.NumismaticApp.Server.NumismaticApp.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
 @Service
 public class CollectionService {
 
@@ -17,13 +22,31 @@ public class CollectionService {
     @Autowired
     UserRepo userRepo;
 
-    public CollectionModel createCollection(CollectionEntity collection, String username ){
 
-        UserEntity user = userRepo.findByUsername(username);
 
-        collection.setUser(user);
 
-        return  CollectionModel.toModel(collectionRepo.save(collection));
+    public CollectionModel createCollection(CollectionDTO collection,UserEntity user){
+
+
+
+
+        CollectionEntity collectionEntity = new CollectionEntity();
+
+        collectionEntity.setCollectionname(collection.getNameCollection());
+
+        String hashPlace=String.valueOf(
+                Base64.getEncoder()
+                        .encode(
+                                (user.getUsername()+collection.getNameCollection())
+                                        .getBytes(StandardCharsets.UTF_8)
+                        )
+        );
+        collectionEntity.setUser(user);
+        collectionEntity.setPlacehash(hashPlace);
+
+        CollectionStorage.saveData(collection,hashPlace);
+
+        return  CollectionModel.toModel(collectionRepo.save(collectionEntity));
 
 
     }
