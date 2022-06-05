@@ -79,13 +79,7 @@ public class FindCoin {
 
         countryInformation.getPeriods().forEach((period)->{
 
-
-
-
-
             years.forEach(year->{
-
-
 
                 if(period.compareData(year)){
 
@@ -100,19 +94,15 @@ public class FindCoin {
                                 errorPeriods.add(period);
                            }
 
-
-
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         } catch (SiteConnectionError e) {
                             return;
                         }
 
-
                     }
 
                     countryPeriods.add(period);
-
 
                 }
 

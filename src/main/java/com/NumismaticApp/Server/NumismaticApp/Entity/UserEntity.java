@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,17 +26,19 @@ public class UserEntity  {
     private String password;
 
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "user")
     private List<CollectionEntity> collectionEntities;
 
+    public List<CollectionEntity> getCollectionEntities() {
+        return collectionEntities;
+    }
 
-    public CollectionEntity getCollectionByCollectionName(String collectionname){
+    public ArrayList<CollectionEntity> getCollection(){
 
-       return (CollectionEntity)collectionEntities
-               .stream()
-               .filter(collection->
-                       collection.getCollectionname()==collectionname
-               );
+       System.out.println( collectionEntities.get(0).getCollectionname());
+
+       return new ArrayList<>(getCollectionEntities());
+
 
     }
 

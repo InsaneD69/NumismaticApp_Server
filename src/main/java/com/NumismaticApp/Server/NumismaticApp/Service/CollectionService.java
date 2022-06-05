@@ -5,13 +5,17 @@ import com.NumismaticApp.Server.NumismaticApp.DataStorage.CollectionStorage;
 import com.NumismaticApp.Server.NumismaticApp.Entity.CollectionEntity;
 import com.NumismaticApp.Server.NumismaticApp.Entity.UserEntity;
 import com.NumismaticApp.Server.NumismaticApp.Exception.CollectionNotFoundException;
+import com.NumismaticApp.Server.NumismaticApp.Exception.DataStorageException;
 import com.NumismaticApp.Server.NumismaticApp.Model.CollectionModel;
 import com.NumismaticApp.Server.NumismaticApp.repository.CollectionRepo;
 import com.NumismaticApp.Server.NumismaticApp.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Base64;
 
 @Service
@@ -51,23 +55,54 @@ public class CollectionService {
 
     }
 
-    public CollectionModel getCollection(String username, String collectionName) throws CollectionNotFoundException {
+    public ArrayList<CollectionDTO> getCollections(UserEntity user) throws CollectionNotFoundException, DataStorageException {
 
-        CollectionEntity collection = userRepo.findByUsername(username).getCollectionByCollectionName(collectionName);
+         ArrayList<CollectionEntity> collectionEntities= user.getCollection();
 
-        if(collection==null){
-            throw  new CollectionNotFoundException("Коллекции с таким именем не существует");
+        if(collectionEntities.isEmpty()){
+
+            throw  new CollectionNotFoundException("У пользователя отсутсвуют коллекции");
 
         }
 
-        //поиск коллекции в хранилище
 
-        //пока затычка
-        return CollectionModel.toModel(collection);
+
+
+        try {
+
+            return getAllUserCollectonDTOs(collectionEntities);
+
+        } catch (DataStorageException e) {
+
+            throw new DataStorageException(e.getMessage());
+        }
+
 
     }
 
 
+    private ArrayList<CollectionDTO>  getAllUserCollectonDTOs(ArrayList<CollectionEntity> collectionEntities) throws DataStorageException{
+
+        ArrayList<CollectionDTO> collectionDTOS = new ArrayList<>();
+
+
+        try{
+            for (CollectionEntity encol : collectionEntities) {
+
+                collectionDTOS.add(CollectionStorage.getUserCollectionFromFile(encol.getPlacehash()));
+            }
+
+        } catch (DataStorageException e){
+
+            throw new DataStorageException(e.getMessage());
+
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return  collectionDTOS;
+    }
 
 
 }
