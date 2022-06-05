@@ -45,7 +45,7 @@ public class UserController  {
     }
 
 
-    @PutMapping("/login")
+    @GetMapping("/login")
     public ResponseEntity logInAccount(){
 
         return  ResponseEntity.status(200).body("successful login");
