@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.io.UTF8Writer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -144,6 +145,31 @@ public class ParseController {
 
     }
 
+
+    @GetMapping("/price")
+    private ResponseEntity getCoinPrice(@RequestParam  String url, @RequestParam String lang){
+
+        try {
+            IncomingLangValidator.checkExistLanguage(lang);
+            Thread.currentThread().setName(lang);
+
+            return ResponseEntity.ok().body(parseService.getActualCoinCost(url));
+
+
+        } catch (LanguageNotExistException e) {
+
+            return ResponseEntity.status(500).body(e.getMessage());
+
+        }  catch (SiteConnectionError e) {
+
+           return ResponseEntity.status(500).body(e.getMessage());
+        }
+        catch (IOException e) {
+            return ResponseEntity.status(500).body("Server error");
+        }
+
+
+    }
 
 
 }

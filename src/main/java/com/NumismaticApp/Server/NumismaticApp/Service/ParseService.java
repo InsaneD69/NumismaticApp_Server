@@ -85,6 +85,16 @@ public class ParseService {
 
 
 
+    public String getActualCoinCost(String partOfCoin_url) throws IOException, SiteConnectionError {
+
+        PropertyConnection prop = new PropertyConnection(pathToUcoinProperty);
+
+        String coin_url = prop.open().getProperty("link."+Thread.currentThread().getName())+"/"+partOfCoin_url;
+
+        return   CoinSearcher.getCoinCostFromUcoin(coin_url);
+
+    }
+
     private void waitForLittle() throws InterruptedException {
         TimeUnit.SECONDS.sleep(2);
     }

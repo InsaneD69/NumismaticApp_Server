@@ -168,6 +168,26 @@ public class CoinSearcher {
 
 
 
+    public static String getCoinCostFromUcoin(String url) throws SiteConnectionError {
+
+        try {
+            Document coinPage=  UcoinConnection.getUcoinPage(url);
+           String cost= Optional.ofNullable(coinPage
+                            .getElementsByAttributeValue("href","#price")
+                            .first()
+                    ).orElse(new Element("a")
+                            .prepend("Value:&nbsp;<span>none</span>")
+                    )
+                    .text()
+                    .split(": ",2)[1];
+
+           return cost;
+        } catch (SiteConnectionError e) {
+            throw new SiteConnectionError(e.getMessage());
+        }
+
+    }
+
 
     public static String replaceAmpersand(String text){
 
