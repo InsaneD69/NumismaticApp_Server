@@ -32,7 +32,6 @@ public class ParseController {
 
 
     @GetMapping("/countries")
-
     private ResponseEntity getCountries(@RequestParam String lang) throws IOException, ClassNotFoundException {
 
         try {

@@ -53,7 +53,7 @@ public class CoinSearcher {
 
             //получаем список стран в пользовательском виде
 
-            return new ArrayList(Collections.singleton(new HashSet(timeVar.eachText())));
+            return new ArrayList<Set<String>>(new HashSet(timeVar.eachText()));
 
         } catch (SiteConnectionError e) {
             throw new SiteConnectionError(e.getMessage());
