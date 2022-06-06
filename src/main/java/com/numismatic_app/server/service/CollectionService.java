@@ -9,6 +9,7 @@ import com.numismatic_app.server.exception.DataStorageException;
 
 import com.numismatic_app.server.repository.CollectionRepo;
 import com.numismatic_app.server.repository.UserRepo;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ import java.util.List;
 
 
 @Service
+@Log4j2
 public class CollectionService {
 
     @Autowired
@@ -82,7 +84,12 @@ public class CollectionService {
 
         }
 
+        log.info("User "+user.getUsername()+" have collections:");
+        collectionEntities.forEach(col->{
 
+            log.info(col.getCollectionname());
+
+        });
 
 
         try {
@@ -111,13 +118,16 @@ public class CollectionService {
 
         } catch (DataStorageException e){
 
+            log.error(e.getMessage());
+
             throw new DataStorageException(e.getMessage());
 
 
         } catch (ClassNotFoundException e) {
+            log.error(e.getMessage());
             throw new DataStorageException("Data storage has been broken");
         }
-
+        log.info("have collections on server data storage: "+collectionDTOS.size());
         return  collectionDTOS;
     }
 
