@@ -16,11 +16,13 @@ import com.numismatic_app.server.exception.DegreeErrorException;
 import com.numismatic_app.server.exception.SiteConnectionError;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Optional;
 
 
 @RestController
@@ -140,13 +142,13 @@ public class ParseController {
 
 
     @GetMapping("/price")
-    private ResponseEntity getCoinPrice(@RequestParam  String url, @RequestParam String lang,@RequestParam String vid){
+    private ResponseEntity getCoinPrice(@RequestParam  String url, @RequestParam String lang,@Param("vid") String vid){
 
         try {
             IncomingLangValidator.checkExistLanguage(lang);
             Thread.currentThread().setName(lang);
 
-            return ResponseEntity.ok().body(parseService.getActualCoinCost(url+"&"+vid));
+            return ResponseEntity.ok().body(parseService.getActualCoinCost(url,vid));
 
 
         } catch (LanguageNotExistException e) {

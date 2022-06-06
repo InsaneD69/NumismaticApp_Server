@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -79,11 +80,13 @@ public class ParseService {
 
 
 
-    public String getActualCoinCost(String partOfCoin_url) throws IOException, SiteConnectionError {
+    public String getActualCoinCost(String partOfCoin_url, String vid) throws IOException, SiteConnectionError {
 
         PropertyConnection prop = new PropertyConnection(CoinSearcher.PATH_TO_UCOIN_PROPERTY);
 
-        String coin_url = prop.open().getProperty("link."+Thread.currentThread().getName())+"/"+partOfCoin_url;
+
+
+        String coin_url = prop.open().getProperty("link."+Thread.currentThread().getName())+"/"+partOfCoin_url+"&vid="+ Optional.ofNullable(vid).orElse("");
 
         return   CoinSearcher.getCoinCostFromUcoin(coin_url);
 
