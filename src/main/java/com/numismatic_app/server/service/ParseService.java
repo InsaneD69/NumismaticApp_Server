@@ -25,8 +25,8 @@ public class ParseService {
     }
 
 
-    public ArrayList<String> getCountryList() throws IOException, ClassNotFoundException, InterruptedException {
-        waitForLittle();
+    public ArrayList<String> getCountryList() throws IOException, ClassNotFoundException {
+
         log.info("taken list of country: given to "+Thread.currentThread().getName()+" id: "+Thread.currentThread().getId());
 
         PropertyConnection property=new PropertyConnection(CoinSearcher.pathToUcoinProperty);
@@ -38,6 +38,7 @@ public class ParseService {
 
        getParseInfo.close();
 
+        log.info("sending countryList"+Thread.currentThread().getName()+" starting with\n"+countryList.get(0));
         return countryList;
 
     }

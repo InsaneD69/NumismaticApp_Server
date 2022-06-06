@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
+import java.util.ArrayList;
 
 
 @RestController
@@ -39,14 +40,12 @@ public class ParseController {
 
             Thread.currentThread().setName(lang);
             log.info("taken Get request /search/countries: given to thread  "+Thread.currentThread().getName()+" id: "+Thread.currentThread().getId());
-            return ResponseEntity.ok().body(parseService.getCountryList());
+            return ResponseEntity.ok().body((ArrayList<String>)parseService.getCountryList());
         }
         catch (LanguageNotExistException e){
 
            return ResponseEntity.badRequest().body(e.getMessage());
 
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
 
 
