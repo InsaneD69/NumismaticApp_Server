@@ -29,7 +29,7 @@ public class ParseService {
 
         log.info("taken list of country: given to "+Thread.currentThread().getName()+" id: "+Thread.currentThread().getId());
 
-        PropertyConnection property=new PropertyConnection(CoinSearcher.pathToUcoinProperty);
+        PropertyConnection property=new PropertyConnection(CoinSearcher.PATH_TO_UCOIN_PROPERTY);
         GetterInfo getParseInfo = new GetterInfo(new File("").getAbsolutePath()+property.open().getProperty("countriesList."+Thread.currentThread().getName()));
 
         property.close();
@@ -81,7 +81,7 @@ public class ParseService {
 
     public String getActualCoinCost(String partOfCoin_url) throws IOException, SiteConnectionError {
 
-        PropertyConnection prop = new PropertyConnection(CoinSearcher.pathToUcoinProperty);
+        PropertyConnection prop = new PropertyConnection(CoinSearcher.PATH_TO_UCOIN_PROPERTY);
 
         String coin_url = prop.open().getProperty("link."+Thread.currentThread().getName())+"/"+partOfCoin_url;
 

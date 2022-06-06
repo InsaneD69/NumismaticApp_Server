@@ -6,7 +6,7 @@ import com.numismatic_app.server.entity.CollectionEntity;
 import com.numismatic_app.server.entity.UserEntity;
 import com.numismatic_app.server.exception.CollectionNotFoundException;
 import com.numismatic_app.server.exception.DataStorageException;
-import com.numismatic_app.server.model.CollectionModel;
+
 import com.numismatic_app.server.repository.CollectionRepo;
 import com.numismatic_app.server.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+
 
 @Service
 public class CollectionService {
@@ -95,7 +95,6 @@ public class CollectionService {
         }
 
 
-
     }
 
 
@@ -115,6 +114,8 @@ public class CollectionService {
             throw new DataStorageException(e.getMessage());
 
 
+        } catch (ClassNotFoundException e) {
+            throw new DataStorageException("Data storage has been broken");
         }
 
         return  collectionDTOS;

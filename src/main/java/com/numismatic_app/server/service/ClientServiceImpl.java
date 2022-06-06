@@ -1,5 +1,6 @@
 package com.numismatic_app.server.service;
 
+import com.numismatic_app.server.dto.UserDto;
 import com.numismatic_app.server.entity.UserEntity;
 import com.numismatic_app.server.exception.UserAlreadyExistException;
 import com.numismatic_app.server.exception.UserNotFoundException;
@@ -22,18 +23,21 @@ public class ClientServiceImpl  {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UserModel registration(UserEntity incomingUser) throws UserAlreadyExistException {
+    public void registration(UserDto incomingUser) throws UserAlreadyExistException {
 
-        UserEntity user = userRepo.findByUsername(incomingUser.getUsername());
+        UserEntity entity = new UserEntity();
+        entity.setUsername(incomingUser.getUsername());
+
+        UserEntity user = userRepo.findByUsername(entity.getUsername());
 
         if (user != null) {
 
             throw new UserAlreadyExistException("Пользователь с таким именем существует");
 
         }
-        incomingUser.setPassword(passwordEncoder.encode(incomingUser.getPassword()));
+        entity.setPassword(passwordEncoder.encode(incomingUser.getPassword()));
 
-        return UserModel.toModel(userRepo.save(incomingUser));
+
 
     }
 

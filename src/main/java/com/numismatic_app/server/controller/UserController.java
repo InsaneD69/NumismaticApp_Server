@@ -2,6 +2,7 @@
 
 
 
+import com.numismatic_app.server.dto.UserDto;
 import com.numismatic_app.server.entity.UserEntity;
 import com.numismatic_app.server.exception.UserAlreadyExistException;
 import com.numismatic_app.server.service.ClientServiceImpl;
@@ -22,7 +23,7 @@ public class UserController  {
 
 
     @PostMapping("/new")
-    public ResponseEntity registration(@RequestBody UserEntity user){
+    public ResponseEntity<String> registration(@RequestBody UserDto user){
 
 
        log.info("Процесс регистрация пользователя  "+user.getUsername());
@@ -33,7 +34,7 @@ public class UserController  {
         }
         catch (UserAlreadyExistException e){
 
-            return  ResponseEntity.badRequest().body(e.getMessage());
+            return  ResponseEntity.status(205).body(e.getMessage());
         }
         catch(Exception e) {
 
@@ -44,30 +45,12 @@ public class UserController  {
 
     }
 
-
     @GetMapping("/login")
-    public ResponseEntity logInAccount(){
+    public ResponseEntity<String> logInAccount(){
 
-        return  ResponseEntity.status(200).body("successful login");
-
-    }
-
-
-
-    @GetMapping("/get")
-    public ResponseEntity getUser(@RequestParam String username){
-
-        System.out.println(username);
-        try {
-
-
-            return ResponseEntity.ok(clientServiceImpl.getOne(username));
-        }
-        catch(Exception e) {
-
-            return  ResponseEntity.badRequest().body("произошла ошибка");
-
-         }
+        return  ResponseEntity.status(200).body("упешная аунтефикация");
 
     }
+
+
 }

@@ -48,12 +48,5 @@ private AuthProviderImpl authProvider;
     }
 
 
-    /*http.authorizeHttpRequests((authz)->authz
-                .anyRequest()
-                .authenticated()
-                )
-                .httpBasic(Customizer.withDefaults());
-        return http.build();*/
-
 
 }

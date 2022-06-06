@@ -22,10 +22,13 @@ import java.util.*;
 @Log4j2
 public class CoinSearcher {
 
-    public static final String pathToUcoinProperty = new File("").getAbsolutePath()+"/src/main/resources/ucoin.properties";
+    public static final String PATH_TO_UCOIN_PROPERTY = new File("").getAbsolutePath()+"/src/main/resources/ucoin.properties";
 
-    public static String propMainPage = "mainPage.";
+    private static final String PROP_MAIN_PAGE = "mainPage.";
 
+    private static final String CLASS = "class";
+    private static final String WRAP_NOPAD ="wrap nopad";
+    private static final String COUNTRY ="country";
 
      private ArrayList<Set<String>> countries; //список со всеми странами
 
@@ -34,26 +37,26 @@ public class CoinSearcher {
     }
 
 
-    public static ArrayList<Set<String>> getCountriesFromUcoin(String lang) throws IOException, SiteConnectionError { //отвечает за получение списка стран с сайта ucoin
+    public static ArrayList<String> getCountriesFromUcoin(String lang) throws IOException, SiteConnectionError { //отвечает за получение списка стран с сайта ucoin
 
         try {
 
-            PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
+            PropertyConnection property = new PropertyConnection(PATH_TO_UCOIN_PROPERTY);
 
 
             Document mainPageDoc = UcoinConnection.getUcoinPage(property.open().getProperty("link." + lang));
 
 
-            SaverInfo saverInfo = new SaverInfo(new File("").getAbsolutePath() + property.open().getProperty(propMainPage + lang));
+            SaverInfo saverInfo = new SaverInfo(new File("").getAbsolutePath() + property.open().getProperty(PROP_MAIN_PAGE + lang));
             saverInfo.save(String.valueOf(mainPageDoc));
             saverInfo.close();
             property.close();
 
-            Elements timeVar = mainPageDoc.getElementsByAttributeValue("class", "wrap nopad");
+            Elements timeVar = mainPageDoc.getElementsByAttributeValue(CLASS, WRAP_NOPAD);
 
             //получаем список стран в пользовательском виде
 
-            return new ArrayList<Set<String>>(new HashSet(timeVar.eachText()));
+            return new ArrayList<>(new HashSet<>(timeVar.eachText()));
 
         } catch (SiteConnectionError e) {
             throw new SiteConnectionError(e.getMessage());
@@ -64,15 +67,15 @@ public class CoinSearcher {
     public static String getCountryLink(String requiredCountry) throws IOException, ClassNotFoundException {  //возвращает нужную часть http ссылки на определенную страну
         // название стран для пользователей и их название в http ссылке отличается
 
-        PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
+        PropertyConnection property = new PropertyConnection(PATH_TO_UCOIN_PROPERTY);
 
         GetterInfo getParseInfo = new GetterInfo(new File("").getAbsolutePath()+
                 property.open().
-                        getProperty(propMainPage +Thread.currentThread().getName())
+                        getProperty(PROP_MAIN_PAGE +Thread.currentThread().getName())
         );
         Document mainPage =Jsoup.parse(String.valueOf(getParseInfo.get()));
 
-        Elements  listOfCountries =  mainPage.getElementsByAttributeValue("class","country");
+        Elements  listOfCountries =  mainPage.getElementsByAttributeValue(CLASS,COUNTRY);
         getParseInfo.close();
         property.close();
 
@@ -81,7 +84,7 @@ public class CoinSearcher {
 
             if(requiredCountry.equals(
                     oneComparedCountry
-                            .getElementsByAttributeValue("class","wrap nopad")
+                            .getElementsByAttributeValue(CLASS,WRAP_NOPAD)
                             .text())
             ) {
                 return  oneComparedCountry.select("a[href]").attr("href");
@@ -104,7 +107,7 @@ public class CoinSearcher {
             throw new SiteConnectionError(e.getMessage());
         }
 
-        return new ArrayList<CoinDto>(findCoin.getCoins());
+        return new ArrayList<>(findCoin.getCoins());
 
 
     }
@@ -118,7 +121,7 @@ public class CoinSearcher {
         String correctCountryName = partOfLinkCountry.substring(18); // извлекает из ссылки название страны для http запрсов и более удобного сравнивания в html коде
 
         CountryInformation infoAboutCountry;
-        PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
+        PropertyConnection property = new PropertyConnection(PATH_TO_UCOIN_PROPERTY);
 
         File file = new File(new File("").getAbsolutePath()
                 +property.open().getProperty("countriesInfo")
@@ -141,12 +144,12 @@ public class CoinSearcher {
 
         GetterInfo getParseInfo = new GetterInfo( new File("").getAbsolutePath()+
                 property.open().
-                        getProperty(propMainPage +Thread.currentThread().getName())
+                        getProperty(PROP_MAIN_PAGE +Thread.currentThread().getName())
         );
         Document mainPage =Jsoup.parse( String.valueOf(getParseInfo.get()));
 
-        Element htmlCountryPeriods = mainPage.selectFirst("[data-code="+correctCountryName+"]"); // получает html код, внутри которого информация о периодах в запрашиваемой стране с ссылками
-        Elements countryPeriods = htmlCountryPeriods.getElementsByAttributeValue("class","period");
+        Element htmlCountryPeriods = Optional.ofNullable(mainPage.selectFirst("[data-code="+correctCountryName+"]")).orElse(new Element("null")); // получает html код, внутри которого информация о периодах в запрашиваемой стране с ссылками
+        Elements countryPeriods = htmlCountryPeriods.getElementsByAttributeValue(CLASS,"period");
 
         SaverInfo saverParseInfo = new SaverInfo(file.getPath());
 
@@ -172,7 +175,8 @@ public class CoinSearcher {
 
         try {
             Document coinPage=  UcoinConnection.getUcoinPage(url);
-           String cost= Optional.ofNullable(coinPage
+
+            return Optional.ofNullable(coinPage
                             .getElementsByAttributeValue("href","#price")
                             .first()
                     ).orElse(new Element("a")
@@ -181,8 +185,8 @@ public class CoinSearcher {
                     .text()
                     .split(": ",2)[1];
 
-           return cost;
-        } catch (SiteConnectionError e) {
+
+        } catch (SiteConnectionError | IOException e) {
             throw new SiteConnectionError(e.getMessage());
         }
 

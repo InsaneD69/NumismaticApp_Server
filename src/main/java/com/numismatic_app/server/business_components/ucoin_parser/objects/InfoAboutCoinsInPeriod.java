@@ -26,11 +26,11 @@ public class InfoAboutCoinsInPeriod {
         Elements years= table.getElementsByTag("tr");
 
 
-        years.forEach((Element year)->{ // для каждой строчки
+        years.forEach(year-> // для каждой строчки
 
-            year.getElementsByAttributeValueContaining("class","cell marked-").forEach((Element value)->{//каждого значения в строчке
+            year.getElementsByAttributeValueContaining("class","cell marked-").forEach( value->{//каждого значения в строчке
 
-                String valueAndCurrency =value.text();// currenciesAndNominalValues.get(value.text());
+                String valueAndCurrency =value.text();
 
                 if(!valueAndCurrency.equals("-")) {
 
@@ -44,11 +44,11 @@ public class InfoAboutCoinsInPeriod {
 
                 }
 
-            });
+            })
 
 
 
-        });
+        );
 
 
 

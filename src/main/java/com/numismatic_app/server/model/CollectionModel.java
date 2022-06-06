@@ -21,6 +21,8 @@ public class CollectionModel {
         return model;
     }
 
-    public CollectionModel(){}
+    public CollectionModel(){
+        //Do nothing
+    }
 
 }

@@ -7,8 +7,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+
 
 public class CountryInformation implements Serializable {                           // содержит информацию о стране
 
@@ -23,39 +22,22 @@ public class CountryInformation implements Serializable {                       
 
         periods = new ArrayList<>();
 
-        countryPeriods.forEach(period->{                   //на каждый период создается свой объект класса Period
+        countryPeriods.forEach(period->                  //на каждый период создается свой объект класса Period
 
+                periods.add(new CountryPeriod(period,country))
 
-            try {
-                periods.add(new CountryPeriod(period,country));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        );
 
-
-        });
         try {
-            periods.get(0).setCurrenciesAndNominalValues();
+            int requiredNumOfPeriodsInfo=3;
+            for(CountryPeriod period:  periods){
 
-            if (periods.size() > 1) {
+                if(requiredNumOfPeriodsInfo==0) break;
+                period.setCurrenciesAndNominalValues();
+                requiredNumOfPeriodsInfo--;
 
-                if (periods.get(1) != null) {
-
-                    periods.get(1).setCurrenciesAndNominalValues();
-
-                    if (periods.get(1).getCurrenciesAndNominalValues() == null) {
-
-                        if (periods.size() > 2) {
-
-                            if (periods.get(2) != null) {
-
-                                periods.get(2).setCurrenciesAndNominalValues();
-
-                            }
-                        }
-                    }
-                }
             }
+
         } catch (SiteConnectionError e) {
             throw new SiteConnectionError(e.getMessage());
         }
@@ -70,7 +52,7 @@ public class CountryInformation implements Serializable {                       
         return periods.get(0).getListOnePeriodCountry()
                 .stream()
                 .filter(elem->elem.getYear()==requiredYear)
-                .collect(Collectors.toList());
+                .toList();
 
 
 
@@ -101,9 +83,7 @@ public class CountryInformation implements Serializable {                       
 
     }*/
 
-    private void waitForLittle() throws InterruptedException {
-        TimeUnit.MILLISECONDS.sleep(10);
-    }
+
 
     public String getNameCountry() {
         return nameCountry;

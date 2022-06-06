@@ -9,6 +9,7 @@ public class CountryInfoDTO implements Serializable {
     private int degree;
 
     public CountryInfoDTO() {
+        //Don't use
     }
 
     public String getCountry() {

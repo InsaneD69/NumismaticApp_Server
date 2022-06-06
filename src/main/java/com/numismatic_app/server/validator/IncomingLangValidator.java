@@ -8,11 +8,13 @@ import java.io.IOException;
 
 public class IncomingLangValidator {
 
-    public static void checkExistLanguage(String lang) throws LanguageNotExistException {
+   private IncomingLangValidator() {
+       throw new IllegalStateException("Utility class");
+    }
 
+    public static void checkExistLanguage(String lang) throws LanguageNotExistException, IOException {
 
-        try {
-            PropertyConnection property = new PropertyConnection(CoinSearcher.pathToUcoinProperty);
+            PropertyConnection property = new PropertyConnection(CoinSearcher.PATH_TO_UCOIN_PROPERTY);
             boolean status = property.open().getProperty("existLang").contains(lang);
             property.close();
 
@@ -21,9 +23,7 @@ public class IncomingLangValidator {
                 throw new LanguageNotExistException("Wrong language");
 
             }
-        }  catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
 
 
     }

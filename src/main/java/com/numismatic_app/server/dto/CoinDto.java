@@ -19,7 +19,11 @@ public class CoinDto implements Serializable {
 
     private LinkedHashMap<String,String> infoTable;
 
-    public CoinDto() {}
+    public CoinDto() {
+        // От конструкротра требуется
+        // только создание нового экземпляра
+        // без параметров
+    }
 
     public Map<String, String> getInfoTable() {
         return infoTable;

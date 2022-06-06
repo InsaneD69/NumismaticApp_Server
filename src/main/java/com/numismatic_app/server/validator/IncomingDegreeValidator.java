@@ -5,6 +5,9 @@ import com.numismatic_app.server.exception.DegreeErrorException;
 import java.util.Optional;
 
 public class IncomingDegreeValidator {
+    private IncomingDegreeValidator() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static void checkDegree(int degree) throws DegreeErrorException {
 

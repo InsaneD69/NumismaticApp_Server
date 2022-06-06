@@ -11,7 +11,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-import static com.numismatic_app.server.business_components.ucoin_parser.CoinSearcher.pathToUcoinProperty;
+import static com.numismatic_app.server.business_components.ucoin_parser.CoinSearcher.PATH_TO_UCOIN_PROPERTY;
 
 class FindCoinTest {
 
@@ -22,7 +22,7 @@ class FindCoinTest {
         int year = 2008;
         String url="/coin/russia-2-rubles-2002-2009/?tid=2016";
 
-        PropertyConnection property = new PropertyConnection(pathToUcoinProperty);
+        PropertyConnection property = new PropertyConnection(PATH_TO_UCOIN_PROPERTY);
 
         Document doc = Jsoup.connect(property.open().getProperty("link."+"en")+url).get();
         property.close();
@@ -45,7 +45,7 @@ class FindCoinTest {
 
 
 
-        PropertyConnection property1 = new PropertyConnection(pathToUcoinProperty);
+        PropertyConnection property1 = new PropertyConnection(PATH_TO_UCOIN_PROPERTY);
 
         Document docx = Jsoup.connect(property1.open().getProperty("link."+"en")+s.get(0)).get();
 

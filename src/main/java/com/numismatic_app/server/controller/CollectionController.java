@@ -24,7 +24,7 @@ public class CollectionController {
 
 
     @PostMapping("/postcollection")
-    private ResponseEntity createNewCollection(@RequestBody CollectionDTO collectionDTO){
+   public ResponseEntity<String> createNewCollection(@RequestBody CollectionDTO collectionDTO){
 
         try {
             service.createCollection(collectionDTO
@@ -40,7 +40,7 @@ public class CollectionController {
 
 
     @GetMapping("/get")
-    private ResponseEntity getCollection()
+    public ResponseEntity<Object> getCollection()
 
         {
 
@@ -60,6 +60,10 @@ public class CollectionController {
 
         } catch (DataStorageException e) {
             return  ResponseEntity.status(500).body(e.getMessage());
+        }
+        catch (Exception e){
+            return  ResponseEntity.status(500).build();
+
         }
 
 

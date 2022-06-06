@@ -13,10 +13,13 @@ import java.util.concurrent.Semaphore;
 @Log4j2
 public class UcoinConnection {
 
+    private UcoinConnection() {
+        throw new IllegalStateException("Utility class");
+    }
 
     private static Semaphore semaphore = new Semaphore(1);
 
-    public static Document getUcoinPage(String url) throws SiteConnectionError {
+    public static Document getUcoinPage(String url) throws SiteConnectionError, IOException {
 
         try {
             semaphore.acquire();
@@ -39,11 +42,11 @@ public class UcoinConnection {
 
             throw new SiteConnectionError("failed connect to Ucoin:");
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        }  catch (InterruptedException e) {
+
             Thread.currentThread().interrupt();
-            throw new RuntimeException(e);
+            throw new SiteConnectionError("failed connect to Ucoin:");
+
         } finally {
             semaphore.release();
         }

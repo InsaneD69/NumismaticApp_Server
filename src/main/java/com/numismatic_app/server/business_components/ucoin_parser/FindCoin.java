@@ -34,7 +34,7 @@ public class FindCoin {
     private Set<CoinDto> coins;
 
 
-    public FindCoin(CountryInformation countryInfo, ArrayList<Integer> year, ArrayList<String> corAndValue) throws IOException, SiteConnectionError {
+    public FindCoin(CountryInformation countryInfo, ArrayList<Integer> year, ArrayList<String> corAndValue) throws IOException {
 
         this.years =year;
         this.corAndValue=corAndValue;
@@ -45,7 +45,7 @@ public class FindCoin {
         System.out.println("years: "+year);
         System.out.println("corAndValue: "+corAndValue);
 
-        try{
+
               findSuitablePeriods();
 
              if(!countryPeriods.isEmpty()){
@@ -58,9 +58,7 @@ public class FindCoin {
 
                          }
              }
-        } catch (SiteConnectionError e) {
-         throw new SiteConnectionError(e.getMessage());
-        }
+
 
 
     }
@@ -116,7 +114,7 @@ public class FindCoin {
 
         if(countryStatus!=countryInformation.hashCode()){
 
-            PropertyConnection property = new PropertyConnection(CoinSearcher.pathToUcoinProperty);
+            PropertyConnection property = new PropertyConnection(CoinSearcher.PATH_TO_UCOIN_PROPERTY);
 
             SaverInfo saverParseInfo = new SaverInfo(
                     new File("").getAbsolutePath()+
@@ -146,9 +144,9 @@ public class FindCoin {
 
                corAndValue.forEach(elem->{
 
-                 if(   (liteCoin.getValueAndCurrency().split(" ")[0].equals(elem.replace(" ",""))
+                 if(   (liteCoin.getValueAndCurrency().split(" ",2)[0].replace(" ","").equals(elem.replace(" ",""))
                          ||
-                         liteCoin.getValueAndCurrency().split(" ")[1].equals(elem.replace(" ",""))
+                         liteCoin.getValueAndCurrency().split(" ",2)[1].replace(" ","").equals(elem.replace(" ",""))
                          ||
                          liteCoin.getValueAndCurrency().equals(elem)
                        )
@@ -168,7 +166,7 @@ public class FindCoin {
 
     }
 
-    private void findSuitableCoins()throws SiteConnectionError{
+    private void findSuitableCoins() {
 
 
          liteCoins.forEach(liteCoin->{
@@ -176,10 +174,8 @@ public class FindCoin {
              try {
 
                  getCoins(liteCoin.getUrl(),liteCoin.getYear(),liteCoin.getValueAndCurrency());
-             } catch (IOException e) {
-                 throw new RuntimeException(e);
-             } catch (SiteConnectionError e) {
-                 log.info("Failed connect to"+liteCoin.getUrl());
+             } catch (SiteConnectionError | IOException e) {
+                 log.info("Failed connect to" + liteCoin.getUrl());
                  return;
              }
 
@@ -191,7 +187,7 @@ public class FindCoin {
 
     public  CoinDto getCoins(String url, Integer year ,String valueAndCurrency) throws IOException, SiteConnectionError {
 
-        PropertyConnection property = new PropertyConnection(CoinSearcher.pathToUcoinProperty);
+        PropertyConnection property = new PropertyConnection(CoinSearcher.PATH_TO_UCOIN_PROPERTY);
 
         Document doc ;
         try {
@@ -260,7 +256,7 @@ public class FindCoin {
 
         CoinDto coinDto = new CoinDto();
 
-        PropertyConnection property = new PropertyConnection(CoinSearcher.pathToUcoinProperty);
+        PropertyConnection property = new PropertyConnection(CoinSearcher.PATH_TO_UCOIN_PROPERTY);
 
         Document doc = null;
         try {

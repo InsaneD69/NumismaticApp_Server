@@ -66,7 +66,7 @@ public class SearchInformation implements Serializable {
     }
 
     public SearchInformation(){
-
+        //Do nothing
    }
 
 

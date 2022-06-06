@@ -44,15 +44,6 @@ public class SaverInfo {
 
         }
     }
-    public  boolean isEmpty()  {
-
-        if(file.length()!=0){
-            return false;
-        }
-        return true;
-
-    }
-
 
     public  void close()  {
         try {

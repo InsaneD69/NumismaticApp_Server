@@ -1,6 +1,7 @@
 package com.numismatic_app.server.business_components.ucoin_parser.objects;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class LiteCoin implements Serializable {
 
@@ -53,7 +54,15 @@ public class LiteCoin implements Serializable {
 
     @Override
     public int hashCode() {
-        return url.hashCode()+year.hashCode();
+        return (url+year).hashCode();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LiteCoin liteCoin = (LiteCoin) o;
+        return  Objects.equals(year, liteCoin.year) &&
+                Objects.equals(url, liteCoin.url);
+    }
 }

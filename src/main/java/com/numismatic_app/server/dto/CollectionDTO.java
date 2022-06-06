@@ -8,7 +8,7 @@ import java.util.Objects;
 public class CollectionDTO implements Serializable {
 
     private ArrayList<CoinDto> collection;
-    public String nameCollection;
+    private String nameCollection;
 
     public void setCollection(ArrayList<CoinDto> collection) {
         this.collection = collection;
@@ -18,7 +18,9 @@ public class CollectionDTO implements Serializable {
         this.nameCollection = nameCollection;
     }
 
-    public CollectionDTO() {}
+    public CollectionDTO() {
+        //Do nothing
+    }
 
     public ArrayList<CoinDto> getCollection() {return collection;}
     public String getNameCollection() {

@@ -1,7 +1,8 @@
 package com.numismatic_app.server.file_worker;
 
 import java.io.*;
-import java.nio.charset.Charset;
+
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 public class PropertyConnection {
@@ -11,11 +12,11 @@ public class PropertyConnection {
 
     public PropertyConnection(String pathToProperty) throws IOException {
         property = new Properties();
-        inputStreamReader = new InputStreamReader(new FileInputStream(pathToProperty), Charset.forName("UTF-8"));
+        inputStreamReader = new InputStreamReader(new FileInputStream(pathToProperty), StandardCharsets.UTF_8);
         property.load(inputStreamReader);
     }
 
-    public Properties open() throws IOException {
+    public Properties open()  {
         return property;
     }
 

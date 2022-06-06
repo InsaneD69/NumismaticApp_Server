@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
-import static com.numismatic_app.server.business_components.ucoin_parser.CoinSearcher.pathToUcoinProperty;
+import static com.numismatic_app.server.business_components.ucoin_parser.CoinSearcher.PATH_TO_UCOIN_PROPERTY;
 
 @Log4j2
 public class CountryPeriod implements Serializable { // содержит в себе информацию об одном периоде :
@@ -54,10 +54,10 @@ public class CountryPeriod implements Serializable { // содержит в се
 
     public void setCurrenciesAndNominalValues() throws IOException, SiteConnectionError { //излекает из html таблицы значения номиналов и валют в данном периоде
 
-        //если на странице с таблицей сселка указаеная не с type=1, то это означает, что таблица на этой странице не с монетами регулярного выпуска
+        //если на странице с таблицей ссылка указаеная не с type=1, то это означает, что таблица на этой странице не с монетами регулярного выпуска
 
 
-       PropertyConnection property=new PropertyConnection(pathToUcoinProperty);
+       PropertyConnection property=new PropertyConnection(PATH_TO_UCOIN_PROPERTY);
 
        try {
            periodTablePage = UcoinConnection.getUcoinPage(property.open()
@@ -76,14 +76,14 @@ public class CountryPeriod implements Serializable { // содержит в се
 
 
         if(!periodTablePage.getElementsByAttributeValue("class","switcher active").attr("href").contains("type=1"))
-        { System.out.println("not exist period, circulation coin is empty"); return;}
+        { log.info("not exist period, circulation coin is empty"); return;}
 
 
        Elements elWithCurAndVal=periodTablePage.getElementsByAttributeValue("class","legend");
 
        currenciesAndNominalValues =new HashMap<>();
 
-       elWithCurAndVal.forEach((text)->{                         //разделяет полученный текст вида 1pf - 1 penning на значение в таблице и номинал с валютой
+       elWithCurAndVal.forEach(text->{                         //разделяет полученный текст вида 1pf - 1 penning на значение в таблице и номинал с валютой
                                                                  // затем помещает их в мапу
                String[] parts = text.text().split(" - ");
                currenciesAndNominalValues.put(parts[0], parts[1]);
@@ -117,7 +117,7 @@ public class CountryPeriod implements Serializable { // содержит в се
 
 
 
-    public CountryPeriod(Element period,String country) throws IOException {
+    public CountryPeriod(Element period,String country) {
 
         this.country=country;
         this.link= period.attr("href");
@@ -133,9 +133,8 @@ public class CountryPeriod implements Serializable { // содержит в се
 
         log.info("Comparing"+year+" with"+bgYear+"-"+endYear);
 
-        if((year>=bgYear)&&(year<=endYear)){
-            return true;
-        } else return false;
+        return ((year>=bgYear)&&(year<=endYear));
+
 
     }
 
@@ -173,6 +172,21 @@ public class CountryPeriod implements Serializable { // содержит в се
 
     @Override
     public int hashCode() {
-        return namePeriod.hashCode()+Optional.ofNullable(getListOnePeriodCountry()).orElse(new ArrayList<LiteCoin>()).hashCode();
+        return namePeriod.hashCode()+Optional.ofNullable(getListOnePeriodCountry()).orElse(new ArrayList<>()).hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CountryPeriod that = (CountryPeriod) o;
+        return   bgYear == that.bgYear &&
+                endYear == that.endYear &&
+                Objects.equals(country, that.country) &&
+                Objects.equals(link, that.link) &&
+                Objects.equals(namePeriod, that.namePeriod);
+
+
+
     }
 }

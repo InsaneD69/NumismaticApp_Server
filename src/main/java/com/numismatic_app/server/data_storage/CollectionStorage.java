@@ -25,11 +25,11 @@ public class CollectionStorage {
 
         }  catch (IOException e) {
 
-           Thread.currentThread().interrupt();
            throw new DataStorageException("error");
 
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
+            throw new DataStorageException("error");
         } finally {
             semaphore.release();
         }
@@ -48,14 +48,12 @@ public class CollectionStorage {
 
 
     }
-    public static CollectionDTO getUserCollectionFromFile(String place) throws IOException, DataStorageException {
+    public static CollectionDTO getUserCollectionFromFile(String place) throws IOException, DataStorageException, ClassNotFoundException {
 
 
         PropertyConnection prop=new PropertyConnection(pathToUserDataProp);
         String s =new File("").getAbsolutePath()+prop.open().getProperty("collectionPath")+place+".pdto";
-        System.out.println(s);
         File file = new File(s);
-        System.out.println(file.isFile());
         prop.close();
 
 
@@ -63,22 +61,15 @@ public class CollectionStorage {
              ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
              )
         {
-            CollectionDTO collectionDTO =    (CollectionDTO)  objectInputStream.readObject();
 
-            return collectionDTO;
+
+            return (CollectionDTO)objectInputStream.readObject();
 
         } catch (FileNotFoundException e){
 
             throw new DataStorageException("Collection not found in server data storage");
-        }
-        catch(IOException e ){
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
 
-
-        return null;
+        }
 
 
     }

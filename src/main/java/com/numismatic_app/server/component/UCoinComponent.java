@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +26,6 @@ public class UCoinComponent implements CommandLineRunner {
     @Override
     public void run(String... args)  {
 
-
          try {
             log.info("CountryListComponent start");
 
@@ -33,24 +33,25 @@ public class UCoinComponent implements CommandLineRunner {
             while (true) {
 
                 necessity();
-                try {
-                    openStreams();
-                } catch (SiteConnectionError e) {
-                    log.error(e.getMessage());
-
-                }
+                openStreams();
                 closeStreams();
                 waitFor();
+
             }
 
-        } catch (IOException | InterruptedException e) {
+        }  catch (SiteConnectionError e) {
+             log.error(e.getMessage());
+
+         }
+         catch (IOException | InterruptedException e) {
+             Thread.currentThread().interrupt();
             log.error("Error");
         }
     }
 
         private void openStreams() throws IOException, InterruptedException, SiteConnectionError {
 
-            PropertyConnection property = new PropertyConnection(CoinSearcher.pathToUcoinProperty);
+            PropertyConnection property = new PropertyConnection(CoinSearcher.PATH_TO_UCOIN_PROPERTY);
         try{
 
             for(String lang:property.open().getProperty("existLang").split(",")){
@@ -76,7 +77,7 @@ public class UCoinComponent implements CommandLineRunner {
 
     private void necessity() throws IOException, InterruptedException {
 
-       PropertyConnection property = new PropertyConnection(CoinSearcher.pathToUcoinProperty);
+       PropertyConnection property = new PropertyConnection(CoinSearcher.PATH_TO_UCOIN_PROPERTY);
        if(property.open().getProperty("enableLoadingCountriesList").equals("false")){
 
            log.info("Not necessity to load countries list");
@@ -84,18 +85,17 @@ public class UCoinComponent implements CommandLineRunner {
            waitForMiddle();
            necessity();
        }
-
-
+        property.close();
     }
 
 
-    private void closeStreams() throws IOException {
+    private void closeStreams()  {
        saverParseInfo.close();
     }
 
     private void saveCountriesIntoFile(String lang) throws IOException, SiteConnectionError {
 
-        ArrayList<Set<String>> countriesBufferStorage = new ArrayList<>(CoinSearcher.getCountriesFromUcoin(lang));
+        ArrayList<String> countriesBufferStorage = new ArrayList<>(CoinSearcher.getCountriesFromUcoin(lang));
 
         deleteOldData();
 
@@ -106,7 +106,7 @@ public class UCoinComponent implements CommandLineRunner {
 
     }
 
-    private  void deleteOldData(){
+    private  void deleteOldData() throws IOException {
 
 
         File countriesInfo = new File(new File("").getAbsolutePath()+"/src/main/resources/SearcherInformation/CountriesInfo");
@@ -119,7 +119,7 @@ public class UCoinComponent implements CommandLineRunner {
             for(String nameFile:data){
                 log.info("deleting "+nameFile);
                 File deletingFile =new File(countriesInfo.getPath(),nameFile);
-                deletingFile.delete();
+                if(!Files.deleteIfExists(deletingFile.toPath())){log.info("failing deleting "+nameFile);}
             }
         log.info("old data successful deleted");
 

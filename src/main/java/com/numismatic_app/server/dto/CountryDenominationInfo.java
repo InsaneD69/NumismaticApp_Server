@@ -24,6 +24,7 @@ public class CountryDenominationInfo implements Serializable {
     }
 
     public CountryDenominationInfo() {
+        //Do nothing
     }
 
     public String getCountry() {
@@ -63,10 +64,7 @@ public class CountryDenominationInfo implements Serializable {
                   map.forEach((key,value)->{
 
                    String[] part= value.split(" ",2);
-
-                   System.out.println(part[0]+" : "+part[1]);
-
-                     arPair.add(new ValAndCurPair(part[0],part[1]));
+                   arPair.add(new ValAndCurPair(part[0],part[1]));
 
                   });
 

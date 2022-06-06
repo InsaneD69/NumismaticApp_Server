@@ -70,7 +70,7 @@ public class ParseController {
             log.info("taken Get request /search/info:"+countryInfoDTO.getCountry()
                        +" given to thread  "+Thread.currentThread().getName()
                        +" id: "+Thread.currentThread().getId());
-             ///dfewaefqaWEeg
+
 
             return ResponseEntity.ok().body(
                     CountryDenominationInfo.toModel(
@@ -92,10 +92,10 @@ public class ParseController {
         } catch (SiteConnectionError e) {
             return ResponseEntity.status(500).body(e.getMessage());
         }
-        // catch (Exception e) {
-          //  return ResponseEntity.status(500).build();
+         catch (Exception e) {
+             return ResponseEntity.status(500).build();
 
-      //  }
+         }
 
 
 
