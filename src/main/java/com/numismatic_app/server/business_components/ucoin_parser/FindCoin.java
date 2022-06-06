@@ -137,10 +137,10 @@ public class FindCoin {
         liteCoins = new HashSet<>();
 
 
-        countryPeriods.forEach(countryPeriod -> {
+        countryPeriods.forEach(countryPeriod ->
 
 
-           countryPeriod.getListOnePeriodCountry().forEach(liteCoin -> {
+           countryPeriod.getListOnePeriodCountry().forEach(liteCoin ->
 
                corAndValue.forEach(elem->{
 
@@ -157,11 +157,11 @@ public class FindCoin {
                      liteCoins.add(liteCoin);
                  }
 
-               });
+               })
 
-           });
+           )
 
-        });
+        );
 
 
     }
@@ -276,12 +276,12 @@ public class FindCoin {
         infoTables.remove(0); //удаляем ненужный krause number
         coinDto.setInfoTable();
 
-        infoTables.forEach(r->{
+        infoTables.forEach(r->
                         coinDto.addToInfoTable(
                                 r.getElementsByTag("th").text(),
                                 r.getElementsByTag("td").text()
-                        );
-        });
+                        )
+        );
 
         coinDto.setCurrency(currency);
         coinDto.setValue(value);//new Element("<a href=\"#price\" class=\"gray-12 right pricewj\">Value:&nbsp;<span>none</span></a>")

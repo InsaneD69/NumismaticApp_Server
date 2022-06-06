@@ -37,7 +37,7 @@ public class ClientServiceImpl  {
         }
         entity.setPassword(passwordEncoder.encode(incomingUser.getPassword()));
 
-
+        userRepo.save(entity);
 
     }
 

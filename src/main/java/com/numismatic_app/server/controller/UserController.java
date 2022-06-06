@@ -40,7 +40,7 @@ public class UserController  {
 
             log.info("пользователь с именем "+user.getUsername()+"уже существует");
 
-            return  ResponseEntity.status(201).contentType(MediaType.APPLICATION_JSON).body(e.getMessage());
+            return  ResponseEntity.status(205).contentType(MediaType.APPLICATION_JSON).body(e.getMessage());
         }
         catch(Exception e) {
 
