@@ -17,7 +17,7 @@ public class UcoinConnection {
         throw new IllegalStateException("Utility class");
     }
 
-    private static Semaphore semaphore = new Semaphore(1);
+    private static final Semaphore semaphore = new Semaphore(1);
 
     public static Document getUcoinPage(String url) throws SiteConnectionError, IOException {
 
@@ -31,6 +31,7 @@ public class UcoinConnection {
 
             if (connection.statusCode() != 200) {
 
+                log.error("Failed connect to" + url);
                 throw new SiteConnectionError("failed connect to" + url);
 
             }

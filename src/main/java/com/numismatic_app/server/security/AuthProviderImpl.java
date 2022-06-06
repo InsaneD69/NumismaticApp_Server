@@ -2,6 +2,7 @@ package com.numismatic_app.server.security;
 
 import com.numismatic_app.server.entity.UserEntity;
 import com.numismatic_app.server.repository.UserRepo;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@Log4j2
 public class AuthProviderImpl implements AuthenticationProvider {
 
     @Autowired
@@ -40,6 +42,8 @@ public class AuthProviderImpl implements AuthenticationProvider {
         }
 
         List<GrantedAuthority> authorities = new ArrayList<>();
+
+        log.info("User "+user.getUsername()+"connected to server");
 
         return new UsernamePasswordAuthenticationToken(user,null,authorities);
 

@@ -1,6 +1,7 @@
 package com.numismatic_app.server.service;
 
 
+import com.numismatic_app.server.exception.ServerWorkException;
 import com.numismatic_app.server.file_worker.PropertyConnection;
 import com.numismatic_app.server.business_components.ucoin_parser.CoinSearcher;
 import com.numismatic_app.server.business_components.ucoin_parser.objects.CountryInformation;
@@ -21,11 +22,6 @@ import java.util.concurrent.TimeUnit;
 public class ParseService {
 
 
-    @Autowired
-    private void ParseService() throws IOException {
-    }
-
-
     public ArrayList<String> getCountryList() throws IOException, ClassNotFoundException {
 
         log.info("taken list of country: given to "+Thread.currentThread().getName()+" id: "+Thread.currentThread().getId());
@@ -43,58 +39,49 @@ public class ParseService {
         return countryList;
 
     }
-    public CountryInformation getInfoAboutCountry(String country) throws SiteConnectionError {
+    public CountryInformation getInfoAboutCountry(String country) throws SiteConnectionError, IOException, ClassNotFoundException {
 
         try {
             return  CoinSearcher.getInfoAboutCountry(country);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (SiteConnectionError e) {
+        } catch (SiteConnectionError  e) {
+
             throw new SiteConnectionError(e.getMessage());
+
         }
+
+
 
     }
 
-    public Object getRequiredCoins(String country, ArrayList<Integer> year, ArrayList<String> curAndVal ) throws IOException, ClassNotFoundException, SiteConnectionError {
+    public Object getRequiredCoins(String country, ArrayList<Integer> year, ArrayList<String> curAndVal ) throws IOException, ClassNotFoundException, SiteConnectionError, ServerWorkException {
 
 
         log.info("curAndVal: "+curAndVal);
-        ArrayList<CoinDto> coinDtos = null;
-        try {
-            coinDtos = CoinSearcher.getCoin(country,year,curAndVal);
-        } catch (SiteConnectionError e) {
-            throw new SiteConnectionError(e.getMessage());
-        }
+        ArrayList<CoinDto> coinDtos = CoinSearcher.getCoin(country,year,curAndVal);
 
         if(coinDtos.isEmpty()){
 
-
             return "coins with the specified parameters were not found";
-
         }
+
         else  return  coinDtos;
 
     }
 
 
 
-    public String getActualCoinCost(String partOfCoin_url, String vid) throws IOException, SiteConnectionError {
+    public String getActualCoinCost(String partOfCoinUrl, String vid) throws IOException, SiteConnectionError {
 
         PropertyConnection prop = new PropertyConnection(CoinSearcher.PATH_TO_UCOIN_PROPERTY);
 
 
 
-        String coin_url = prop.open().getProperty("link."+Thread.currentThread().getName())+"/"+partOfCoin_url+"&vid="+ Optional.ofNullable(vid).orElse("");
+        String coinUrl = prop.open().getProperty("link."+Thread.currentThread().getName())+"/"+partOfCoinUrl+"&vid="+ Optional.ofNullable(vid).orElse("");
 
-        return   CoinSearcher.getCoinCostFromUcoin(coin_url);
+        return   CoinSearcher.getCoinCostFromUcoin(coinUrl);
 
     }
 
-    private void waitForLittle() throws InterruptedException {
-        TimeUnit.SECONDS.sleep(2);
-    }
 
 
 }

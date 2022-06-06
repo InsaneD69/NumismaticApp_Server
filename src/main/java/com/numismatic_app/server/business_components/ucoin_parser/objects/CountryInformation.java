@@ -42,11 +42,9 @@ public class CountryInformation implements Serializable {                       
             throw new SiteConnectionError(e.getMessage());
         }
 
-
     }
+
     public List<LiteCoin> getCoinFromPeriod(int requiredYear){
-
-
 
 
         return periods.get(0).getListOnePeriodCountry()
@@ -54,36 +52,7 @@ public class CountryInformation implements Serializable {                       
                 .filter(elem->elem.getYear()==requiredYear)
                 .toList();
 
-
-
     }
-
-    /*public List<CountryPeriod> getPeriodByYear(int requiredYear){
-
-
-        List<CountryPeriod> requiredPeriods= periods
-                .stream()
-                .filter(elem->elem.compareData(requiredYear))
-                .collect(Collectors.toList());
-
-        requiredPeriods.forEach((period)->{
-
-            try {
-                period.setCurrenciesAndNominalValues();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (SiteConnectionError e) {
-                throw new SiteConnectionError(e.getMessage());
-            }
-
-        });
-
-
-        return requiredPeriods;
-
-    }*/
-
-
 
     public String getNameCountry() {
         return nameCountry;

@@ -1,6 +1,7 @@
 package com.numismatic_app.server.business_components.ucoin_parser;
 
 import com.numismatic_app.server.business_components.ucoin_parser.objects.CountryInformation;
+import com.numismatic_app.server.exception.ServerWorkException;
 import com.numismatic_app.server.file_worker.GetterInfo;
 import com.numismatic_app.server.file_worker.PropertyConnection;
 import com.numismatic_app.server.dto.CoinDto;
@@ -98,7 +99,7 @@ public class CoinSearcher {
     }
 
 
-    public static ArrayList<CoinDto> getCoin(String country, ArrayList<Integer> year, ArrayList<String> curAndValue) throws IOException, ClassNotFoundException, SiteConnectionError {
+    public static ArrayList<CoinDto> getCoin(String country, ArrayList<Integer> year, ArrayList<String> curAndValue) throws IOException, ClassNotFoundException, SiteConnectionError, ServerWorkException {
 
         FindCoin findCoin = null;
         try {

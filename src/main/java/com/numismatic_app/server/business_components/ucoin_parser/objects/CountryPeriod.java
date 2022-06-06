@@ -131,7 +131,6 @@ public class CountryPeriod implements Serializable { // содержит в се
 
     public boolean compareData(int year){ // дает ответ на вопрос: принадлежит ли входящий год к этому периоду
 
-        log.info("Comparing"+year+" with"+bgYear+"-"+endYear);
 
         return ((year>=bgYear)&&(year<=endYear));
 

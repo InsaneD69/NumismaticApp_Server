@@ -3,6 +3,7 @@ package com.numismatic_app.server.business_components.ucoin_parser;
 import com.numismatic_app.server.business_components.ucoin_parser.objects.CountryInformation;
 import com.numismatic_app.server.business_components.ucoin_parser.objects.CountryPeriod;
 import com.numismatic_app.server.business_components.ucoin_parser.objects.LiteCoin;
+import com.numismatic_app.server.exception.ServerWorkException;
 import com.numismatic_app.server.file_worker.PropertyConnection;
 import com.numismatic_app.server.dto.CoinDto;
 import com.numismatic_app.server.exception.SiteConnectionError;
@@ -21,8 +22,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+
+
+
 @Log4j2
 public class FindCoin {
+
+    private static final String CLASS = "class";
 
 
     private  ArrayList<Integer> years;
@@ -34,19 +40,14 @@ public class FindCoin {
     private Set<CoinDto> coins;
 
 
-    public FindCoin(CountryInformation countryInfo, ArrayList<Integer> year, ArrayList<String> corAndValue) throws IOException {
+    public FindCoin(CountryInformation countryInfo, ArrayList<Integer> year, ArrayList<String> corAndValue) throws IOException, ServerWorkException, SiteConnectionError {
 
         this.years =year;
         this.corAndValue=corAndValue;
         this.countryInformation=countryInfo;
         coins=new HashSet<>();
 
-        System.out.println("countryInfo:"+countryInfo.getPeriods().get(0).getNamePeriod());
-        System.out.println("years: "+year);
-        System.out.println("corAndValue: "+corAndValue);
-
-
-              findSuitablePeriods();
+             findSuitablePeriods();
 
              if(!countryPeriods.isEmpty()){
 
@@ -64,53 +65,49 @@ public class FindCoin {
     }
 
 
-    private void findSuitablePeriods() throws IOException {
+    private void findSuitablePeriods() throws IOException, SiteConnectionError {
 
         countryPeriods=new HashSet<>();
 
-        ArrayList<CountryPeriod> errorPeriods = new ArrayList<>();
+        ArrayList<CountryPeriod> addingPeriods = new ArrayList<>();
 
        int countryStatus = countryInformation.hashCode();
 
-        countryInformation.getPeriods().forEach((period)->{
+        countryInformation.getPeriods().forEach(period->
 
             years.forEach(year->{
 
                 if(period.compareData(year)){
 
-                    log.debug("Exist::Checking info about "+countryInformation.getNameCountry()+" period "+period);
-
-                    if (period.getListOnePeriodCountry()==null){
-
-                        try {
-                            period.setCurrenciesAndNominalValues();
-
-                            if(period.getCurrenciesAndNominalValues()==null){
-                                errorPeriods.add(period);
-                           }
-
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        } catch (SiteConnectionError e) {
-                            return;
-                        }
-
-                    }
-
-                    countryPeriods.add(period);
+                    log.debug("added for searching " +period.getNamePeriod() +" period");
+                    addingPeriods.add(period);
 
                 }
+            })
+        );
 
-            });
 
 
-        });
+        for (CountryPeriod period: addingPeriods){
 
-        errorPeriods.forEach(countryPeriod -> {
+            try {
 
-            countryPeriods.remove(countryPeriod);
+                if(period.getListOnePeriodCountry()==null){
 
-        });
+                     period.setCurrenciesAndNominalValues();
+                }
+                if(period.getCurrenciesAndNominalValues()==null){
+
+                    continue;
+                }
+                countryPeriods.add(period);
+
+            } catch (SiteConnectionError e) {
+
+                throw new SiteConnectionError(e.getMessage());
+            }
+
+        }
 
         if(countryStatus!=countryInformation.hashCode()){
 
@@ -166,26 +163,26 @@ public class FindCoin {
 
     }
 
-    private void findSuitableCoins() {
+    private void findSuitableCoins() throws SiteConnectionError, ServerWorkException {
 
+        try {
+            for(LiteCoin liteCoin:liteCoins){
 
-         liteCoins.forEach(liteCoin->{
+                  getCoins(liteCoin.getUrl(),liteCoin.getYear(),liteCoin.getValueAndCurrency());
 
-             try {
+            }
+        } catch (SiteConnectionError  e) {
+            throw new SiteConnectionError(e.getMessage());
+        } catch (Exception e) {
+            throw new ServerWorkException("Server error");
+        }
 
-                 getCoins(liteCoin.getUrl(),liteCoin.getYear(),liteCoin.getValueAndCurrency());
-             } catch (SiteConnectionError | IOException e) {
-                 log.info("Failed connect to" + liteCoin.getUrl());
-                 return;
-             }
-
-         });
 
 
 
     }
 
-    public  CoinDto getCoins(String url, Integer year ,String valueAndCurrency) throws IOException, SiteConnectionError {
+    public  void getCoins(String url, Integer year ,String valueAndCurrency) throws SiteConnectionError, IOException, ServerWorkException {
 
         PropertyConnection property = new PropertyConnection(CoinSearcher.PATH_TO_UCOIN_PROPERTY);
 
@@ -201,11 +198,11 @@ public class FindCoin {
         }
 
 
-        Element  tableCoins = doc.getElementsByAttributeValue("class","tbl").tagName("body").first(); // html таблица с монетами
+        Element  tableCoins = doc.getElementsByAttributeValue(CLASS,"tbl").tagName("body").first(); // html таблица с монетами
 
 
         Elements coinHtml = tableCoins
-                .getElementsByAttributeValue("class","tr-hr")
+                .getElementsByAttributeValue(CLASS,"tr-hr")
                 .stream()
                .filter(coin->
                      Integer.compare(
@@ -215,38 +212,38 @@ public class FindCoin {
                )
             .collect(Collectors.toCollection(Elements::new));
 
-        if(coinHtml.isEmpty()){
-            try{
-            String value=valueAndCurrency.split(" ",2)[0];
-            String currency=valueAndCurrency.split(" ",2)[1];
-            getCoin(url,value,currency,year);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+
+        try{
+            if(coinHtml.isEmpty()){
+
+                 String value=valueAndCurrency.split(" ",2)[0];
+                 String currency=valueAndCurrency.split(" ",2)[1];
+                 getCoin(url,value,currency,year);
+
+            }
         } catch (SiteConnectionError e) {
             throw new SiteConnectionError(e.getMessage());
         }
-            return null;
-        }
 
-       coinHtml.forEach(coin->{
 
-            try {
-                String value=valueAndCurrency.split(" ",2)[0];
-                String currency=valueAndCurrency.split(" ",2)[1];
-                getCoin(coin.attr("data-href"),value,currency,year);
-           } catch (IOException e) {
-               throw new RuntimeException(e);
-            } catch (SiteConnectionError e) {
-                return;
+
+        try {
+
+            for (Element coin: coinHtml) {
+
+                String value = valueAndCurrency.split(" ", 2)[0];
+                String currency = valueAndCurrency.split(" ", 2)[1];
+                getCoin(coin.attr("data-href"), value, currency, year);
+
             }
 
+        } catch (SiteConnectionError e) {
+            throw new SiteConnectionError(e.getMessage());
+        }
+        catch (Exception e){
+            throw new ServerWorkException("Server error");
 
-       });
-
-
-
-        return null;
-
+        }
 
     }
 
@@ -268,7 +265,7 @@ public class FindCoin {
         }
 
 
-        Element infoTableColumns = doc.getElementsByAttributeValue("class","tbl coin-info").first();
+        Element infoTableColumns = doc.getElementsByAttributeValue(CLASS,"tbl coin-info").first();
 
         Elements infoTables=infoTableColumns.getElementsByTag("tr");
 
@@ -302,7 +299,7 @@ public class FindCoin {
 
         coinDto.setMint(
 
-                        Optional.ofNullable(Optional.ofNullable(doc.getElementsByAttributeValue("class","sodd")
+                        Optional.ofNullable(Optional.ofNullable(doc.getElementsByAttributeValue(CLASS,"sodd")
                                                 .first())
                                         .orElse(
                                                 new Element("<th></th>")

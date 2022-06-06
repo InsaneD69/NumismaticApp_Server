@@ -26,7 +26,7 @@ private AuthProviderImpl authProvider;
 
         http.authorizeRequests()
                 .antMatchers("/acc/new").anonymous()
-                .antMatchers("/search/countries","acc/login","collection/new","collection/get","collection/").authenticated()
+                .antMatchers("/search/countries","acc/login","collection/").authenticated()
                 .and().csrf().disable()
                .logout()
                 .and().httpBasic();
@@ -35,7 +35,7 @@ private AuthProviderImpl authProvider;
 
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth)  {
 
         auth.authenticationProvider(authProvider);
 

@@ -1,12 +1,17 @@
 package com.numismatic_app.server.validator;
 
 import com.numismatic_app.server.dto.SearchInformation;
+import com.numismatic_app.server.entity.UserEntity;
 import com.numismatic_app.server.exception.CountryNotExistException;
 import com.numismatic_app.server.exception.LanguageNotExistException;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
+import java.rmi.ServerException;
 import java.util.*;
 
+@Log4j2
 public class IncomingSearcherValidator {
 
     private  ArrayList<String> currenciesAndValues=new ArrayList<>();
@@ -15,17 +20,24 @@ public class IncomingSearcherValidator {
         return Optional.ofNullable(currenciesAndValues).orElse(new ArrayList<>(Arrays.asList("")));
     }
 
-    public   ArrayList<String> validate(SearchInformation searchInformation) throws IOException, ClassNotFoundException, CountryNotExistException, LanguageNotExistException {
+    public   ArrayList<String> validate(SearchInformation searchInformation) throws CountryNotExistException, ServerException {
 
-       IncomingCountryValidator.checkExistCountry(searchInformation.getCountry());
+        try {
 
-        IncomingSearcherValidator val =new IncomingSearcherValidator();
+            IncomingCountryValidator.checkExistCountry(searchInformation.getCountry());
 
-        val.validateCurrenciesAndValues(searchInformation);
+            IncomingSearcherValidator val = new IncomingSearcherValidator();
+
+            val.validateCurrenciesAndValues(searchInformation);
 
 
-       return val.getCurrenciesAndValues();
+            return val.getCurrenciesAndValues();
 
+        }  catch (CountryNotExistException e) {
+           throw new CountryNotExistException(e.getMessage());
+        } catch (IOException | ClassNotFoundException e) {
+            throw new ServerException("Server Error");
+        }
 
 
     }
@@ -34,30 +46,24 @@ public class IncomingSearcherValidator {
 
         ArrayList<String> values = searchInformation.getValue();
         ArrayList<String> currencies = searchInformation.getCurrency();
-        ArrayList<Integer> years = searchInformation.getYear();
 
-        System.out.println("values "+values);
-        System.out.println("currencies "+currencies);
 
-        System.out.println(values.size());
-        System.out.println(currencies.size());
-         values.forEach(oneValue->{
-            currencies.forEach(oneCurrency-> {
+        log.info(" Get values: "+ values);
+        log.info(" Get currencies "+currencies);
 
-                String fs=  Optional.ofNullable(oneValue).orElse("")+
-                        " "+
-                        Optional.ofNullable(oneCurrency).orElse("");
-                System.out.println("fs "+fs);
-                        currenciesAndValues.add(
-                                Optional.ofNullable(oneValue).orElse("")+
-                                        " "+
-                                        Optional.ofNullable(oneCurrency).orElse("")
-                        );
-                  }
-            );
-        });
 
-         System.out.println( currenciesAndValues);
+         values.forEach(oneValue->
+             currencies.forEach(oneCurrency->
+
+                 currenciesAndValues.add(
+                         Optional.ofNullable(oneValue).orElse("")+
+                               " "+
+                               Optional.ofNullable(oneCurrency).orElse("")
+                 )
+
+             )
+        );
+
 
     }
 
