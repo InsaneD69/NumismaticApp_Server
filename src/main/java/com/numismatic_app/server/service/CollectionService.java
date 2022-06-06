@@ -85,11 +85,11 @@ public class CollectionService {
         }
 
         log.info("User "+user.getUsername()+" have collections:");
-        collectionEntities.forEach(col->{
+        collectionEntities.forEach(col->
 
-            log.info(col.getCollectionname());
+            log.info(col.getCollectionname())
 
-        });
+        );
 
 
         try {

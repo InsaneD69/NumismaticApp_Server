@@ -78,7 +78,7 @@ public class FindCoin {
 
                 if(period.compareData(year)){
 
-                    log.debug("Exist::Checking info about"+countryInformation.getNameCountry()+" period "+period);
+                    log.debug("Exist::Checking info about "+countryInformation.getNameCountry()+" period "+period);
 
                     if (period.getListOnePeriodCountry()==null){
 

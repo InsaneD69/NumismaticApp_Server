@@ -140,13 +140,13 @@ public class ParseController {
 
 
     @GetMapping("/price")
-    private ResponseEntity getCoinPrice(@RequestParam  String url, @RequestParam String lang){
+    private ResponseEntity getCoinPrice(@RequestParam  String url, @RequestParam String lang,@RequestParam String vid){
 
         try {
             IncomingLangValidator.checkExistLanguage(lang);
             Thread.currentThread().setName(lang);
 
-            return ResponseEntity.ok().body(parseService.getActualCoinCost(url));
+            return ResponseEntity.ok().body(parseService.getActualCoinCost(url+"&"+vid));
 
 
         } catch (LanguageNotExistException e) {
