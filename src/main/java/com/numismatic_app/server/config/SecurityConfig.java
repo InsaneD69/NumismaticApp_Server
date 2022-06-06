@@ -26,7 +26,7 @@ private AuthProviderImpl authProvider;
 
         http.authorizeRequests()
                 .antMatchers("/acc/new").anonymous()
-                .antMatchers("/search/countries","acc/login","collection/").authenticated()
+                .antMatchers("/search/countries","acc/login","collection/new,","collection/get").authenticated()
                 .and().csrf().disable()
                .logout()
                 .and().httpBasic();
