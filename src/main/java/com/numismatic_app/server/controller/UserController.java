@@ -8,8 +8,11 @@ import com.numismatic_app.server.exception.UserAlreadyExistException;
 import com.numismatic_app.server.service.ClientServiceImpl;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.BufferedReader;
 
 
  @RestController
@@ -26,6 +29,7 @@ public class UserController  {
     public ResponseEntity<String> registration(@RequestBody UserDto user){
 
 
+
        log.info("Процесс регистрация пользователя  "+user.getUsername());
         try {
             clientServiceImpl.registration(user);
@@ -34,7 +38,9 @@ public class UserController  {
         }
         catch (UserAlreadyExistException e){
 
-            return  ResponseEntity.status(205).body(e.getMessage());
+            log.info("пользователь с именем "+user.getUsername()+"уже существует");
+
+            return  ResponseEntity.status(201).contentType(MediaType.APPLICATION_JSON).body(e.getMessage());
         }
         catch(Exception e) {
 
@@ -48,7 +54,7 @@ public class UserController  {
     @GetMapping("/login")
     public ResponseEntity<String> logInAccount(){
 
-        return  ResponseEntity.status(200).body("упешная аунтефикация");
+        return  ResponseEntity.status(200).body("уcпешная аунтефикация");
 
     }
 
