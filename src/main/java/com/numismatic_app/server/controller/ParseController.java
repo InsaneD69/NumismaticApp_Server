@@ -68,7 +68,7 @@ public class ParseController {
 
                 IncomingDegreeValidator
                     .checkDegree(countryInfoDTO.getDegree());
-
+//egdrgder
 
 
             log.info("taken Get request /search/info:"+countryInfoDTO.getCountry()
