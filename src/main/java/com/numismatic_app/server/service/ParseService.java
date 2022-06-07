@@ -42,7 +42,9 @@ public class ParseService {
     public CountryInformation getInfoAboutCountry(String country,String lang) throws SiteConnectionError, IOException, ClassNotFoundException {
 
         try {
+
             return  CoinSearcher.getInfoAboutCountry(country,lang);
+
         } catch (SiteConnectionError  e) {
 
             log.error(e.getMessage());

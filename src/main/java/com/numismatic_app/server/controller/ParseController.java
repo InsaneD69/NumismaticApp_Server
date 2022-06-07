@@ -64,7 +64,7 @@ public class ParseController {
                         .checkExistLanguage(lang);
 
                 IncomingCountryValidator
-                        .checkExistCountry(countryInfoDTO.getCountry());
+                        .checkExistCountry(countryInfoDTO.getCountry(),lang);
 
                 IncomingDegreeValidator
                     .checkDegree(countryInfoDTO.getDegree());
@@ -117,7 +117,7 @@ public class ParseController {
                     parseService.getRequiredCoins(
                             searchInformation.getCountry()
                             ,searchInformation.getYear()
-                            ,val.validate(searchInformation)
+                            ,val.validate(searchInformation, lang)
                             ,lang
                     )
             );

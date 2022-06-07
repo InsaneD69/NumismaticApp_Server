@@ -20,11 +20,11 @@ public class IncomingSearcherValidator {
         return Optional.ofNullable(currenciesAndValues).orElse(new ArrayList<>(Arrays.asList("")));
     }
 
-    public   ArrayList<String> validate(SearchInformation searchInformation) throws CountryNotExistException, ServerException {
+    public   ArrayList<String> validate(SearchInformation searchInformation, String lang) throws CountryNotExistException, ServerException {
 
         try {
 
-            IncomingCountryValidator.checkExistCountry(searchInformation.getCountry());
+            IncomingCountryValidator.checkExistCountry(searchInformation.getCountry(), lang);
 
             IncomingSearcherValidator val = new IncomingSearcherValidator();
 

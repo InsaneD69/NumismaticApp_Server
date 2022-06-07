@@ -130,7 +130,6 @@ public class CoinSearcher {
         );
 
 
-
         if(file.length()!=0){
 
             log.info("exist data about "+country);

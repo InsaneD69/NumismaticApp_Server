@@ -18,7 +18,7 @@ public  class IncomingCountryValidator {
         throw new IllegalStateException("Utility class");
     }
 
-    public static void checkExistCountry(String country) throws CountryNotExistException, IOException, ClassNotFoundException {
+    public static void checkExistCountry(String country, String lang) throws CountryNotExistException, IOException, ClassNotFoundException {
 
 
             PropertyConnection property = new PropertyConnection(CoinSearcher.PATH_TO_UCOIN_PROPERTY);
@@ -26,7 +26,7 @@ public  class IncomingCountryValidator {
             File file = new File(new File("").getAbsolutePath() +
                     (property.open()
                             .getProperty("countriesList."
-                                    + Thread.currentThread().getName()))
+                                    + lang))
             );
 
             property.close();
