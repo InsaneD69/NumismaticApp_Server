@@ -68,14 +68,14 @@ public class ParseController {
 
                 IncomingDegreeValidator
                     .checkDegree(countryInfoDTO.getDegree());
-//egdrgder
+
 
 
             log.info("taken Get request /search/info:"+countryInfoDTO.getCountry()
                        +" given to thread  "+Thread.currentThread().getName()
                        +" id: "+Thread.currentThread().getId());
 
-//
+
             return ResponseEntity.ok().body(
                     CountryDenominationInfo.toModel(
                             parseService.getInfoAboutCountry(
@@ -83,7 +83,7 @@ public class ParseController {
                             )
                     )
             );
-//
+
         }
         catch (LanguageNotExistException | SiteConnectionError  e){
             return ResponseEntity.badRequest().body(e.getMessage());

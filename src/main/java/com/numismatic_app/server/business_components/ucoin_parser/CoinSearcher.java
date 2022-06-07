@@ -65,14 +65,14 @@ public class CoinSearcher {
 
     }
 
-    public static String getCountryLink(String requiredCountry) throws IOException, ClassNotFoundException {  //возвращает нужную часть http ссылки на определенную страну
+    public static String getCountryLink(String requiredCountry, String lang) throws IOException, ClassNotFoundException {  //возвращает нужную часть http ссылки на определенную страну
         // название стран для пользователей и их название в http ссылке отличается
 
         PropertyConnection property = new PropertyConnection(PATH_TO_UCOIN_PROPERTY);
 
         GetterInfo getParseInfo = new GetterInfo(new File("").getAbsolutePath()+
                 property.open().
-                        getProperty(PROP_MAIN_PAGE +Thread.currentThread().getName())
+                        getProperty(PROP_MAIN_PAGE +lang)
         );
         Document mainPage =Jsoup.parse(String.valueOf(getParseInfo.get()));
 
@@ -118,7 +118,7 @@ public class CoinSearcher {
 
     public static CountryInformation getInfoAboutCountry(String country, String lang) throws IOException, ClassNotFoundException, SiteConnectionError {
 
-        String partOfLinkCountry = getCountryLink(country); // получает часть ссылки на страну
+        String partOfLinkCountry = getCountryLink(country, lang); // получает часть ссылки на страну
         String correctCountryName = partOfLinkCountry.substring(18); // извлекает из ссылки название страны для http запрсов и более удобного сравнивания в html коде
 
         CountryInformation infoAboutCountry;
@@ -159,6 +159,7 @@ public class CoinSearcher {
             try {
                 infoAboutCountry=new CountryInformation(countryPeriods, country);
             } catch (SiteConnectionError e) {
+                log.error(e.getMessage());
                 throw new SiteConnectionError(e.getMessage());
             }
             saverParseInfo.save(infoAboutCountry);
