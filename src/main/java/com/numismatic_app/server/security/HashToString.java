@@ -13,4 +13,7 @@ public class HashToString {
         }
         return h;
     }
+
+    private HashToString() {
+    }
 }

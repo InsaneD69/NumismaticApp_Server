@@ -39,7 +39,7 @@ public class ParseService {
         return countryList;
 
     }
-    public CountryInformation getInfoAboutCountry(String country,String lang) throws SiteConnectionError, IOException, ClassNotFoundException {
+    public CountryInformation getInfoAboutCountry(String country,String lang) throws SiteConnectionError, ServerWorkException {
 
         try {
 
@@ -50,8 +50,11 @@ public class ParseService {
             log.error(e.getMessage());
             throw new SiteConnectionError(e.getMessage());
 
-        }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            throw new ServerWorkException(e.getMessage());
 
+        }
 
 
     }

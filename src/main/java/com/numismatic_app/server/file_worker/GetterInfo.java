@@ -1,7 +1,9 @@
 package com.numismatic_app.server.file_worker;
 
-import java.io.*;
+import lombok.extern.log4j.Log4j2;
 
+import java.io.*;
+@Log4j2
 public class GetterInfo {
     private File file;
     private FileInputStream fileInputStream;
@@ -13,6 +15,8 @@ public class GetterInfo {
         file =new File( filePath);
         fileInputStream =new FileInputStream(file);
         objectInputStream = new ObjectInputStream(fileInputStream);
+
+        log.info("open file: "+filePath);
 
     }
 

@@ -39,12 +39,14 @@ public class FindCoin {
 
     private Set<CoinDto> coins;
 
+    private String lang;
 
-    public FindCoin(CountryInformation countryInfo, ArrayList<Integer> year, ArrayList<String> corAndValue) throws IOException, ServerWorkException, SiteConnectionError {
+    public FindCoin(CountryInformation countryInfo, ArrayList<Integer> year, ArrayList<String> corAndValue, String lang) throws IOException, ServerWorkException, SiteConnectionError {
 
         this.years =year;
         this.corAndValue=corAndValue;
         this.countryInformation=countryInfo;
+        this.lang=lang;
         coins=new HashSet<>();
 
              findSuitablePeriods();
@@ -94,7 +96,7 @@ public class FindCoin {
 
                 if(period.getListOnePeriodCountry()==null){
 
-                     period.setCurrenciesAndNominalValues();
+                     period.setCurrenciesAndNominalValues(lang);
                 }
                 if(period.getCurrenciesAndNominalValues()==null){
 
@@ -344,6 +346,14 @@ public class FindCoin {
 
     public Set<CountryPeriod> getCountryPeriods() {
         return countryPeriods;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
     }
 
     public void setCountryPeriods(Set<CountryPeriod> countryPeriods) {

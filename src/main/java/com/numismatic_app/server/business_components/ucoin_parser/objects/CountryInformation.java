@@ -16,7 +16,7 @@ public class CountryInformation implements Serializable {                       
     private String nameCountry;
 
 
-    public CountryInformation(Elements countryPeriods, String country) throws IOException, SiteConnectionError {
+    public CountryInformation(Elements countryPeriods, String country, String lang) throws IOException, SiteConnectionError {
 
         this.nameCountry=country;
 
@@ -33,7 +33,7 @@ public class CountryInformation implements Serializable {                       
             for(CountryPeriod period:  periods){
 
                 if(requiredNumOfPeriodsInfo==0) break;
-                period.setCurrenciesAndNominalValues();
+                period.setCurrenciesAndNominalValues(lang);
                 requiredNumOfPeriodsInfo--;
 
             }

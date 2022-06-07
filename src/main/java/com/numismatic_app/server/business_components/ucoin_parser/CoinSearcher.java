@@ -102,11 +102,9 @@ public class CoinSearcher {
     public static ArrayList<CoinDto> getCoin(String country, ArrayList<Integer> year, ArrayList<String> curAndValue, String lang) throws IOException, ClassNotFoundException, SiteConnectionError, ServerWorkException {
 
         FindCoin findCoin = null;
-        try {
-            findCoin = new FindCoin(getInfoAboutCountry(country,lang),year,curAndValue);
-        } catch (SiteConnectionError e) {
-            throw new SiteConnectionError(e.getMessage());
-        }
+
+        findCoin = new FindCoin(getInfoAboutCountry(country,lang),year,curAndValue,lang);
+
 
         return new ArrayList<>(findCoin.getCoins());
 
@@ -124,13 +122,15 @@ public class CoinSearcher {
         CountryInformation infoAboutCountry;
         PropertyConnection property = new PropertyConnection(PATH_TO_UCOIN_PROPERTY);
 
+
         File file = new File(new File("").getAbsolutePath()
                 +property.open().getProperty("countriesInfo")
                 +country+"_"+lang+".txt"
         );
 
 
-        if(file.length()!=0){
+
+        if(file.length()!=0&&!file.isFile()){
 
             log.info("exist data about "+country);
             GetterInfo getParseInfo = new GetterInfo(file.getPath());
@@ -146,17 +146,21 @@ public class CoinSearcher {
                 property.open().
                         getProperty(PROP_MAIN_PAGE +lang)
         );
+
         Document mainPage =Jsoup.parse( String.valueOf(getParseInfo.get()));
+        log.info("successful get main page");
+
+        getParseInfo.close();
 
         Element htmlCountryPeriods = Optional.ofNullable(mainPage.selectFirst("[data-code="+correctCountryName+"]")).orElse(new Element("null")); // получает html код, внутри которого информация о периодах в запрашиваемой стране с ссылками
         Elements countryPeriods = htmlCountryPeriods.getElementsByAttributeValue(CLASS,"period");
 
-        SaverInfo saverParseInfo = new SaverInfo(file.getPath());
+        SaverInfo saverParseInfo = new SaverInfo(file.getAbsolutePath());
 
         if(countryPeriods!=null){
 
             try {
-                infoAboutCountry=new CountryInformation(countryPeriods, country);
+                infoAboutCountry=new CountryInformation(countryPeriods, country,lang);
             } catch (SiteConnectionError e) {
                 log.error(e.getMessage());
                 throw new SiteConnectionError(e.getMessage());

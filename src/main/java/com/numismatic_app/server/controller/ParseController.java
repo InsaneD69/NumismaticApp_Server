@@ -18,7 +18,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.*;
-
+import java.rmi.ServerException;
 
 
 @RestController
@@ -89,7 +89,7 @@ public class ParseController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         catch (Exception e){
-
+            e.printStackTrace();
             return ResponseEntity.status(500).body(ERROR);
 
         }
@@ -104,7 +104,7 @@ public class ParseController {
 
     @PutMapping()
 
-    public ResponseEntity<Object> findRequiredCoin(@RequestBody SearchInformation searchInformation, @RequestParam String lang) throws  IOException, ClassNotFoundException, CountryNotExistException {
+    public ResponseEntity<Object> findRequiredCoin(@RequestBody SearchInformation searchInformation, @RequestParam String lang)  {
 
 
         try {
@@ -123,18 +123,19 @@ public class ParseController {
             );
         }
         catch (LanguageNotExistException | CountryNotExistException | SiteConnectionError e){
-
+            log.info(e.getMessage());
             return  ResponseEntity.badRequest().body(e.getMessage());
 
         } catch (ServerWorkException e) {
+            log.info(e.getMessage());
             return  ResponseEntity.status(500).body(e.getMessage());
+
+        } catch (IOException |  ClassNotFoundException e) {
+
+            e.printStackTrace();
+
+            return  ResponseEntity.status(500).body("Server error");
         }
-        catch (Exception e ){
-
-           return  ResponseEntity.status(500).body(ERROR);
-
-        }
-
 
 
     }

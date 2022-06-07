@@ -52,7 +52,7 @@ public class CountryPeriod implements Serializable { // содержит в се
         return nominalValues;
     }
 
-    public void setCurrenciesAndNominalValues() throws IOException, SiteConnectionError { //излекает из html таблицы значения номиналов и валют в данном периоде
+    public void setCurrenciesAndNominalValues(String lang) throws IOException, SiteConnectionError { //излекает из html таблицы значения номиналов и валют в данном периоде
 
         //если на странице с таблицей ссылка указаеная не с type=1, то это означает, что таблица на этой странице не с монетами регулярного выпуска
 
@@ -61,7 +61,7 @@ public class CountryPeriod implements Serializable { // содержит в се
 
        try {
            periodTablePage = UcoinConnection.getUcoinPage(property.open()
-                   .getProperty("link." + Thread.currentThread().getName())
+                   .getProperty("link." + lang)
                    + link);
        } catch (SiteConnectionError e) {
 
