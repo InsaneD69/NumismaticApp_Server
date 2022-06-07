@@ -9,6 +9,7 @@ import com.numismatic_app.server.exception.DataStorageException;
 
 import com.numismatic_app.server.repository.CollectionRepo;
 import com.numismatic_app.server.repository.UserRepo;
+import com.numismatic_app.server.security.HashToString;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,13 @@ public class CollectionService {
         collectionEntity.setCollectionname(collection.getNameCollection());
 
         String hashPlace=String.valueOf(
-                                (user.getUsername()+collection.getNameCollection()).hashCode()
+                HashToString.convert(
+                         Base64.getEncoder()
+                                   .encode(
+                                         (user.getUsername()+collection.getNameCollection())
+                                                   .getBytes(StandardCharsets.UTF_8)
+                                   )
+                )
         );
         collectionEntity.setUser(user);
         collectionEntity.setPlacehash(hashPlace);
