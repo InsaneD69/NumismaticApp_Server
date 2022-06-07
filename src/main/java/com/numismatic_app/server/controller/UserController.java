@@ -15,16 +15,22 @@ import org.springframework.web.bind.annotation.*;
 import java.io.BufferedReader;
 
 
+ /**
+  * Обрабатывает запросы, связанные с аккаунтами пользователей
+  */
  @RestController
 @RequestMapping("/acc")
 @Log4j2
 public class UserController  {
 
-
     @Autowired
     private ClientServiceImpl clientServiceImpl;
 
-
+     /** Метод обрабатывает запросы пользователей по пути /acc/new на регистрацию нового аккаунта
+      * @param user Содержит в себе данные пользователя, необходимые для регистрации
+      *             {@link UserDto}
+      * @return Возвращает ответ: успешно ли прошла регистрация
+      */
     @PostMapping("/new")
     public ResponseEntity<String> registration(@RequestBody UserDto user){
 
@@ -51,6 +57,9 @@ public class UserController  {
 
     }
 
+     /** Обрататывает запросs пользователей по пути /acc/login на аутентификацию
+      * @return Возвращает ответ об успешности аутентификации
+      */
     @GetMapping("/login")
     public ResponseEntity<String> logInAccount(){
 

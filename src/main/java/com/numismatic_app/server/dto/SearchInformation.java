@@ -10,7 +10,7 @@ public class SearchInformation implements Serializable {
     private ArrayList<Integer> year;
     private ArrayList<String> value;
     private ArrayList<String> currency;
-    private ArrayList<String> mint;
+
 
 
     public String getCountry() {
@@ -42,12 +42,7 @@ public class SearchInformation implements Serializable {
 
 
 
-    public ArrayList<String> getMint() {
 
-        ArrayList<String> el = new ArrayList<>();
-        el.add("");
-        return Optional.ofNullable(mint).orElse(el);
-    }
 
     public void setYear(ArrayList<Integer> year) {
         this.year = year;
@@ -61,9 +56,7 @@ public class SearchInformation implements Serializable {
         this.currency = currency;
     }
 
-    public void setMint(ArrayList<String> mint) {
-        this.mint = mint;
-    }
+
 
     public SearchInformation(){
         //Do nothing
@@ -78,7 +71,6 @@ public class SearchInformation implements Serializable {
                 ", year=" + year +
                 ", value=" + value +
                 ", currency=" + currency +
-                ", mint=" + mint +
                 '}';
     }
 }

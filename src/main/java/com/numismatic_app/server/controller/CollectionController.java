@@ -11,23 +11,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Обслуживает запросы, связанные с коллекциями пользователей
+ */
 @RestController
 @RequestMapping("/collection")
 public class CollectionController {
 
-
-
     @Autowired
-    private CollectionService service;
+    private CollectionService collectionService;
 
 
-
-
+    /** Обрабатывает запросы клиентов по пути /collection/postcollection
+     * , сохраняет коллекцию пользователя в его аккаунт
+     * @param collectionDTO Колекция, которую нужно сохранить
+     * @return Положительный или отрицателдный ответ
+     */
     @PostMapping("/postcollection")
    public ResponseEntity<String> createNewCollection(@RequestBody CollectionDTO collectionDTO){
 
         try {
-            service.createCollection(collectionDTO
+            collectionService.createCollection(collectionDTO
                     ,(UserEntity)SecurityContextHolder.getContext().getAuthentication().getPrincipal());
            return ResponseEntity.ok().body("ok");
         } catch (DataStorageException e) {
@@ -37,38 +41,36 @@ public class CollectionController {
     }
 
 
+    /** Обрабатывает запросы клиентов по пути /collection/get на получение его коллеций на аккаунте
+     * @return Возвращает список из коллекций {@link CollectionDTO}
+     */
+   @GetMapping("/get")
+   public ResponseEntity<Object> getCollection() {
 
-
-    @GetMapping("/get")
-    public ResponseEntity<Object> getCollection()
-
-        {
-
-        try{
-            return  ResponseEntity.ok(
-                    service
+        try {
+            return ResponseEntity.ok(
+                    collectionService
                             .getCollections(
-                                    ((UserEntity)SecurityContextHolder.getContext().getAuthentication().getPrincipal()
+                                    ((UserEntity) SecurityContextHolder
+                                            .getContext()
+                                            .getAuthentication()
+                                            .getPrincipal()
                                     )
 
                             )
             );
 
-        }  catch (CollectionNotFoundException e) {
+        } catch (CollectionNotFoundException e) {
 
-            return  ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
 
         } catch (DataStorageException e) {
-            return  ResponseEntity.status(500).body(e.getMessage());
-        }
-        catch (Exception e){
-            return  ResponseEntity.status(500).build();
+            return ResponseEntity.status(500).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
 
         }
 
-
-        }
-
-
+   }
 
 }

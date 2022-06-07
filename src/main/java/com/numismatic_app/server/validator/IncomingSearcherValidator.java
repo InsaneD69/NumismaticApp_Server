@@ -1,12 +1,8 @@
 package com.numismatic_app.server.validator;
 
 import com.numismatic_app.server.dto.SearchInformation;
-import com.numismatic_app.server.entity.UserEntity;
 import com.numismatic_app.server.exception.CountryNotExistException;
-import com.numismatic_app.server.exception.LanguageNotExistException;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import java.io.IOException;
 import java.rmi.ServerException;
 import java.util.*;
@@ -14,24 +10,26 @@ import java.util.*;
 @Log4j2
 public class IncomingSearcherValidator {
 
+
+
+    private String lang;
     private  ArrayList<String> currenciesAndValues=new ArrayList<>();
 
-    public ArrayList<String> getCurrenciesAndValues() {
-        return Optional.ofNullable(currenciesAndValues).orElse(new ArrayList<>(Arrays.asList("")));
+    public IncomingSearcherValidator(String lang) {
+        this.lang=lang;
     }
 
-    public   ArrayList<String> validate(SearchInformation searchInformation, String lang) throws CountryNotExistException, ServerException {
+    public   ArrayList<String> validate(SearchInformation searchInformation) throws CountryNotExistException, ServerException {
 
         try {
 
             IncomingCountryValidator.checkExistCountry(searchInformation.getCountry(), lang);
 
-            IncomingSearcherValidator val = new IncomingSearcherValidator();
 
-            val.validateCurrenciesAndValues(searchInformation);
+            validateCurrenciesAndValues(searchInformation);
 
 
-            return val.getCurrenciesAndValues();
+            return getCurrenciesAndValues();
 
         }  catch (CountryNotExistException e) {
            throw new CountryNotExistException(e.getMessage());
@@ -67,6 +65,19 @@ public class IncomingSearcherValidator {
 
     }
 
+    public String getLang() {
+        return lang;
+    }
 
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
 
+    public ArrayList<String> getCurrenciesAndValues() {
+        return Optional.ofNullable(currenciesAndValues).orElse(new ArrayList<>(Arrays.asList("")));
+    }
+
+    public void setCurrenciesAndValues(ArrayList<String> currenciesAndValues) {
+        this.currenciesAndValues = currenciesAndValues;
+    }
 }

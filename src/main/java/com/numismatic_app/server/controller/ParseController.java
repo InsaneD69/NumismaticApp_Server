@@ -8,7 +8,6 @@ import com.numismatic_app.server.exception.LanguageNotExistException;
 import com.numismatic_app.server.exception.ServerWorkException;
 import com.numismatic_app.server.service.ParseService;
 import com.numismatic_app.server.validator.IncomingCountryValidator;
-import com.numismatic_app.server.validator.IncomingDegreeValidator;
 import com.numismatic_app.server.validator.IncomingSearcherValidator;
 import com.numismatic_app.server.validator.IncomingLangValidator;
 import com.numismatic_app.server.exception.SiteConnectionError;
@@ -18,9 +17,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.*;
-import java.rmi.ServerException;
 
 
+/**
+ * Обрабатывает запросы клиента, связанные с поиском монет
+ */
 @RestController
 @RequestMapping("/search")
 @Log4j2
@@ -32,6 +33,10 @@ public class ParseController {
     private ParseService parseService;
 
 
+    /**
+     * @param lang Указывает аббревиатуру языка, на котором требуется отве
+     * @return Возвращает список стран
+     */
     @GetMapping("/countries")
     public ResponseEntity<Object> getCountries(@RequestParam String lang)  {
 
@@ -56,6 +61,14 @@ public class ParseController {
 
     }
 
+    /** Обрабатывает запросы клиента по пути /search/info, получает номиналы и
+     * валюты определенной страны
+     *
+     * @param countryInfoDTO Содержит в себе поля, необходимые для получения списка
+     *   валют и номиналов{@link CountryInfoDTO}
+     * @param lang  Указывает аббревиатуру языка, на котором требуется ответ
+     * @return Возвращает объект класса {@link CountryDenominationInfo} или ошибку
+     */
     @PutMapping("/info")
     public ResponseEntity<Object> parseIncomingInfo(@RequestBody CountryInfoDTO countryInfoDTO, @RequestParam String lang)  {
 
@@ -65,11 +78,6 @@ public class ParseController {
 
                 IncomingCountryValidator
                         .checkExistCountry(countryInfoDTO.getCountry(),lang);
-
-                IncomingDegreeValidator
-                    .checkDegree(countryInfoDTO.getDegree());
-
-
 
             log.info("taken Get request /search/info:"+countryInfoDTO.getCountry()
                        +" given to thread  "+Thread.currentThread().getName()
@@ -102,22 +110,27 @@ public class ParseController {
 
     }
 
+    /** Обрабатывает запросы клиента по пути /search/ и получет монеты по заданным критериям
+     * @param searchInformation Содержит поля класса {@link SearchInformation},
+     *                          которые необходимы для поиска монет
+     * @param lang Указывает аббревиатуру языка, на котором требуется ответ
+     * @return Возвращает список монет (объекты класса {@link com.numismatic_app.server.dto.CoinDto})
+     */
     @PutMapping()
-
-    public ResponseEntity<Object> findRequiredCoin(@RequestBody SearchInformation searchInformation, @RequestParam String lang)  {
+    public ResponseEntity<Object> findRequiredCoins(@RequestBody SearchInformation searchInformation, @RequestParam String lang)  {
 
 
         try {
 
             IncomingLangValidator.checkExistLanguage(lang);
 
-            IncomingSearcherValidator val=new IncomingSearcherValidator();
+            IncomingSearcherValidator val=new IncomingSearcherValidator(lang);
 
             return ResponseEntity.ok().body(
                     parseService.getRequiredCoins(
-                            searchInformation.getCountry()
+                             searchInformation.getCountry()
                             ,searchInformation.getYear()
-                            ,val.validate(searchInformation, lang)
+                            ,val.validate(searchInformation)
                             ,lang
                     )
             );
@@ -141,15 +154,20 @@ public class ParseController {
     }
 
 
+    /** Обрабатывает запросы клиента по пути /search/price и получает цену на монету
+     * @param url Часть сслыки на монету (например:/coin/russia-10-kopeks-2008/?cid=1981&vid=380)
+     * @param lang Указывает аббревиатуру языка, на котором требуется ответ
+     * @param vid Также часть ссылки на моненту, но может отсутствовать
+     * @return Возвращает цену запрашиваемой монеты в String формате
+     */
     @GetMapping("/price")
     public ResponseEntity<String> getCoinPrice(@RequestParam  String url, @RequestParam String lang,@Param("vid") String vid){
 
         try {
+
             IncomingLangValidator.checkExistLanguage(lang);
 
-
             return ResponseEntity.ok().body(parseService.getActualCoinCost(url,vid,lang));
-
 
         } catch (LanguageNotExistException | SiteConnectionError e) {
 
@@ -160,8 +178,6 @@ public class ParseController {
             return ResponseEntity.status(500).body(ERROR);
         }
 
-
     }
-
 
 }
