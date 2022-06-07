@@ -35,18 +35,12 @@ public class CollectionService {
     public void createCollection(CollectionDTO collection, UserEntity user) throws DataStorageException {
 
 
-
-
         CollectionEntity collectionEntity = new CollectionEntity();
 
         collectionEntity.setCollectionname(collection.getNameCollection());
 
         String hashPlace=String.valueOf(
-                Base64.getEncoder()
-                        .encode(
-                                (user.getUsername()+collection.getNameCollection())
-                                        .getBytes(StandardCharsets.UTF_8)
-                        )
+                                (user.getUsername()+collection.getNameCollection()).hashCode()
         );
         collectionEntity.setUser(user);
         collectionEntity.setPlacehash(hashPlace);

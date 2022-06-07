@@ -39,10 +39,10 @@ public class ParseService {
         return countryList;
 
     }
-    public CountryInformation getInfoAboutCountry(String country) throws SiteConnectionError, IOException, ClassNotFoundException {
+    public CountryInformation getInfoAboutCountry(String country,String lang) throws SiteConnectionError, IOException, ClassNotFoundException {
 
         try {
-            return  CoinSearcher.getInfoAboutCountry(country);
+            return  CoinSearcher.getInfoAboutCountry(country,lang);
         } catch (SiteConnectionError  e) {
 
             throw new SiteConnectionError(e.getMessage());
@@ -53,11 +53,11 @@ public class ParseService {
 
     }
 
-    public Object getRequiredCoins(String country, ArrayList<Integer> year, ArrayList<String> curAndVal ) throws IOException, ClassNotFoundException, SiteConnectionError, ServerWorkException {
+    public Object getRequiredCoins(String country, ArrayList<Integer> year, ArrayList<String> curAndVal ,String lang) throws IOException, ClassNotFoundException, SiteConnectionError, ServerWorkException {
 
 
         log.info("curAndVal: "+curAndVal);
-        ArrayList<CoinDto> coinDtos = CoinSearcher.getCoin(country,year,curAndVal);
+        ArrayList<CoinDto> coinDtos = CoinSearcher.getCoin(country,year,curAndVal,lang);
 
         if(coinDtos.isEmpty()){
 

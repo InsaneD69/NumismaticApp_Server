@@ -99,11 +99,11 @@ public class CoinSearcher {
     }
 
 
-    public static ArrayList<CoinDto> getCoin(String country, ArrayList<Integer> year, ArrayList<String> curAndValue) throws IOException, ClassNotFoundException, SiteConnectionError, ServerWorkException {
+    public static ArrayList<CoinDto> getCoin(String country, ArrayList<Integer> year, ArrayList<String> curAndValue, String lang) throws IOException, ClassNotFoundException, SiteConnectionError, ServerWorkException {
 
         FindCoin findCoin = null;
         try {
-            findCoin = new FindCoin(getInfoAboutCountry(country),year,curAndValue);
+            findCoin = new FindCoin(getInfoAboutCountry(country,lang),year,curAndValue);
         } catch (SiteConnectionError e) {
             throw new SiteConnectionError(e.getMessage());
         }
@@ -116,7 +116,7 @@ public class CoinSearcher {
 
 
 
-    public static CountryInformation getInfoAboutCountry(String country) throws IOException, ClassNotFoundException, SiteConnectionError {
+    public static CountryInformation getInfoAboutCountry(String country, String lang) throws IOException, ClassNotFoundException, SiteConnectionError {
 
         String partOfLinkCountry = getCountryLink(country); // получает часть ссылки на страну
         String correctCountryName = partOfLinkCountry.substring(18); // извлекает из ссылки название страны для http запрсов и более удобного сравнивания в html коде
@@ -126,7 +126,7 @@ public class CoinSearcher {
 
         File file = new File(new File("").getAbsolutePath()
                 +property.open().getProperty("countriesInfo")
-                +country+"_"+Thread.currentThread().getName()+".txt"
+                +country+"_"+lang+".txt"
         );
 
 
@@ -145,7 +145,7 @@ public class CoinSearcher {
 
         GetterInfo getParseInfo = new GetterInfo( new File("").getAbsolutePath()+
                 property.open().
-                        getProperty(PROP_MAIN_PAGE +Thread.currentThread().getName())
+                        getProperty(PROP_MAIN_PAGE +lang)
         );
         Document mainPage =Jsoup.parse( String.valueOf(getParseInfo.get()));
 

@@ -63,7 +63,6 @@ public class ParseController {
                 IncomingLangValidator
                         .checkExistLanguage(lang);
 
-                 Thread.currentThread().setName(lang);
                 IncomingCountryValidator
                         .checkExistCountry(countryInfoDTO.getCountry());
 
@@ -80,7 +79,7 @@ public class ParseController {
             return ResponseEntity.ok().body(
                     CountryDenominationInfo.toModel(
                             parseService.getInfoAboutCountry(
-                                    countryInfoDTO.getCountry()
+                                    countryInfoDTO.getCountry(),lang
                             )
                     )
             );
@@ -119,6 +118,7 @@ public class ParseController {
                             searchInformation.getCountry()
                             ,searchInformation.getYear()
                             ,val.validate(searchInformation)
+                            ,lang
                     )
             );
         }
