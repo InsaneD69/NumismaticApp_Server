@@ -38,9 +38,9 @@ public class ParseController {
         try {
             IncomingLangValidator.checkExistLanguage(lang);
 
-            Thread.currentThread().setName(lang);
+
             log.info("taken Get request /search/countries: given to thread  "+Thread.currentThread().getName()+" id: "+Thread.currentThread().getId());
-            return ResponseEntity.ok().body(parseService.getCountryList());
+            return ResponseEntity.ok().body(parseService.getCountryList(lang));
         }
         catch (LanguageNotExistException e){
 
@@ -110,7 +110,7 @@ public class ParseController {
         try {
 
             IncomingLangValidator.checkExistLanguage(lang);
-            Thread.currentThread().setName(lang);
+
             IncomingSearcherValidator val=new IncomingSearcherValidator();
 
             return ResponseEntity.ok().body(
@@ -146,9 +146,9 @@ public class ParseController {
 
         try {
             IncomingLangValidator.checkExistLanguage(lang);
-            Thread.currentThread().setName(lang);
 
-            return ResponseEntity.ok().body(parseService.getActualCoinCost(url,vid));
+
+            return ResponseEntity.ok().body(parseService.getActualCoinCost(url,vid,lang));
 
 
         } catch (LanguageNotExistException | SiteConnectionError e) {

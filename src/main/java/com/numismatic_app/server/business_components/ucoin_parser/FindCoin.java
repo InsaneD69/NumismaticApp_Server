@@ -119,7 +119,7 @@ public class FindCoin {
                     new File("").getAbsolutePath()+
                             property.open().getProperty("countriesInfo")
                             +countryInformation.getNameCountry()
-                            +"_"+Thread.currentThread().getName()+".txt"
+                            +"_"+lang+".txt"
             );
 
             saverParseInfo.save(countryInformation);
@@ -190,7 +190,7 @@ public class FindCoin {
 
         Document doc ;
         try {
-            doc = UcoinConnection.getUcoinPage(property.open().getProperty("link."+Thread.currentThread().getName())+url);
+            doc = UcoinConnection.getUcoinPage(property.open().getProperty("link."+lang)+url);
 
         } catch (SiteConnectionError e) {
            throw new SiteConnectionError(e.getMessage());
@@ -259,7 +259,7 @@ public class FindCoin {
 
         Document doc = null;
         try {
-            doc = UcoinConnection.getUcoinPage(property.open().getProperty("link."+Thread.currentThread().getName())+url);
+            doc = UcoinConnection.getUcoinPage(property.open().getProperty("link."+lang)+url);
         } catch (SiteConnectionError e) {
             throw new SiteConnectionError(e.getMessage());
         }finally {

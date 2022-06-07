@@ -22,12 +22,12 @@ import java.util.concurrent.TimeUnit;
 public class ParseService {
 
 
-    public ArrayList<String> getCountryList() throws IOException, ClassNotFoundException {
+    public ArrayList<String> getCountryList(String lang) throws IOException, ClassNotFoundException {
 
         log.info("taken list of country: given to "+Thread.currentThread().getName()+" id: "+Thread.currentThread().getId());
 
         PropertyConnection property=new PropertyConnection(CoinSearcher.PATH_TO_UCOIN_PROPERTY);
-        GetterInfo getParseInfo = new GetterInfo(new File("").getAbsolutePath()+property.open().getProperty("countriesList."+Thread.currentThread().getName()));
+        GetterInfo getParseInfo = new GetterInfo(new File("").getAbsolutePath()+property.open().getProperty("countriesList."+lang));
 
         property.close();
 
@@ -35,7 +35,7 @@ public class ParseService {
 
        getParseInfo.close();
 
-        log.info("sending countryList"+Thread.currentThread().getName()+" starting with\n"+countryList.get(0));
+        log.info("sending countryList "+lang+" starting with\n"+countryList.get(0));
         return countryList;
 
     }
@@ -76,13 +76,13 @@ public class ParseService {
 
 
 
-    public String getActualCoinCost(String partOfCoinUrl, String vid) throws IOException, SiteConnectionError {
+    public String getActualCoinCost(String partOfCoinUrl, String vid,String lang) throws IOException, SiteConnectionError {
 
         PropertyConnection prop = new PropertyConnection(CoinSearcher.PATH_TO_UCOIN_PROPERTY);
 
 
 
-        String coinUrl = prop.open().getProperty("link."+Thread.currentThread().getName())+"/"+partOfCoinUrl+"&vid="+ Optional.ofNullable(vid).orElse("");
+        String coinUrl = prop.open().getProperty("link."+lang)+"/"+partOfCoinUrl+"&vid="+ Optional.ofNullable(vid).orElse("");
 
         return   CoinSearcher.getCoinCostFromUcoin(coinUrl);
 
