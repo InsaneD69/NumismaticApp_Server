@@ -54,7 +54,7 @@ public class UserController  {
     @GetMapping("/login")
     public ResponseEntity<String> logInAccount(){
 
-        return  ResponseEntity.status(200).body("уcпешная аунтефикация");
+        return  ResponseEntity.status(200).body("успешная аутентификация");
 
     }
 
