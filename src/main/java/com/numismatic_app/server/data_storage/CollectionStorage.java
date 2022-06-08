@@ -1,9 +1,9 @@
 package com.numismatic_app.server.data_storage;
 
-import com.numismatic_app.server.config.file_worker.PropertyConnection;
+import com.numismatic_app.server.controller.file_worker.PropertyConnection;
 import com.numismatic_app.server.dto.CollectionDTO;
 import com.numismatic_app.server.exception.DataStorageException;
-import com.numismatic_app.server.config.file_worker.SaverInfo;
+import com.numismatic_app.server.controller.file_worker.SaverInfo;
 
 import java.io.*;
 import java.util.concurrent.Semaphore;

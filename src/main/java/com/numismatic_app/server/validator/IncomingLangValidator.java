@@ -1,6 +1,6 @@
 package com.numismatic_app.server.validator;
 
-import com.numismatic_app.server.config.file_worker.PropertyConnection;
+import com.numismatic_app.server.controller.file_worker.PropertyConnection;
 import com.numismatic_app.server.exception.LanguageNotExistException;
 import com.numismatic_app.server.business_components.ucoin_parser.CoinSearcher;
 

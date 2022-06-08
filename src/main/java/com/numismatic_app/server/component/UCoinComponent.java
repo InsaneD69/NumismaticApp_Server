@@ -2,9 +2,9 @@ package com.numismatic_app.server.component;
 
 
 import com.numismatic_app.server.business_components.ucoin_parser.CoinSearcher;
-import com.numismatic_app.server.config.file_worker.PropertyConnection;
+import com.numismatic_app.server.controller.file_worker.PropertyConnection;
 import com.numismatic_app.server.exception.SiteConnectionError;
-import com.numismatic_app.server.config.file_worker.SaverInfo;
+import com.numismatic_app.server.controller.file_worker.SaverInfo;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
