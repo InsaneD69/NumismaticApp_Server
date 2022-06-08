@@ -1,7 +1,7 @@
 package com.numismatic_app.server.validator;
 
-import com.numismatic_app.server.controller.file_worker.GetterInfo;
-import com.numismatic_app.server.controller.file_worker.PropertyConnection;
+import com.numismatic_app.server.file_worker.GetterInfo;
+import com.numismatic_app.server.file_worker.PropertyConnection;
 import com.numismatic_app.server.exception.CountryNotExistException;
 import com.numismatic_app.server.business_components.ucoin_parser.CoinSearcher;
 import lombok.extern.log4j.Log4j2;

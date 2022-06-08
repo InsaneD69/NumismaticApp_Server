@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -44,6 +45,7 @@ public class CollectionService {
      */
     public void saveCollectionToAcc(CollectionDTO collection, UserEntity user, String newOrUpdate) throws DataStorageException, CollectionNameAlreadyIsExist {
 
+        CollectionEntity collectionEntity=null;
         if(newOrUpdate.equals("new")){
               for( CollectionEntity col: user.getCollection()){
                   if(col.getCollectionname().equals(collection.getNameCollection())){
@@ -52,24 +54,27 @@ public class CollectionService {
                   }
 
              }
+
+            collectionEntity = new CollectionEntity();
+            collectionEntity.setCollectionname(collection.getNameCollection());
+            collectionEntity.setUser(user);
+            collectionEntity.setPlacehash(getHashPlace(
+                     user.getUsername()
+                    ,collection.getNameCollection()
+                    )
+            );
+
+            collectionRepo.save(collectionEntity);
         }
-        CollectionEntity collectionEntity = new CollectionEntity();
 
-        collectionEntity.setCollectionname(collection.getNameCollection());
 
-        String hashPlace= HashToString.convert(
-                            Base64.getEncoder().encode(
-                                           (user.getUsername()+collection.getNameCollection())
-                                                      .getBytes(StandardCharsets.UTF_8)
-                                       )
-        );
 
-        collectionEntity.setUser(user);
-        collectionEntity.setPlacehash(hashPlace);
-        collectionRepo.save(collectionEntity);
+
 
         try {
-            CollectionStorage.saveData(collection,hashPlace);
+            CollectionStorage.saveData(collection,
+                    Optional.ofNullable(Optional.ofNullable(collectionEntity).get().getPlacehash())
+                            .orElse(getHashPlace(user.getUsername(),collection.getNameCollection())));
         } catch (DataStorageException e) {
 
             throw new DataStorageException(e.getMessage());
@@ -151,4 +156,13 @@ public class CollectionService {
     }
 
 
+    private String getHashPlace(String userName, String collectionName){
+         return HashToString.convert(
+                Base64.getEncoder().encode(
+                        (userName+collectionName)
+                                .getBytes(StandardCharsets.UTF_8)
+                )
+        );
+
+    }
 }

@@ -1,4 +1,4 @@
-package com.numismatic_app.server.controller.file_worker;
+package com.numismatic_app.server.file_worker;
 
 import java.io.*;
 

@@ -2,11 +2,11 @@ package com.numismatic_app.server.business_components.ucoin_parser;
 
 import com.numismatic_app.server.business_components.ucoin_parser.objects.CountryInformation;
 import com.numismatic_app.server.exception.ServerWorkException;
-import com.numismatic_app.server.controller.file_worker.GetterInfo;
-import com.numismatic_app.server.controller.file_worker.PropertyConnection;
+import com.numismatic_app.server.file_worker.GetterInfo;
+import com.numismatic_app.server.file_worker.PropertyConnection;
 import com.numismatic_app.server.dto.CoinDto;
 import com.numismatic_app.server.exception.SiteConnectionError;
-import com.numismatic_app.server.controller.file_worker.SaverInfo;
+import com.numismatic_app.server.file_worker.SaverInfo;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;

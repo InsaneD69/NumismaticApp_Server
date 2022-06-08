@@ -4,10 +4,10 @@ import com.numismatic_app.server.business_components.ucoin_parser.objects.Countr
 import com.numismatic_app.server.business_components.ucoin_parser.objects.CountryPeriod;
 import com.numismatic_app.server.business_components.ucoin_parser.objects.LiteCoin;
 import com.numismatic_app.server.exception.ServerWorkException;
-import com.numismatic_app.server.controller.file_worker.PropertyConnection;
+import com.numismatic_app.server.file_worker.PropertyConnection;
 import com.numismatic_app.server.dto.CoinDto;
 import com.numismatic_app.server.exception.SiteConnectionError;
-import com.numismatic_app.server.controller.file_worker.SaverInfo;
+import com.numismatic_app.server.file_worker.SaverInfo;
 import lombok.extern.log4j.Log4j2;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
