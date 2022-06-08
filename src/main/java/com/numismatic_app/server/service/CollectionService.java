@@ -45,8 +45,12 @@ public class CollectionService {
      */
     public void saveCollectionToAcc(CollectionDTO collection, UserEntity user, String newOrUpdate) throws DataStorageException, CollectionNameAlreadyIsExist {
 
-        CollectionEntity collectionEntity=null;
+
+
+        String hashPlace="";
+
         if(newOrUpdate.equals("new")){
+
               for( CollectionEntity col: user.getCollection()){
                   if(col.getCollectionname().equals(collection.getNameCollection())){
 
@@ -55,7 +59,7 @@ public class CollectionService {
 
              }
 
-            collectionEntity = new CollectionEntity();
+            CollectionEntity  collectionEntity = new CollectionEntity();
             collectionEntity.setCollectionname(collection.getNameCollection());
             collectionEntity.setUser(user);
             collectionEntity.setPlacehash(getHashPlace(
@@ -63,8 +67,12 @@ public class CollectionService {
                     ,collection.getNameCollection()
                     )
             );
+            hashPlace =collectionEntity.getPlacehash();
 
             collectionRepo.save(collectionEntity);
+        }
+        else if(newOrUpdate.equals("update")){
+            hashPlace =getHashPlace(user.getUsername(),collection.getNameCollection());
         }
 
 
@@ -72,9 +80,7 @@ public class CollectionService {
 
 
         try {
-            CollectionStorage.saveData(collection,
-                    Optional.ofNullable(Optional.ofNullable(collectionEntity).get().getPlacehash())
-                            .orElse(getHashPlace(user.getUsername(),collection.getNameCollection())));
+            CollectionStorage.saveData(collection,hashPlace);
         } catch (DataStorageException e) {
 
             throw new DataStorageException(e.getMessage());
