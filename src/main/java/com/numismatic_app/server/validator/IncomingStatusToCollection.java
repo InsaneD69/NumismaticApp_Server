@@ -10,7 +10,7 @@ public class IncomingStatusToCollection {
 
     public static void checkStatus(String status) throws CollectionStatusException {
 
-        if(status.equals("new")||status.equals("update")){
+        if(!(status.equals("new")||status.equals("update"))){
 
             throw new CollectionStatusException("exteds new or update status");
         }

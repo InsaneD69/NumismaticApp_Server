@@ -1,7 +1,7 @@
 package com.numismatic_app.server.business_components.ucoin_parser.objects;
 
 import com.numismatic_app.server.business_components.ucoin_parser.UcoinConnection;
-import com.numismatic_app.server.file_worker.PropertyConnection;
+import com.numismatic_app.server.config.file_worker.PropertyConnection;
 import com.numismatic_app.server.exception.SiteConnectionError;
 import lombok.extern.log4j.Log4j2;
 import org.jsoup.nodes.Document;

@@ -16,7 +16,9 @@ public class IncomingSearcherValidator {
     private  ArrayList<String> currenciesAndValues=new ArrayList<>();
 
     public IncomingSearcherValidator(String lang) {
+
         this.lang=lang;
+
     }
 
     public   ArrayList<String> validate(SearchInformation searchInformation) throws CountryNotExistException, ServerException {

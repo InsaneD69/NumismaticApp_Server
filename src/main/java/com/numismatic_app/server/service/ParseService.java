@@ -1,10 +1,10 @@
 package com.numismatic_app.server.service;
 
 import com.numismatic_app.server.exception.ServerWorkException;
-import com.numismatic_app.server.file_worker.PropertyConnection;
+import com.numismatic_app.server.config.file_worker.PropertyConnection;
 import com.numismatic_app.server.business_components.ucoin_parser.CoinSearcher;
 import com.numismatic_app.server.business_components.ucoin_parser.objects.CountryInformation;
-import com.numismatic_app.server.file_worker.GetterInfo;
+import com.numismatic_app.server.config.file_worker.GetterInfo;
 import com.numismatic_app.server.dto.CoinDto;
 import com.numismatic_app.server.exception.SiteConnectionError;
 import lombok.extern.log4j.Log4j2;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Реализует общение с бизнес-компонентами

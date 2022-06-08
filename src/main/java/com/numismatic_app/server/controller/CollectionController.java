@@ -28,6 +28,7 @@ public class CollectionController {
     /** Обрабатывает запросы клиентов по пути /collection/postcollection
      * , сохраняет коллекцию пользователя в его аккаунт
      * @param collectionDTO Колекция, которую нужно сохранить
+     * "
      * @return Положительный или отрицательный ответ
      */
     @PostMapping("/postcollection")

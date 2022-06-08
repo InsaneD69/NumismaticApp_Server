@@ -1,7 +1,7 @@
 package com.numismatic_app.server.validator;
 
-import com.numismatic_app.server.file_worker.GetterInfo;
-import com.numismatic_app.server.file_worker.PropertyConnection;
+import com.numismatic_app.server.config.file_worker.GetterInfo;
+import com.numismatic_app.server.config.file_worker.PropertyConnection;
 import com.numismatic_app.server.exception.CountryNotExistException;
 import com.numismatic_app.server.business_components.ucoin_parser.CoinSearcher;
 import lombok.extern.log4j.Log4j2;
@@ -10,6 +10,9 @@ import java.io.*;
 import java.util.ArrayList;
 
 
+/**
+ * Проверяет корректность страны на язык написания и грамматические ошибки
+ */
 @Log4j2
 public  class IncomingCountryValidator {
 
@@ -23,10 +26,9 @@ public  class IncomingCountryValidator {
 
             PropertyConnection property = new PropertyConnection(CoinSearcher.PATH_TO_UCOIN_PROPERTY);
 
-            File file = new File(new File("").getAbsolutePath() +
-                    (property.open()
-                            .getProperty("countriesList."
-                                    + lang))
+            File file = new File(new File("")
+                    .getAbsolutePath() +
+                    (property.open().getProperty("countriesList." + lang))
             );
 
             property.close();
@@ -37,14 +39,11 @@ public  class IncomingCountryValidator {
             getterInfo.close();
 
 
-            boolean status = listCountries.contains(country);
-
-            if (!status) {
+            if (!listCountries.contains(country)) {
 
                 throw new CountryNotExistException("Wrong country");
 
             }
-
 
 
     }
