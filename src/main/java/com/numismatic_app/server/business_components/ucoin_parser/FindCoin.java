@@ -203,6 +203,7 @@ public class FindCoin {
         Element  tableCoins = doc.getElementsByAttributeValue(CLASS,"tbl").tagName("body").first(); // html таблица с монетами
 
 
+        log.info(tableCoins);
         Elements coinHtml = tableCoins
                 .getElementsByAttributeValue(CLASS,"tr-hr")
                 .stream()
@@ -215,13 +216,18 @@ public class FindCoin {
             .collect(Collectors.toCollection(Elements::new));
 
 
+
+
         try{
             if(coinHtml.isEmpty()){
 
-                 String value=valueAndCurrency.split(" ",2)[0];
-                 String currency=valueAndCurrency.split(" ",2)[1];
-                 getCoin(url,value,currency,year);
+                coinHtml = isThereReallyNoTable(tableCoins);
 
+                if (coinHtml.isEmpty()){
+                    String value = valueAndCurrency.split(" ", 2)[0];
+                    String currency = valueAndCurrency.split(" ", 2)[1];
+                    getCoin(url, value, currency, year);
+                }
             }
         } catch (SiteConnectionError e) {
             throw new SiteConnectionError(e.getMessage());
@@ -235,7 +241,13 @@ public class FindCoin {
 
                 String value = valueAndCurrency.split(" ", 2)[0];
                 String currency = valueAndCurrency.split(" ", 2)[1];
-                getCoin(coin.attr("data-href"), value, currency, year);
+                getCoin( Optional.ofNullable( elementFixer(coin.attr("data-href")))
+                                .orElse(url.split("/?tid",2)[0]+
+                                        coin.getElementsByTag("a").attr("href")
+                                                .replace("?",""))
+                        , value
+                        , currency
+                        , year);
 
             }
 
@@ -251,7 +263,6 @@ public class FindCoin {
 
 
     public  void getCoin(String url, String value, String currency, Integer year) throws IOException, SiteConnectionError {
-
 
         CoinDto coinDto = new CoinDto();
 
@@ -269,6 +280,7 @@ public class FindCoin {
 
         Element infoTableColumns = doc.getElementsByAttributeValue(CLASS,"tbl coin-info").first();
 
+
         Elements infoTables=infoTableColumns.getElementsByTag("tr");
 
 
@@ -283,7 +295,7 @@ public class FindCoin {
         );
 
         coinDto.setCurrency(currency);
-        coinDto.setValue(value);//new Element("<a href=\"#price\" class=\"gray-12 right pricewj\">Value:&nbsp;<span>none</span></a>")
+        coinDto.setValue(value);
         coinDto.setYears(year);
 
 
@@ -319,7 +331,26 @@ public class FindCoin {
 
 
 
+    private Elements isThereReallyNoTable(Element tableCoins){
+        log.info("isThereReallyNoTable?");
 
+        return tableCoins.getElementsByAttribute("href")
+                .stream().filter(coin-> coin
+                        .getElementsByTag("a")
+                        .attr("href")
+                        .contains("#price"))
+                .collect(Collectors.toCollection(Elements::new));
+
+    }
+
+
+    private String elementFixer(String el){
+        if(el.equals("")){
+            return null;
+        }
+        else return  el;
+
+    }
     public ArrayList<Integer> getYears() {
         return years;
     }

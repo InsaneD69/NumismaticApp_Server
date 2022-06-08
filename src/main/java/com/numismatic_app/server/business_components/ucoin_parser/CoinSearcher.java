@@ -130,7 +130,7 @@ public class CoinSearcher {
 
 
 
-        if(file.length()!=0&&!file.isFile()){
+        if(file.length()!=0){
 
             log.info("exist data about "+country);
             GetterInfo getParseInfo = new GetterInfo(file.getPath());
