@@ -7,50 +7,24 @@ import java.io.IOException;
 import java.rmi.ServerException;
 import java.util.*;
 
+/**
+ * Обрабатывает данные, которые будут использоваться для поиска монеты.
+ */
 @Log4j2
 public class IncomingSearcherValidator {
 
-
-
-    private String lang;
-    private  ArrayList<String> currenciesAndValues=new ArrayList<>();
-
-    public IncomingSearcherValidator(String lang) {
-
-        this.lang=lang;
-
-    }
-
-    public   ArrayList<String> validate(SearchInformation searchInformation) throws CountryNotExistException, ServerException {
-
-        try {
-
-            IncomingCountryValidator.checkExistCountry(searchInformation.getCountry(), lang);
-
-
-            validateCurrenciesAndValues(searchInformation);
-
-
-            return getCurrenciesAndValues();
-
-        }  catch (CountryNotExistException e) {
-           throw new CountryNotExistException(e.getMessage());
-        } catch (IOException | ClassNotFoundException e) {
-            throw new ServerException("Server Error");
-        }
-
-
-    }
-
-    public   void validateCurrenciesAndValues(SearchInformation searchInformation){
-
+    /** Склеивает каждый друг с другом  номинал и валютю, которые находятся внтури объекта
+     *     класса SearchInformation: номиналы и валюты
+     * @param searchInformation Содержит все поля, необходимые для поиска монеты {@link SearchInformation}
+     * @return Список из комбинаций номиналов и валют
+     */
+    public static  ArrayList<String> validateCurrenciesAndValues(SearchInformation searchInformation){
+        ArrayList<String> currenciesAndValues=new ArrayList<>();
         ArrayList<String> values = searchInformation.getValue();
         ArrayList<String> currencies = searchInformation.getCurrency();
 
-
         log.info(" Get values: "+ values);
         log.info(" Get currencies "+currencies);
-
 
          values.forEach(oneValue->
              currencies.forEach(oneCurrency->
@@ -63,23 +37,11 @@ public class IncomingSearcherValidator {
 
              )
         );
-
+        return Optional.ofNullable(currenciesAndValues)
+                .orElse(new ArrayList<>(Arrays.asList("")));
 
     }
 
-    public String getLang() {
-        return lang;
-    }
+    private IncomingSearcherValidator(){}
 
-    public void setLang(String lang) {
-        this.lang = lang;
-    }
-
-    public ArrayList<String> getCurrenciesAndValues() {
-        return Optional.ofNullable(currenciesAndValues).orElse(new ArrayList<>(Arrays.asList("")));
-    }
-
-    public void setCurrenciesAndValues(ArrayList<String> currenciesAndValues) {
-        this.currenciesAndValues = currenciesAndValues;
-    }
 }

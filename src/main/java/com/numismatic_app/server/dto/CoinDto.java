@@ -5,6 +5,9 @@ import java.time.LocalDate;
 import java.util.*;
 
 
+/**
+ * Сущность 1-ой монеты
+ */
 public class CoinDto implements Serializable {
 
 
@@ -104,5 +107,26 @@ public class CoinDto implements Serializable {
                 ;
 
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CoinDto coinDto = (CoinDto) o;
+        return Objects.equals(
+                country, coinDto.country)
+                && Objects.equals(currency, coinDto.currency)
+                && Objects.equals(years, coinDto.years)
+                && Objects.equals(cost, coinDto.cost)
+                && Objects.equals(linkUcoin, coinDto.linkUcoin)
+                && Objects.equals(value, coinDto.value)
+                && Objects.equals(mint, coinDto.mint)
+                ;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(country, currency, years, cost, linkUcoin, value, mint);
     }
 }

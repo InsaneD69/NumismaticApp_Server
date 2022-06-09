@@ -55,12 +55,14 @@ public class UCoinComponent implements CommandLineRunner {
 
             for(String lang:property.open().getProperty("existLang").split(",")){
 
-             String countryListWay = new File("").getAbsolutePath()+property.open().getProperty("countriesList."+lang);
-             saverParseInfo  = new SaverInfo(countryListWay);
-             saveCountriesIntoFile(lang);
-             waitForLittle();
+                String countryListWay = new File("").getAbsolutePath()+property.open().getProperty("countriesList."+lang);
+                saverParseInfo  = new SaverInfo(countryListWay);
+                saveCountriesIntoFile(lang);
+                waitForLittle();
 
-         }
+             }
+            deleteOldData();
+
         }
         catch (SiteConnectionError e){
 
@@ -88,7 +90,7 @@ public class UCoinComponent implements CommandLineRunner {
     }
 
 
-    private void closeStreams()  {
+    private void closeStreams() throws IOException {
        saverParseInfo.close();
     }
 
@@ -96,7 +98,6 @@ public class UCoinComponent implements CommandLineRunner {
 
         ArrayList<String> countriesBufferStorage = new ArrayList<>(CoinSearcher.getCountriesFromUcoin(lang));
 
-        deleteOldData();
 
         log.info("Country  list "+lang+" had been downloaded");
         saverParseInfo.save(countriesBufferStorage);

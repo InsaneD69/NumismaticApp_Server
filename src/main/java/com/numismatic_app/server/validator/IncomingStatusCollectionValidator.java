@@ -2,9 +2,12 @@ package com.numismatic_app.server.validator;
 
 import com.numismatic_app.server.exception.CollectionStatusException;
 
-public class IncomingStatusToCollection {
+/**
+ * Проверяет на корректность статус публикации коллекции пользователя
+ */
+public class IncomingStatusCollectionValidator {
 
-    private IncomingStatusToCollection() {
+    private IncomingStatusCollectionValidator() {
         throw new IllegalStateException("Utility class");
     }
 

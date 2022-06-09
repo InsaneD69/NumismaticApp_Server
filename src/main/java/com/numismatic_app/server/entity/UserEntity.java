@@ -32,15 +32,6 @@ public class UserEntity  {
         return collectionEntities;
     }
 
-    public List<CollectionEntity> getCollection(){
-
-
-       return getCollectionEntities();
-
-
-    }
-
-
 
 
 }

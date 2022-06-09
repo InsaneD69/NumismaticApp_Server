@@ -17,6 +17,9 @@ import java.util.ArrayList;
 public  class IncomingCountryValidator {
 
 
+    /**
+     *
+     */
     private IncomingCountryValidator() {
         throw new IllegalStateException("Utility class");
     }
@@ -38,15 +41,12 @@ public  class IncomingCountryValidator {
             ArrayList<String> listCountries = (ArrayList<String>) getterInfo.get();
             getterInfo.close();
 
-
             if (!listCountries.contains(country)) {
 
                 throw new CountryNotExistException("Wrong country");
 
             }
 
-
     }
-
 
 }

@@ -40,18 +40,17 @@ public class CollectionService {
     /** Сохраняет коллекцию пользователя
      * @param collection Коллекция дял сохраенеия
      * @param user  Владелец коллекии
+     * @param status Дает ответ на впрос: сохранять новую и обновлять сатрую коллекцию
      * @throws DataStorageException Выбрасывается при возникновении ошибки
      * при сохранении коллекции пользователя в хранилище сервера
      */
-    public void saveCollectionToAcc(CollectionDTO collection, UserEntity user, String newOrUpdate) throws DataStorageException, CollectionNameAlreadyIsExist {
-
-
+    public void saveCollectionToAcc(CollectionDTO collection, UserEntity user, String status) throws DataStorageException, CollectionNameAlreadyIsExist {
 
         String hashPlace="";
 
-        if(newOrUpdate.equals("new")){
+        if(status.equals("new")){
 
-              for( CollectionEntity col: user.getCollection()){
+              for( CollectionEntity col: user.getCollectionEntities()){
                   if(col.getCollectionname().equals(collection.getNameCollection())){
 
                       throw new CollectionNameAlreadyIsExist("коллекция с таким именем уже существует");
@@ -59,34 +58,22 @@ public class CollectionService {
 
              }
 
-            CollectionEntity  collectionEntity = new CollectionEntity();
+            CollectionEntity collectionEntity = new CollectionEntity();
             collectionEntity.setCollectionname(collection.getNameCollection());
             collectionEntity.setUser(user);
             collectionEntity.setPlacehash(getHashPlace(
                      user.getUsername()
                     ,collection.getNameCollection()
-                    )
-            );
+                    ));
             hashPlace =collectionEntity.getPlacehash();
 
             collectionRepo.save(collectionEntity);
         }
-        else if(newOrUpdate.equals("update")){
+        else if(status.equals("update")){
             hashPlace =getHashPlace(user.getUsername(),collection.getNameCollection());
         }
 
-
-
-
-
-        try {
-            CollectionStorage.saveData(collection,hashPlace);
-        } catch (DataStorageException e) {
-
-            throw new DataStorageException(e.getMessage());
-        }
-
-
+        CollectionStorage.saveData(collection,hashPlace);
 
 
     }
@@ -102,7 +89,7 @@ public class CollectionService {
      */
     public List<CollectionDTO> getCollections(UserEntity user) throws DataStorageException, CollectionNotFoundException {
 
-         List<CollectionEntity> collectionEntities= user.getCollection();
+         List<CollectionEntity> collectionEntities= user.getCollectionEntities();
 
         if(collectionEntities.isEmpty()){
 
@@ -162,6 +149,11 @@ public class CollectionService {
     }
 
 
+    /** Формирует строку-адрес из имени пользователя и имени коллекции
+     * @param userName
+     * @param collectionName
+     * @return строку-адрес
+     */
     private String getHashPlace(String userName, String collectionName){
          return HashToString.convert(
                 Base64.getEncoder().encode(

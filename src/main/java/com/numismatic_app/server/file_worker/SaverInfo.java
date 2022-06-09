@@ -11,46 +11,28 @@ public class SaverInfo {
     private ObjectOutputStream objectOutputStream;
 
 
-    public SaverInfo(String filePath)  {
+    public SaverInfo(String filePath) throws IOException {
 
-        try{
+
         file =new File(filePath);
         fileOutputStream=new FileOutputStream(file);
         objectOutputStream = new ObjectOutputStream(fileOutputStream);
         log.info("preparing for preservation to "+file.getPath());
 
-        }
-
-        catch (IOException e){
-
-            e.printStackTrace();
-
-        }
-
 
     }
 
-    public  void save(Object object)  {
-
-        try {
+    public  void save(Object object) throws IOException {
 
             objectOutputStream.writeObject(object);
             objectOutputStream.flush();
             log.info("file was saved:"+file.getPath());
-        }
-        catch (IOException e){
 
-            e.printStackTrace();
-
-        }
     }
 
-    public  void close()  {
-        try {
+    public  void close() throws IOException {
             objectOutputStream.close();
             fileOutputStream.close();
-        }
-        catch (IOException e){e.printStackTrace();}
     }
 
 

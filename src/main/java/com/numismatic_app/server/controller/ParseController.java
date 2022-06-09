@@ -123,14 +123,14 @@ public class ParseController {
         try {
 
             IncomingLangValidator.checkExistLanguage(lang);
-
-            IncomingSearcherValidator val=new IncomingSearcherValidator(lang);
+            IncomingCountryValidator
+                    .checkExistCountry(searchInformation.getCountry(),lang);
 
             return ResponseEntity.ok().body(
                     parseService.getRequiredCoins(
                              searchInformation.getCountry()
                             ,searchInformation.getYear()
-                            ,val.validate(searchInformation)
+                            ,IncomingSearcherValidator.validateCurrenciesAndValues(searchInformation)
                             ,lang
                     )
             );

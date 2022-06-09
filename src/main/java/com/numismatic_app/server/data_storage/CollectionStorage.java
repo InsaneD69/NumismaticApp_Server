@@ -20,7 +20,6 @@ public class CollectionStorage {
         try {
             semaphore.acquire();
 
-            // сохраняем данные DTO в файл
             saveUserCollectionInFile(collectionDTO, place);
 
         }  catch (IOException e) {
@@ -42,10 +41,6 @@ public class CollectionStorage {
         SaverInfo saverInfo =new SaverInfo(file.getAbsolutePath());
         saverInfo.save(collectionDTO);
         saverInfo.close();
-
-
-
-
 
     }
     public static CollectionDTO getUserCollectionFromFile(String place) throws IOException, DataStorageException, ClassNotFoundException {

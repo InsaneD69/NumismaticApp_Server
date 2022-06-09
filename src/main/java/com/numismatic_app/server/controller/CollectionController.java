@@ -8,7 +8,7 @@ import com.numismatic_app.server.exception.CollectionNotFoundException;
 import com.numismatic_app.server.exception.CollectionStatusException;
 import com.numismatic_app.server.exception.DataStorageException;
 import com.numismatic_app.server.service.CollectionService;
-import com.numismatic_app.server.validator.IncomingStatusToCollection;
+import com.numismatic_app.server.validator.IncomingStatusCollectionValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,14 +28,14 @@ public class CollectionController {
     /** Обрабатывает запросы клиентов по пути /collection/postcollection
      * , сохраняет коллекцию пользователя в его аккаунт
      * @param collectionDTO Колекция, которую нужно сохранить
-     * "
+     * @param status Дает ответ на впрос: сохранять новую и обновлять сатрую коллекцию
      * @return Положительный или отрицательный ответ
      */
     @PostMapping("/postcollection")
    public ResponseEntity<String> saveUserCollection(@RequestBody CollectionDTO collectionDTO, @RequestParam String status){
 
         try {
-            IncomingStatusToCollection.checkStatus(status);
+            IncomingStatusCollectionValidator.checkStatus(status);
             collectionService.saveCollectionToAcc(collectionDTO
                     ,(UserEntity)SecurityContextHolder.getContext().getAuthentication().getPrincipal(),status);
            return ResponseEntity.ok().body("ok");

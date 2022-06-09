@@ -45,7 +45,8 @@ public class UserModel {
         if(entity.getCollectionEntities()==null){
             model.setCollections(null);
         }else {
-            model.setCollections(entity.getCollectionEntities().stream().map(CollectionModel::toModel).toList());
+            model.setCollections(entity.getCollectionEntities()
+                    .stream().map(CollectionModel::toModel).toList());
         }
 
         return  model;
