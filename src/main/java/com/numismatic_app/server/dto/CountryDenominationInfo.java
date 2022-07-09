@@ -13,7 +13,15 @@ public class CountryDenominationInfo implements Serializable {
     private HashSet<ValAndCurPair> curAndValues;
     private boolean allInfo;
 
+    private String countryYearsPeriod;
 
+    public String getCountryYearsPeriod() {
+        return countryYearsPeriod;
+    }
+
+    public void setCountryYearsPeriod(String countryYearsPeriod) {
+        this.countryYearsPeriod = countryYearsPeriod;
+    }
 
     public HashSet<ValAndCurPair> getCurAndValues() {
         return curAndValues;
@@ -50,6 +58,8 @@ public class CountryDenominationInfo implements Serializable {
         CountryDenominationInfo denominationInfo = new CountryDenominationInfo();
 
         denominationInfo.setCountry(countryInformation.getNameCountry());
+
+        denominationInfo.setCountryYearsPeriod(countryInformation.getCountryYearsPeriod());
 
         denominationInfo.setAllInfo(true);
 

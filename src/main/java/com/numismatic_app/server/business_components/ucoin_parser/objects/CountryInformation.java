@@ -15,6 +15,15 @@ public class CountryInformation implements Serializable {                       
 
     private String nameCountry;
 
+    private String countryYearsPeriod;
+
+    public String getCountryYearsPeriod() {
+        return countryYearsPeriod;
+    }
+
+    public void setCountryYearsPeriod(String countryYearsPeriod) {
+        this.countryYearsPeriod = countryYearsPeriod;
+    }
 
     public CountryInformation(Elements countryPeriods, String country, String lang) throws IOException, SiteConnectionError {
 
@@ -27,6 +36,9 @@ public class CountryInformation implements Serializable {                       
                 periods.add(new CountryPeriod(period,country))
 
         );
+
+        setCountryYearsPeriod(periods.get(0).getEndYear()+" - "+periods.get(periods.size()-1).getBgYear());
+
 
         try {
             int requiredNumOfPeriodsInfo=3;
