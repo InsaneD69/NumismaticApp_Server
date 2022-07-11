@@ -42,7 +42,7 @@ public class CountryPeriod implements Serializable { // содержит в се
         return listOnePeriodCountry;
     }
 
-///gdfrzsdfzgdfgdfgd
+
 
     public Set<String> getCurrencies() {
         return currencies;
@@ -54,7 +54,7 @@ public class CountryPeriod implements Serializable { // содержит в се
 
     public void setCurrenciesAndNominalValues(String lang) throws IOException, SiteConnectionError { //излекает из html таблицы значения номиналов и валют в данном периоде
 
-        //если на странице с таблицей ссылка указаеная не с type=1, то это означает, что таблица на этой странице не с монетами регулярного выпуска
+        //если на странице с таблицей ссылка указанна не с type=1, то это означает, что таблица на этой странице не с монетами регулярного выпуска
 
 
        PropertyConnection property=new PropertyConnection(PATH_TO_UCOIN_PROPERTY);

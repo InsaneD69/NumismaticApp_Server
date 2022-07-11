@@ -203,7 +203,7 @@ public class FindCoin {
         Element  tableCoins = doc.getElementsByAttributeValue(CLASS,"tbl").tagName("body").first(); // html таблица с монетами
 
 
-        log.info(tableCoins);
+
         Elements coinHtml = tableCoins
                 .getElementsByAttributeValue(CLASS,"tr-hr")
                 .stream()

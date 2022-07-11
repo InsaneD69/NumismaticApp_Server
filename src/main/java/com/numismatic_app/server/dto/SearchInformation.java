@@ -11,6 +11,9 @@ public class SearchInformation implements Serializable {
     private ArrayList<String> value;
     private ArrayList<String> currency;
 
+    private ArrayList<Integer> periodsCode;
+    private char sign ;
+
 
 
     public String getCountry() {

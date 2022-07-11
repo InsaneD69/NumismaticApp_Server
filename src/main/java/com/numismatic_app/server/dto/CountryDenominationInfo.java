@@ -12,8 +12,8 @@ public class CountryDenominationInfo implements Serializable {
     private String country;
     private HashSet<ValAndCurPair> curAndValues;
     private boolean allInfo;
-
     private String countryYearsPeriod;
+
 
     public String getCountryYearsPeriod() {
         return countryYearsPeriod;
