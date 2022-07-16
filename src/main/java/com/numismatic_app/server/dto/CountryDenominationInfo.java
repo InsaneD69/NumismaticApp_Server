@@ -15,16 +15,6 @@ public class CountryDenominationInfo implements Serializable {
 
     private String countryYearsPeriod;
 
-    private ArrayList<String> periodsList;
-
-    public ArrayList<String> getPeriodsList() {
-        return periodsList;
-    }
-
-    public void setPeriodsList(ArrayList<String> periodsList) {
-        this.periodsList = periodsList;
-    }
-
     public String getCountryYearsPeriod() {
         return countryYearsPeriod;
     }
@@ -75,13 +65,9 @@ public class CountryDenominationInfo implements Serializable {
 
         HashSet<ValAndCurPair> arPair = new HashSet<>();
 
-        ArrayList<String> periodCurList= new ArrayList<>();
-
         for(CountryPeriod period: countryInformation.getPeriods()){
 
               Map<String,String> map=period.getCurrenciesAndNominalValues();
-
-              periodCurList.add(period.getNamePeriod()+" ("+period.getBgYear()+"-"+period.getEndYear()+")");
 
               if(map!=null){
 
@@ -99,11 +85,8 @@ public class CountryDenominationInfo implements Serializable {
               }
 
         }
-        denominationInfo.setPeriodsList(periodCurList);
 
         denominationInfo.setCurAndValues(arPair);
-
-
 
         return denominationInfo;
 
