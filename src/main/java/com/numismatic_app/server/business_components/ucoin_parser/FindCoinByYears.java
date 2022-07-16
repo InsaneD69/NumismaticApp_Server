@@ -59,6 +59,7 @@ public class FindCoinByYears {
                       if( liteCoins!=null) {
                           log.info(liteCoins.toString());
                           findSuitableCoins();
+                          //
 
                          }
              }
