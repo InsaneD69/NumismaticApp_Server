@@ -86,14 +86,31 @@ public class ParseService {
      * @param lang Указывает аббревиатуру языка, на котором требуется ответ
      * @return Список из монет {@link CoinDto}, которые подошли под требования
      */
-    public Object getRequiredCoins(String country, ArrayList<Integer> year, ArrayList<String> curAndVal ,String lang) throws IOException, ClassNotFoundException, SiteConnectionError, ServerWorkException {
+    public Object getRequiredCoins(String country, ArrayList<Integer> year,ArrayList<String> period, ArrayList<String> curAndVal ,String lang) throws IOException, ClassNotFoundException, SiteConnectionError, ServerWorkException {
 
         log.info("curAndVal: "+curAndVal);
-        ArrayList<CoinDto> coinDtos = CoinSearcher.getCoin(country,year,curAndVal,lang);
+
+        ArrayList<CoinDto> coinDtos = new ArrayList<>();
+
+        if(year.isEmpty()){
+
+            coinDtos.addAll( CoinSearcher.getCoin(country,null,period,curAndVal,lang));
+
+        }
+        else if(year.get(0)==99999){
+
+            coinDtos.addAll( CoinSearcher.getCoin(country,null,period,curAndVal,lang));
+
+        }
+        else{
+            coinDtos.addAll(CoinSearcher.getCoin(country,year,curAndVal,lang));
+        }
+
 
         if(coinDtos.isEmpty()){
 
             return "coins with the specified parameters were not found";
+
         }
 
         else  return  coinDtos;

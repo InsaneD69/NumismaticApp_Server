@@ -130,6 +130,7 @@ public class ParseController {
                     parseService.getRequiredCoins(
                              searchInformation.getCountry()
                             ,searchInformation.getYear()
+                            ,searchInformation.getPeriod()
                             ,IncomingSearcherValidator.validateCurrenciesAndValues(searchInformation)
                             ,lang
                     )

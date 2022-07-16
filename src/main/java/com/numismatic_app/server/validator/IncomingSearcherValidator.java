@@ -25,6 +25,8 @@ public class IncomingSearcherValidator {
 
         log.info(" Get values: "+ values);
         log.info(" Get currencies "+currencies);
+        log.info(" Get years "+searchInformation.getYear());
+        log.info(" Get periods "+searchInformation.getPeriod());
 
          values.forEach(oneValue->
              currencies.forEach(oneCurrency->

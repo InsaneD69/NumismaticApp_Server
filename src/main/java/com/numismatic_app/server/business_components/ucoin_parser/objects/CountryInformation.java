@@ -37,7 +37,7 @@ public class CountryInformation implements Serializable {                       
 
         );
 
-        setCountryYearsPeriod(periods.get(0).getEndYear()+" - "+periods.get(periods.size()-1).getBgYear());
+        setCountryYearsPeriod(periods.get(periods.size()-1).getBgYear()+" - "+periods.get(0).getEndYear());
 
 
         try {

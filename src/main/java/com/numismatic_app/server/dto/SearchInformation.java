@@ -10,8 +10,18 @@ public class SearchInformation implements Serializable {
     private ArrayList<Integer> year;
     private ArrayList<String> value;
     private ArrayList<String> currency;
+    private ArrayList<String> period;
 
+    public ArrayList<String> getPeriod() {
 
+        ArrayList<String> el= new ArrayList<>();
+        el.add("none");
+        return  Optional.ofNullable(period).orElse(el);
+    }
+
+    public void setPeriod(ArrayList<String> period) {
+        this.period = period;
+    }
 
     public String getCountry() {
         return country;
@@ -21,7 +31,10 @@ public class SearchInformation implements Serializable {
     }
 
     public ArrayList<Integer> getYear() {
-        return  Optional.ofNullable(year).orElse(new ArrayList<>(1));
+
+        ArrayList<Integer> el= new ArrayList<>();
+        el.add(99999);
+        return  Optional.ofNullable(year).orElse(el);
     }
 
 
@@ -69,6 +82,7 @@ public class SearchInformation implements Serializable {
         return "SearchInformation{" +
                 "country='" + country + '\'' +
                 ", year=" + year +
+                ", period=" + period +
                 ", value=" + value +
                 ", currency=" + currency +
                 '}';

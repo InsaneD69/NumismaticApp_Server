@@ -1,11 +1,16 @@
 package com.numismatic_app.server.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Optional;
 
 
 public class CountryInfoDTO implements Serializable {
 
     private String country;
+
+    private ArrayList<String> periods;
+
 
     public CountryInfoDTO() {
         //Don't use
@@ -20,4 +25,13 @@ public class CountryInfoDTO implements Serializable {
     }
 
 
+    public ArrayList<String> getPeriods() {
+        ArrayList<String> el = new ArrayList<>();
+        el.add("none");
+        return Optional.ofNullable(periods).orElse(el);
+    }
+
+    public void setPeriods(ArrayList<String> periods) {
+        this.periods = periods;
+    }
 }

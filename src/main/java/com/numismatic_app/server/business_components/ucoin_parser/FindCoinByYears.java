@@ -26,12 +26,13 @@ import java.util.stream.Collectors;
 
 
 @Log4j2
-public class FindCoin {
+public class FindCoinByYears {
 
     private static final String CLASS = "class";
 
 
     private  ArrayList<Integer> years;
+
     private  ArrayList<String> corAndValue;
     private CountryInformation countryInformation;
     private Set<CountryPeriod> countryPeriods;
@@ -41,7 +42,7 @@ public class FindCoin {
 
     private String lang;
 
-    public FindCoin(CountryInformation countryInfo, ArrayList<Integer> year, ArrayList<String> corAndValue, String lang) throws IOException, ServerWorkException, SiteConnectionError {
+    public FindCoinByYears(CountryInformation countryInfo, ArrayList<Integer> year, ArrayList<String> corAndValue, String lang) throws IOException, ServerWorkException, SiteConnectionError {
 
         this.years =year;
         this.corAndValue=corAndValue;
@@ -65,6 +66,7 @@ public class FindCoin {
 
 
     }
+
 
 
     private void findSuitablePeriods() throws IOException, SiteConnectionError {
@@ -203,7 +205,7 @@ public class FindCoin {
         Element  tableCoins = doc.getElementsByAttributeValue(CLASS,"tbl").tagName("body").first(); // html таблица с монетами
 
 
-        log.info(tableCoins);
+
         Elements coinHtml = tableCoins
                 .getElementsByAttributeValue(CLASS,"tr-hr")
                 .stream()

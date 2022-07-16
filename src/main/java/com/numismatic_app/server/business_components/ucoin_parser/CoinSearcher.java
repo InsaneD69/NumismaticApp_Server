@@ -101,17 +101,23 @@ public class CoinSearcher {
 
     public static ArrayList<CoinDto> getCoin(String country, ArrayList<Integer> year, ArrayList<String> curAndValue, String lang) throws IOException, ClassNotFoundException, SiteConnectionError, ServerWorkException {
 
-        FindCoin findCoin = null;
-
-        findCoin = new FindCoin(getInfoAboutCountry(country,lang),year,curAndValue,lang);
+        FindCoinByYears findCoinByYears =  new FindCoinByYears(getInfoAboutCountry(country,lang),year,curAndValue,lang);
 
 
-        return new ArrayList<>(findCoin.getCoins());
+        return new ArrayList<>(findCoinByYears.getCoins());
 
 
     }
 
+    public static ArrayList<CoinDto> getCoin(String country,ArrayList<Integer> year, ArrayList<String> period, ArrayList<String> curAndValue, String lang) throws IOException, ClassNotFoundException, SiteConnectionError, ServerWorkException {
 
+        FindCoinByPeriods findCoinByPeriods =  new FindCoinByPeriods(getInfoAboutCountry(country,lang),period,curAndValue,lang);
+
+
+        return new ArrayList<>(findCoinByPeriods.getCoins());
+
+
+    }
 
 
     public static CountryInformation getInfoAboutCountry(String country, String lang) throws IOException, ClassNotFoundException, SiteConnectionError {
