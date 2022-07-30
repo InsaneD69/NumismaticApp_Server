@@ -58,8 +58,8 @@ public class ParseService {
      * @throws ServerWorkException выбрасывается при ошибке на  сервере,
      * которая  связанна с файловой системой сервера
      */
-    public CountryInformation getInfoAboutCountry(String country,String lang) throws SiteConnectionError, ServerWorkException {
-
+    public CountryInformation getInfoAboutCountry(String country,ArrayList<String> periods, String lang) throws SiteConnectionError, ServerWorkException {
+//определиться, как грамотно взять инфу только о периоде
         try {
 
             return  CoinSearcher.getInfoAboutCountry(country,lang);

@@ -53,7 +53,7 @@ public class CountryDenominationInfo implements Serializable {
     }
 
 
-    public static CountryDenominationInfo toModel(CountryInformation countryInformation){
+    public static CountryDenominationInfo toModel(CountryInformation countryInformation, ArrayList<String> certainPeriods){
 
         CountryDenominationInfo denominationInfo = new CountryDenominationInfo();
 
@@ -63,32 +63,87 @@ public class CountryDenominationInfo implements Serializable {
 
         denominationInfo.setAllInfo(true);
 
+
+
         HashSet<ValAndCurPair> arPair = new HashSet<>();
 
-        for(CountryPeriod period: countryInformation.getPeriods()){
-
-              Map<String,String> map=period.getCurrenciesAndNominalValues();
-
-              if(map!=null){
-
-                  map.forEach((key,value)->{
-
-                   String[] part= value.split(" ",2);
-                   arPair.add(new ValAndCurPair(part[0],part[1]));
-
-                  });
-
-              }else{
-
-                  denominationInfo.setAllInfo(false);
-
-              }
-
+        if (certainPeriods==null){
+            denominationInfo=scanAllPeriods(arPair,countryInformation.getPeriods(), denominationInfo);
         }
+        else  denominationInfo=scanCertainPeriods(arPair, countryInformation.getPeriods(), denominationInfo, certainPeriods);
 
-        denominationInfo.setCurAndValues(arPair);
+
+
+
 
         return denominationInfo;
+
+
+    }
+    private static CountryDenominationInfo scanAllPeriods(HashSet<ValAndCurPair> arPair,ArrayList<CountryPeriod> countryPeriods, CountryDenominationInfo denominationInfo){
+
+        for(CountryPeriod period: countryPeriods){
+
+
+
+            Map<String,String> map=period.getCurrenciesAndNominalValues();
+
+            if(map!=null){
+
+                map.forEach((key,value)->{
+
+                    String[] part= value.split(" ",2);
+                    arPair.add(new ValAndCurPair(part[0],part[1]));
+
+                });
+
+            }else{
+
+                denominationInfo.setAllInfo(false);
+
+            }
+
+
+
+        }
+        denominationInfo.setCurAndValues(arPair);
+
+        return  denominationInfo;
+
+    }
+
+    private static CountryDenominationInfo scanCertainPeriods( HashSet<ValAndCurPair> arPair ,ArrayList<CountryPeriod> countryPeriods, CountryDenominationInfo denominationInfo,ArrayList<String> certainPeriods){
+
+            for (CountryPeriod period : countryPeriods) {
+
+                for(int a=0;a<certainPeriods.size();a++) {
+
+                    if(certainPeriods.get(a).split(" \\("+period.getBgYear())[0].equals(period.getNamePeriod())) {
+
+                        Map<String, String> map = period.getCurrenciesAndNominalValues();
+
+                        if (map != null) {
+
+                            map.forEach((key, value) -> {
+
+                                String[] part = value.split(" ", 2);
+                                arPair.add(new ValAndCurPair(part[0], part[1]));
+
+                            });
+
+                        } else {
+
+                            denominationInfo.setAllInfo(false);
+
+                        }
+                    }
+                }
+
+
+        }
+        denominationInfo.setCurAndValues(arPair);
+
+        return  denominationInfo;
 
 
     }

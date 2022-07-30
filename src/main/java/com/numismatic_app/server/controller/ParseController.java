@@ -7,6 +7,7 @@ import com.numismatic_app.server.exception.CountryNotExistException;
 import com.numismatic_app.server.exception.LanguageNotExistException;
 import com.numismatic_app.server.exception.ServerWorkException;
 import com.numismatic_app.server.service.ParseService;
+import com.numismatic_app.server.validator.IncomingCountryInfoValidator;
 import com.numismatic_app.server.validator.IncomingCountryValidator;
 import com.numismatic_app.server.validator.IncomingSearcherValidator;
 import com.numismatic_app.server.validator.IncomingLangValidator;
@@ -79,16 +80,23 @@ public class ParseController {
                 IncomingCountryValidator
                         .checkExistCountry(countryInfoDTO.getCountry(),lang);
 
-            log.info("taken Get request /search/info:"+countryInfoDTO.getCountry()
+                countryInfoDTO=IncomingCountryInfoValidator
+                        .checkCountryInfoReq(countryInfoDTO);
+
+            log.info("taken request /search/info:"+countryInfoDTO.getCountry()
+                       +" periods: "+countryInfoDTO.getPeriods()
                        +" given to thread  "+Thread.currentThread().getName()
                        +" id: "+Thread.currentThread().getId());
+
 
 
             return ResponseEntity.ok().body(
                     CountryDenominationInfo.toModel(
                             parseService.getInfoAboutCountry(
-                                    countryInfoDTO.getCountry(),lang
-                            )
+                                    countryInfoDTO.getCountry(),countryInfoDTO.getPeriods(),lang
+                            ),
+                            countryInfoDTO.getPeriods()
+
                     )
             );
 
