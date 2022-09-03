@@ -4,7 +4,9 @@ import com.numismatic_app.server.business_components.ucoin_parser.objects.Countr
 import com.numismatic_app.server.business_components.ucoin_parser.objects.CountryPeriod;
 
 
+import java.awt.image.AreaAveragingScaleFilter;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.*;
 
 
@@ -14,6 +16,16 @@ public class CountryDenominationInfo implements Serializable {
     private boolean allInfo;
 
     private String countryYearsPeriod;
+
+    private ArrayList<String> periodsList;
+
+    public ArrayList<String> getPeriodsList() {
+        return periodsList;
+    }
+
+    public void setPeriodsList(ArrayList<String> periodsList) {
+        this.periodsList = periodsList;
+    }
 
     public String getCountryYearsPeriod() {
         return countryYearsPeriod;
@@ -55,6 +67,8 @@ public class CountryDenominationInfo implements Serializable {
 
     public static CountryDenominationInfo toModel(CountryInformation countryInformation, ArrayList<String> certainPeriods){
 
+
+
         CountryDenominationInfo denominationInfo = new CountryDenominationInfo();
 
         denominationInfo.setCountry(countryInformation.getNameCountry());
@@ -64,13 +78,15 @@ public class CountryDenominationInfo implements Serializable {
         denominationInfo.setAllInfo(true);
 
 
-
         HashSet<ValAndCurPair> arPair = new HashSet<>();
 
-        if (certainPeriods==null){
+
+
+        if (certainPeriods.isEmpty()){
+
             denominationInfo=scanAllPeriods(arPair,countryInformation.getPeriods(), denominationInfo);
         }
-        else  denominationInfo=scanCertainPeriods(arPair, countryInformation.getPeriods(), denominationInfo, certainPeriods);
+        else  {denominationInfo=scanCertainPeriods(arPair, countryInformation.getPeriods(), denominationInfo, certainPeriods);}
 
 
 
@@ -82,13 +98,17 @@ public class CountryDenominationInfo implements Serializable {
     }
     private static CountryDenominationInfo scanAllPeriods(HashSet<ValAndCurPair> arPair,ArrayList<CountryPeriod> countryPeriods, CountryDenominationInfo denominationInfo){
 
+        ArrayList<String> periodCurList = new ArrayList<>();
         for(CountryPeriod period: countryPeriods){
 
-
+            periodCurList.add(period.getNamePeriod()+" ("+period.getBgYear()+"-"+period.getEndYear()+")");
 
             Map<String,String> map=period.getCurrenciesAndNominalValues();
 
+
             if(map!=null){
+
+
 
                 map.forEach((key,value)->{
 
@@ -106,6 +126,7 @@ public class CountryDenominationInfo implements Serializable {
 
 
         }
+        denominationInfo.setPeriodsList(periodCurList);
         denominationInfo.setCurAndValues(arPair);
 
         return  denominationInfo;

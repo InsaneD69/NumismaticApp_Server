@@ -27,7 +27,6 @@ public class CountryInfoDTO implements Serializable {
 
     public ArrayList<String> getPeriods() {
         ArrayList<String> el = new ArrayList<>();
-        el.add("none");
         return Optional.ofNullable(periods).orElse(el);
     }
 
