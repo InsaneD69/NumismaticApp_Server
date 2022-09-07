@@ -64,6 +64,7 @@ public class ParseService {
 
             return  CoinSearcher.getInfoAboutCountry(country,lang);
 
+
         } catch (SiteConnectionError  e) {
 
             log.error(e.getMessage());
