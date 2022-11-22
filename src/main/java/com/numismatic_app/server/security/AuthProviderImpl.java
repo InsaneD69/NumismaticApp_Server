@@ -30,14 +30,16 @@ public class AuthProviderImpl implements AuthenticationProvider {
 
         UserEntity user = userRepo.findByUsername(authentication.getName());
 
+
         if (user==null) {
             throw new UsernameNotFoundException("Пользователь с таким логином не существует");
         }
 
 
         if (!passwordEncoder.matches(authentication.getCredentials().toString(),user.getPassword())){
-
+            log.info("User "+user.getUsername()+" not connected to server (mistake password)");
             throw new BadCredentialsException("неверный пароль");
+
 
         }
 

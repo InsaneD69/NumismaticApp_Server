@@ -34,8 +34,6 @@ public class UserController  {
     @PostMapping("/new")
     public ResponseEntity<String> registration(@RequestBody UserDto user){
 
-
-
        log.info("Процесс регистрация пользователя  "+user.getUsername());
         try {
             clientServiceImpl.registration(user);

@@ -12,6 +12,7 @@ public class SearchInformation implements Serializable {
     private ArrayList<String> currency;
     private ArrayList<String> period;
 
+
     public ArrayList<String> getPeriod() {
 
         ArrayList<String> el= new ArrayList<>();
