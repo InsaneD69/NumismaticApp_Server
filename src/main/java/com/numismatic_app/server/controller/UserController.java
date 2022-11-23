@@ -37,12 +37,12 @@ public class UserController  {
        log.info("Процесс регистрация пользователя  "+user.getUsername());
         try {
             clientServiceImpl.registration(user);
-            log.info("Регистрация пользователя  "+user.getUsername()+"успешно завершена");
+            log.info("Регистрация пользователя  "+user.getUsername()+" успешно завершена");
             return ResponseEntity.ok("пользователь с именем "+user.getUsername()+" успешно загерестрирован");
         }
         catch (UserAlreadyExistException e){
 
-            log.info("пользователь с именем "+user.getUsername()+"уже существует");
+            log.info("пользователь с именем "+user.getUsername()+" уже существует");
 
             return  ResponseEntity.status(205).contentType(MediaType.APPLICATION_JSON).body(e.getMessage());
         }

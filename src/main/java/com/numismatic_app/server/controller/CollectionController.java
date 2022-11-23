@@ -14,6 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Обслуживает запросы, связанные с коллекциями пользователей
  */
@@ -48,7 +52,8 @@ public class CollectionController {
     }
 
 
-    /** Обрабатывает запросы клиентов по пути /collection/get на получение его коллеций на аккаунте
+    /** ИСПОЛЬЗУЕТСЯ ТОЛЬКО ДЛЯ ПРИЛОЖЕНИЯ
+     * Обрабатывает запросы клиентов по пути /collection/get на получение его коллеций на аккаунте
      * @return Возвращает список из коллекций {@link CollectionDTO}
      */
    @GetMapping("/get")
@@ -79,5 +84,34 @@ public class CollectionController {
         }
 
    }
+
+    @GetMapping("/getAll")
+    public ResponseEntity<Object> getAllCollection() {
+
+        try {
+            return ResponseEntity.ok(
+                    collectionService
+                            .getCollections(
+                                    ((UserEntity) SecurityContextHolder
+                                            .getContext()
+                                            .getAuthentication()
+                                            .getPrincipal()
+                                    )
+
+                            )
+            );
+
+        } catch (CollectionNotFoundException e) {
+
+            return ResponseEntity.status(200).body("none");
+
+        } catch (DataStorageException e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+
+        }
+
+    }
 
 }
