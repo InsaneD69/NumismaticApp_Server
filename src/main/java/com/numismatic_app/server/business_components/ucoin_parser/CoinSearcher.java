@@ -52,7 +52,7 @@ public class CoinSearcher {
             Document mainPageDoc = UcoinConnection.getUcoinPage(property.open().getProperty("link." + lang));
 
 
-            SaverInfo saverInfo = new SaverInfo(PATH_TO_UCOIN_PROPERTY+ property.open().getProperty(PROP_MAIN_PAGE + lang));
+            SaverInfo saverInfo = new SaverInfo( property.open().getProperty(PROP_MAIN_PAGE + lang));
             saverInfo.save(String.valueOf(mainPageDoc));
             saverInfo.close();
             property.close();
