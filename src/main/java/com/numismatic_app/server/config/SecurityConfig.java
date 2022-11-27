@@ -8,23 +8,24 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 @Log4j2
-public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
+public class SecurityConfig  implements WebMvcConfigurer {
 
 @Autowired
 
 private AuthProviderImpl authProvider;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+
+    @Bean
+    protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
                 .antMatchers("/acc/new").anonymous()
@@ -32,6 +33,7 @@ private AuthProviderImpl authProvider;
                 .and().csrf().disable()
                .logout()
                 .and().httpBasic();
+        return http.build();
 
     }
 
@@ -41,7 +43,8 @@ private AuthProviderImpl authProvider;
                 .allowedOrigins("http://localhost:4000")
                 .allowedMethods("*");
     }
-    @Override
+
+
     protected void configure(AuthenticationManagerBuilder auth)  {
 
         auth.authenticationProvider(authProvider);
