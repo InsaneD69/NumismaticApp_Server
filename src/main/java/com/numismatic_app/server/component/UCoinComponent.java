@@ -22,6 +22,8 @@ public class UCoinComponent implements CommandLineRunner {
 
     private SaverInfo saverParseInfo;
 
+
+
     @Override
     public void run(String... args)  {
 
@@ -44,7 +46,7 @@ public class UCoinComponent implements CommandLineRunner {
          }
          catch (IOException | InterruptedException e) {
              Thread.currentThread().interrupt();
-            log.error("Error");
+            log.error(e.getMessage());
         }
     }
 
@@ -55,7 +57,7 @@ public class UCoinComponent implements CommandLineRunner {
 
             for(String lang:property.open().getProperty("existLang").split(",")){
 
-                String countryListWay = new File("").getAbsolutePath()+property.open().getProperty("countriesList."+lang);
+                String countryListWay = property.open().getProperty("countriesList."+lang);
                 saverParseInfo  = new SaverInfo(countryListWay);
                 saveCountriesIntoFile(lang);
                 waitForLittle();
@@ -109,7 +111,7 @@ public class UCoinComponent implements CommandLineRunner {
     private  void deleteOldData() throws IOException {
 
 
-        File countriesInfo = new File(new File("").getAbsolutePath()+"/src/main/resources/SearcherInformation/CountriesInfo");
+        File countriesInfo = new File(CoinSearcher.PATH_TO_RESOURCES+"/SearcherInformation/CountriesInfo");
         String[] data= countriesInfo.list();
 
 

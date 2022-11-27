@@ -23,7 +23,11 @@ import java.util.*;
 @Log4j2
 public class CoinSearcher {
 
-    public static final String PATH_TO_UCOIN_PROPERTY = new File("").getAbsolutePath()+"/src/main/resources/ucoin.properties";
+    public static final String PATH_TO_RESOURCES="./src/main/resources";
+
+    public static final String PATH_TO_UCOIN_PROPERTY = PATH_TO_RESOURCES+"/ucoin.properties";
+
+
 
     private static final String PROP_MAIN_PAGE = "mainPage.";
 
@@ -48,7 +52,7 @@ public class CoinSearcher {
             Document mainPageDoc = UcoinConnection.getUcoinPage(property.open().getProperty("link." + lang));
 
 
-            SaverInfo saverInfo = new SaverInfo(new File("").getAbsolutePath() + property.open().getProperty(PROP_MAIN_PAGE + lang));
+            SaverInfo saverInfo = new SaverInfo(PATH_TO_UCOIN_PROPERTY+ property.open().getProperty(PROP_MAIN_PAGE + lang));
             saverInfo.save(String.valueOf(mainPageDoc));
             saverInfo.close();
             property.close();
@@ -70,7 +74,7 @@ public class CoinSearcher {
 
         PropertyConnection property = new PropertyConnection(PATH_TO_UCOIN_PROPERTY);
 
-        GetterInfo getParseInfo = new GetterInfo(new File("").getAbsolutePath()+
+        GetterInfo getParseInfo = new GetterInfo(
                 property.open().
                         getProperty(PROP_MAIN_PAGE +lang)
         );
@@ -129,8 +133,7 @@ public class CoinSearcher {
         PropertyConnection property = new PropertyConnection(PATH_TO_UCOIN_PROPERTY);
 
 
-        File file = new File(new File("").getAbsolutePath()
-                +property.open().getProperty("countriesInfo")
+        File file = new File(property.open().getProperty("countriesInfo")
                 +country+"_"+lang+".txt"
         );
 
@@ -148,10 +151,7 @@ public class CoinSearcher {
 
         log.info("info about "+country+" empty");
 
-        GetterInfo getParseInfo = new GetterInfo( new File("").getAbsolutePath()+
-                property.open().
-                        getProperty(PROP_MAIN_PAGE +lang)
-        );
+        GetterInfo getParseInfo = new GetterInfo(property.open().getProperty(PROP_MAIN_PAGE +lang));
 
         Document mainPage =Jsoup.parse( String.valueOf(getParseInfo.get()));
         log.info("successful get main page");

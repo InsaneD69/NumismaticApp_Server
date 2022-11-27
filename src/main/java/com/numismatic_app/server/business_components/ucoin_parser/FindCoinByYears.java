@@ -146,6 +146,8 @@ public class FindCoinByYears {
 
                corAndValue.forEach(elem->{
 
+
+
                  if(   (liteCoin.getValueAndCurrency().split(" ",2)[0].replace(" ","").equals(elem.replace(" ",""))
                          ||
                          liteCoin.getValueAndCurrency().split(" ",2)[1].replace(" ","").equals(elem.replace(" ",""))

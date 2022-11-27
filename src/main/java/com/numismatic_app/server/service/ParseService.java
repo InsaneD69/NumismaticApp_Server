@@ -34,7 +34,7 @@ public class ParseService {
         log.info("taken list of country: given to "+Thread.currentThread().getName()+" id: "+Thread.currentThread().getId());
 
         PropertyConnection property=new PropertyConnection(CoinSearcher.PATH_TO_UCOIN_PROPERTY);
-        GetterInfo getParseInfo = new GetterInfo(new File("").getAbsolutePath()+property.open().getProperty("countriesList."+lang));
+        GetterInfo getParseInfo = new GetterInfo(property.open().getProperty("countriesList."+lang));
 
         property.close();
 
