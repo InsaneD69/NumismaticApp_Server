@@ -9,6 +9,7 @@ import com.numismatic_app.server.exception.CollectionStatusException;
 import com.numismatic_app.server.exception.DataStorageException;
 import com.numismatic_app.server.service.CollectionService;
 import com.numismatic_app.server.validator.IncomingStatusCollectionValidator;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,6 +28,9 @@ public class CollectionController {
 
     @Autowired
     private CollectionService collectionService;
+
+
+
 
 
     /** Обрабатывает запросы клиентов по пути /collection/postcollection
@@ -56,7 +60,7 @@ public class CollectionController {
      * Обрабатывает запросы клиентов по пути /collection/get на получение его коллеций на аккаунте
      * @return Возвращает список из коллекций {@link CollectionDTO}
      */
-   @GetMapping("/get")
+  /* @GetMapping("/get")
    public ResponseEntity<Object> getCollection() {
 
         try {
@@ -83,7 +87,7 @@ public class CollectionController {
 
         }
 
-   }
+   }*/
 
     @GetMapping("/getAll")
     public ResponseEntity<Object> getAllCollection() {
@@ -92,14 +96,13 @@ public class CollectionController {
             return ResponseEntity.ok(
                     collectionService
                             .getCollections(
-                                    ((UserEntity) SecurityContextHolder
+                                    SecurityContextHolder
                                             .getContext()
                                             .getAuthentication()
-                                            .getPrincipal()
+                                            .getPrincipal().toString()
                                     )
 
-                            )
-            );
+                            );
 
         } catch (CollectionNotFoundException e) {
 

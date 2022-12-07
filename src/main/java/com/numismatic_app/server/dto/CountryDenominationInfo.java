@@ -84,12 +84,10 @@ public class CountryDenominationInfo implements Serializable {
 
         if (certainPeriods.isEmpty()){
 
-            System.out.println("none");
-
             denominationInfo=scanAllPeriods(arPair,countryInformation.getPeriods(), denominationInfo);
         }
         else  {
-            System.out.println("ne none");denominationInfo=scanCertainPeriods(arPair, countryInformation.getPeriods(), denominationInfo, certainPeriods);}
+           denominationInfo=scanCertainPeriods(arPair, countryInformation.getPeriods(), denominationInfo, certainPeriods);}
 
 
 

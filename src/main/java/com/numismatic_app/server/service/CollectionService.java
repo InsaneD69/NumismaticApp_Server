@@ -13,6 +13,7 @@ import com.numismatic_app.server.repository.UserRepo;
 import com.numismatic_app.server.security.HashToString;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -87,7 +88,12 @@ public class CollectionService {
      * @throws CollectionNotFoundException Выбрасывается при отсутствии коллекции
      * в хранилище сервера
      */
-    public List<CollectionDTO> getCollections(UserEntity user) throws DataStorageException, CollectionNotFoundException {
+    public List<CollectionDTO> getCollections(String username) throws DataStorageException, CollectionNotFoundException {
+
+        UserEntity user = userRepo.findByUsername(username);
+        if (user==null) {
+            throw new UsernameNotFoundException("Пользователь не найден");
+        }
 
          List<CollectionEntity> collectionEntities= user.getCollectionEntities();
 
@@ -100,7 +106,7 @@ public class CollectionService {
         log.info("User "+user.getUsername()+" have collections:");
         collectionEntities.forEach(col->
 
-            log.info(col.getCollectionname())
+            log.info("    "+col.getCollectionname())
 
         );
 

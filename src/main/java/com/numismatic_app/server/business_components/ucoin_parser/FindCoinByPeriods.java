@@ -68,11 +68,9 @@ public class FindCoinByPeriods {
         for(String incomePer:periods) {
 
             for (CountryPeriod cp : countryInfo.getPeriods()) {
-                System.out.println(incomePer.split(" \\("+cp.getBgYear())[0]);
-                System.out.println(cp.getNamePeriod());
+
                 if(incomePer.split(" \\("+cp.getBgYear())[0].equals(cp.getNamePeriod())){
 
-                    System.out.println("equals");
                     try{
 
                         if(cp.getListOnePeriodCountry()==null){
