@@ -84,17 +84,27 @@ public class UserController {
      @PostMapping("/token")
      public ResponseEntity<JWTResponse> getNewAccessToken(@RequestBody RefreshJWTRequest request) {
          final JWTResponse token = authProvider.getAccessToken(request.getRefreshToken());
+         System.out.println("/token");
+         System.out.println(token.getAccessToken());
+         System.out.println(token.getRefreshToken());
+         System.out.println(token.getAccessTokenExpMinute());
+         System.out.println(token.getRefreshTokenExpMinute());
          return ResponseEntity.ok(token);
      }
 
      @PostMapping("/refresh")
-     public ResponseEntity<Object> getNewRefreshToken(@RequestBody RefreshJWTRequest request)  {
+     public ResponseEntity<JWTResponse> getNewRefreshToken(@RequestBody RefreshJWTRequest request)  {
          try{
          final JWTResponse token = authProvider.refresh(request.getRefreshToken());
+             System.out.println("/refresh");
+             System.out.println(token.getAccessToken());
+             System.out.println(token.getRefreshToken());
+             System.out.println(token.getAccessTokenExpMinute());
+             System.out.println(token.getRefreshTokenExpMinute());
          return ResponseEntity.ok(token);
          }
          catch (AuthException e){
-             return  ResponseEntity.status(403).body(e.getMessage());
+             return  ResponseEntity.status(403).body(new JWTResponse(null,null,null,null));
          }
      }
  }

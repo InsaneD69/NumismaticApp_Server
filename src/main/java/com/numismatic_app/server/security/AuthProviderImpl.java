@@ -32,8 +32,8 @@ public class AuthProviderImpl  {
     private final Map<String, String> refreshStorage = new HashMap<>();
     private final JWTProvider jwtProvider;
 
-    private final int accessTokenExpMinute=100;
-    private final int refreshTokenExpMinute =52560000;
+    private final int accessTokenExpMinute=3;
+    private final int refreshTokenExpMinute =3600;
 
 
     public JWTResponse login(@NotNull UserDto authentication) throws  AuthException {
