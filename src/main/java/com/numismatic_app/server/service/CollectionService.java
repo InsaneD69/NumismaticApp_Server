@@ -21,7 +21,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -39,25 +38,25 @@ public class CollectionService {
 
 
     /** Сохраняет коллекцию пользователя
-     * @param collection Коллекция дял сохраенеия
-     * @param user  Владелец коллекии
-     * @param status Дает ответ на впрос: сохранять новую и обновлять сатрую коллекцию
+     * @param collection Коллекция дял сохраенеи
      * @throws DataStorageException Выбрасывается при возникновении ошибки
      * при сохранении коллекции пользователя в хранилище сервера
      */
-    public void saveCollectionToAcc(CollectionDTO collection, UserEntity user, String status) throws DataStorageException, CollectionNameAlreadyIsExist {
+    public void postCollectionToAcc(CollectionDTO collection, String  username) throws DataStorageException, CollectionNameAlreadyIsExist {
 
         String hashPlace="";
 
-        if(status.equals("new")){
+        UserEntity user = userRepo.findByUsername(username);
 
               for( CollectionEntity col: user.getCollectionEntities()){
+
                   if(col.getCollectionname().equals(collection.getNameCollection())){
 
                       throw new CollectionNameAlreadyIsExist("коллекция с таким именем уже существует");
                   }
 
              }
+
 
             CollectionEntity collectionEntity = new CollectionEntity();
             collectionEntity.setCollectionname(collection.getNameCollection());
@@ -69,19 +68,33 @@ public class CollectionService {
             hashPlace =collectionEntity.getPlacehash();
 
             collectionRepo.save(collectionEntity);
-        }
-        else if(status.equals("update")){
-            hashPlace =getHashPlace(user.getUsername(),collection.getNameCollection());
-        }
+
 
         CollectionStorage.saveData(collection,hashPlace);
 
 
+    };
+
+    public void updateCollectionToAcc(CollectionDTO collection, String  username) throws DataStorageException, CollectionNameAlreadyIsExist {
+
+        String hashPlace="";
+
+        UserEntity user = userRepo.findByUsername(username);
+
+        CollectionEntity collectionEntity = collectionRepo.findByCollectionnameAndUser_id(collection.getNameCollection(),user.getId());
+
+        collectionEntity.setCollectionname(collection.getNameCollection());
+        hashPlace =getHashPlace(user.getUsername(),collection.getNameCollection());
+
+        collectionEntity.setPlacehash(hashPlace);
+
+        CollectionStorage.saveData(collection,hashPlace);
+
+        collectionRepo.save(collectionEntity);
     }
 
     /**  проверяет, есть ли у пользователя сохраненные коллекции в базе данных и
      * вызывает метод получения всех коллекций
-     * @param user Сущность владельца коллекции
      * @return Возвращает список из всех коллекций пользователя {@link CollectionDTO}
      * @throws DataStorageException Выбрасывается при возникновении ошибки
      *      * при сохранении коллекции пользователя в хранилище сервера
