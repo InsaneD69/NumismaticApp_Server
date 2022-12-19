@@ -13,7 +13,5 @@ public class JWTResponse {
 
     private String refreshToken;
 
-    private Integer  accessTokenExpMinute;
-
-    private Integer  refreshTokenExpMinute;
+    
 }

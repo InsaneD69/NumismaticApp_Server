@@ -87,8 +87,7 @@ public class UserController {
          System.out.println("/token");
          System.out.println(token.getAccessToken());
          System.out.println(token.getRefreshToken());
-         System.out.println(token.getAccessTokenExpMinute());
-         System.out.println(token.getRefreshTokenExpMinute());
+
          return ResponseEntity.ok(token);
      }
 
@@ -99,12 +98,10 @@ public class UserController {
              System.out.println("/refresh");
              System.out.println(token.getAccessToken());
              System.out.println(token.getRefreshToken());
-             System.out.println(token.getAccessTokenExpMinute());
-             System.out.println(token.getRefreshTokenExpMinute());
          return ResponseEntity.ok(token);
          }
          catch (AuthException e){
-             return  ResponseEntity.status(403).body(new JWTResponse(null,null,null,null));
+             return  ResponseEntity.status(403).body(new JWTResponse(null,null));
          }
      }
  }

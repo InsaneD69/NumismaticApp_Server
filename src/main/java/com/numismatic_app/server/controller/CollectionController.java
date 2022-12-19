@@ -2,26 +2,35 @@ package com.numismatic_app.server.controller;
 
 
 import com.numismatic_app.server.dto.CollectionDTO;
+import com.numismatic_app.server.dto.TestDto;
 import com.numismatic_app.server.exception.CollectionNameAlreadyIsExist;
 import com.numismatic_app.server.exception.CollectionNotFoundException;
 import com.numismatic_app.server.exception.DataStorageException;
+import com.numismatic_app.server.security.AuthProviderImpl;
+import com.numismatic_app.server.security.JWTAuthentication;
 import com.numismatic_app.server.service.CollectionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
 
 /**
  * Обслуживает запросы, связанные с коллекциями пользователей
  */
 @RestController
 @RequestMapping("/collection")
+@RequiredArgsConstructor
 public class CollectionController {
 
-    @Autowired
-    private CollectionService collectionService;
 
+    private final CollectionService collectionService;
 
+    private final AuthProviderImpl authProvider;
 
 
 
@@ -42,7 +51,7 @@ public class CollectionController {
                             .getPrincipal().toString());
            return ResponseEntity.ok().body("ok");
         } catch (DataStorageException e) {
-            return  ResponseEntity.badRequest().body("произошла ошибка");
+            return  ResponseEntity.status(500).build();
         } catch (CollectionNameAlreadyIsExist e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -50,22 +59,42 @@ public class CollectionController {
     }
 
     @PutMapping("/updatecollection")
-    public ResponseEntity<String> updateUserCollection(@RequestBody CollectionDTO collectionDTO){
+    public ResponseEntity<String> updateUserCollection(@RequestParam String  nameCollection, @RequestBody CollectionDTO collectionDTO, @RequestParam(required = false) Optional<String>  newNameCollection){
 
-        System.out.println("dasd");
-        System.out.println(collectionDTO.getNameCollection());
+
+        System.out.println("Имя изменяемой коллекции "+nameCollection);
+        System.out.println("Новое имя: "+newNameCollection.orElse("/не_предоставлено."));
+        if(collectionDTO.getCollection()!=null){
+            System.out.println("Содержимое коллекции обновляется " );
+
+
+        } else   System.out.println("Содержимое коллекции не обновляется " );
+
+
+        String updatingToNameCollection=newNameCollection.orElse(null);
+
+
+        if((collectionDTO.getCollection()==null)&&(updatingToNameCollection==null)){
+
+            return  ResponseEntity.status(204).body("Отсутствуют данные для обновления");
+        }
+
         try {
-            collectionService.updateCollectionToAcc(collectionDTO
-                    , SecurityContextHolder
-                            .getContext()
-                            .getAuthentication()
-                            .getPrincipal().toString());
-            return ResponseEntity.ok().header("Access-Control-Allow-Origin","*").body("ok");
+            collectionService.updateCollectionToAcc(nameCollection,collectionDTO
+                    , SecurityContextHolder.getContext().getAuthentication().getName(),updatingToNameCollection);
+            return ResponseEntity.ok().body("ok");
         } catch (DataStorageException e) {
             return  ResponseEntity.status(500).body("произошла ошибка");
         } catch (CollectionNameAlreadyIsExist e) {
             return ResponseEntity.status(405).body(e.getMessage());
+        } catch (CollectionNotFoundException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (IOException e) {
+            return  ResponseEntity.status(500).body("произошла ошибка");
+        } catch (ClassNotFoundException e) {
+            return  ResponseEntity.status(500).body("произошла ошибка");
         }
+
 
     }
 
@@ -104,6 +133,12 @@ public class CollectionController {
 
     @GetMapping("/getAll")
     public ResponseEntity<Object> getAllCollection() {
+        System.out.println("Try to get collection:");
+        System.out.println(SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal().toString());
+
 
         try {
             return ResponseEntity.ok(

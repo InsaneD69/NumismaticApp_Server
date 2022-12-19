@@ -43,7 +43,7 @@ public class CollectionStorage {
         saverInfo.close();
 
     }
-    public static CollectionDTO getUserCollectionFromFile(String place) throws IOException, DataStorageException, ClassNotFoundException {
+    public static CollectionDTO getUserCollectionFromFile(String place) throws IOException, DataStorageException {
 
 
         PropertyConnection prop=new PropertyConnection(pathToUserDataProp);
@@ -64,6 +64,8 @@ public class CollectionStorage {
 
             throw new DataStorageException("Collection not found in server data storage");
 
+        } catch (ClassNotFoundException e) {
+            throw new DataStorageException("Error collection");
         }
 
 

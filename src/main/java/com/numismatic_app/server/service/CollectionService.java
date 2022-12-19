@@ -75,20 +75,56 @@ public class CollectionService {
 
     };
 
-    public void updateCollectionToAcc(CollectionDTO collection, String  username) throws DataStorageException, CollectionNameAlreadyIsExist {
+    public void updateCollectionToAcc(String nameCollection,CollectionDTO collection, String  username, String newNameCollection) throws DataStorageException, CollectionNameAlreadyIsExist, CollectionNotFoundException, IOException, ClassNotFoundException {
 
-        String hashPlace="";
+
 
         UserEntity user = userRepo.findByUsername(username);
 
-        CollectionEntity collectionEntity = collectionRepo.findByCollectionnameAndUser_id(collection.getNameCollection(),user.getId());
+        CollectionEntity collectionEntity = collectionRepo.findByCollectionnameAndUser_id(nameCollection,user.getId());
 
-        collectionEntity.setCollectionname(collection.getNameCollection());
-        hashPlace =getHashPlace(user.getUsername(),collection.getNameCollection());
+        if (collectionEntity==null){
+            throw new CollectionNotFoundException("коллекция с таким именем не существует");
+        }
 
-        collectionEntity.setPlacehash(hashPlace);
 
-        CollectionStorage.saveData(collection,hashPlace);
+        if(newNameCollection!=null){
+            for( CollectionEntity col: user.getCollectionEntities()){
+
+                if(col.getCollectionname().equals(newNameCollection)){
+
+                    throw new CollectionNameAlreadyIsExist("коллекция с таким именем уже существует");
+                }
+            }
+            collection.setNameCollection(newNameCollection);
+            collectionEntity.setCollectionname(newNameCollection);
+
+        }
+
+        if((collection.getNameCollection()!=null)||(collection.getCollection()!=null)){
+
+           CollectionDTO updatingCollection= CollectionStorage.getUserCollectionFromFile(collectionEntity.getPlacehash());
+
+           if((collection.getNameCollection()!=null)){
+
+               updatingCollection.setNameCollection(newNameCollection);
+
+           }
+            if((collection.getCollection()!=null)){
+
+                updatingCollection.setCollection(collection.getCollection());
+
+            }
+
+            CollectionStorage.saveData( updatingCollection,collectionEntity.getPlacehash());
+
+        }
+
+        if(collection!=null){
+            //обновление коллекции в бд (коллекция с монетами пока не хранится в бд)
+        }
+
+
 
         collectionRepo.save(collectionEntity);
     }
@@ -160,7 +196,7 @@ public class CollectionService {
             log.error(e.getMessage());
             throw new DataStorageException(e.getMessage());
 
-        } catch (ClassNotFoundException | IOException e) {
+        } catch ( IOException e) {
             log.error(e.getMessage());
             throw new DataStorageException("Data storage has been broken");
         }

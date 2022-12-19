@@ -37,17 +37,6 @@ private final JWTFilter jwtFilter;
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
-        /*http.httpBasic().disable()
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().authorizeRequests()
-                     .antMatchers("/acc/new", "/acc/login","/acc/token").permitAll()
-                     .anyRequest().authenticated()
-                .and()
-                .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .logout();
-        return http.build();*/
-
         return http
                 .cors().and()
                 .httpBasic().disable()
@@ -64,19 +53,16 @@ private final JWTFilter jwtFilter;
                 ).build();
 
     }
-
-    /*@Override
+    @Override
     public void addCorsMappings(CorsRegistry registry) {
+        WebMvcConfigurer.super.addCorsMappings(registry);
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:4000","http://localhost:4001")
-                .allowedMethods("*");
-    }*/
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
-        return source;
+                .allowedHeaders("*")
+                .allowedMethods("POST","GET","PUT")
+                .allowedOrigins("*");
     }
+
+
 
     @Bean
     public CommonsRequestLoggingFilter requestLoggingFilter() {

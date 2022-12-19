@@ -13,6 +13,11 @@ import java.util.Collection;
 public class JWTAuthentication implements Authentication {
 
     private boolean authenticated;
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     private String username;
 
 
