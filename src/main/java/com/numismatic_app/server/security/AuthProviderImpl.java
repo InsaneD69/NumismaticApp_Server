@@ -32,7 +32,7 @@ public class AuthProviderImpl  {
     private final Map<String, String> refreshStorage = new HashMap<>();
     private final JWTProvider jwtProvider;
 
-    private final int accessTokenExpMinute=3;
+    private final int accessTokenExpMinute=1;
     private final int refreshTokenExpMinute =3600;
 
 
@@ -42,13 +42,13 @@ public class AuthProviderImpl  {
 
 
         if (user==null) {
-            throw new UsernameNotFoundException("Пользователь не найден");
+            throw new UsernameNotFoundException("User not found");
         }
 
 
         if (!passwordEncoder.matches(authentication.getPassword(),user.getPassword())){
             log.info("User "+user.getUsername()+" not connected to server (mistake password)");
-            throw new BadCredentialsException("неверный пароль");
+            throw new BadCredentialsException("uncorrected password");
 
 
         }
@@ -57,7 +57,7 @@ public class AuthProviderImpl  {
         final String refreshToken = jwtProvider.generateRefreshToken(user, refreshTokenExpMinute);
         refreshStorage.put(user.getUsername(), refreshToken);
         log.info("Generate for user  "+user.getUsername()+" refresh token: "+refreshToken);
-        return new JWTResponse(accessToken, refreshToken,accessTokenExpMinute,refreshTokenExpMinute);
+        return new JWTResponse(accessToken, refreshToken);
 
 
     }
@@ -70,13 +70,13 @@ public class AuthProviderImpl  {
             if (saveRefreshToken != null && saveRefreshToken.equals(refreshToken)) {
                 final UserEntity user = userRepo.findByUsername(username);
                 if (user==null) {
-                     new UserNotFoundException("Пользователь не найден");
+                     new UserNotFoundException("User not found");
                 }
                 final String accessToken = jwtProvider.generateAccessToken(user,accessTokenExpMinute);
-                return new JWTResponse(accessToken, null,accessTokenExpMinute,null);
+                return new JWTResponse(accessToken, null);
             }
         }
-        return new JWTResponse(null, null,null,null);
+        return new JWTResponse(null, null);
     }
 
     public JWTResponse refresh(@NotNull String refreshToken) throws AuthException {
@@ -87,15 +87,15 @@ public class AuthProviderImpl  {
             if (saveRefreshToken != null && saveRefreshToken.equals(refreshToken)) {
                 final UserEntity user = userRepo.findByUsername(username);
                 if (user==null) {
-                     new UsernameNotFoundException("Пользователь не найден");
+                     new UsernameNotFoundException("User not found");
                 }
                 final String accessToken = jwtProvider.generateAccessToken(user,accessTokenExpMinute);
                 final String newRefreshToken = jwtProvider.generateRefreshToken(user, refreshTokenExpMinute);
                 refreshStorage.put(user.getUsername(), newRefreshToken);
-                return new JWTResponse(accessToken, newRefreshToken,accessTokenExpMinute,refreshTokenExpMinute);
+                return new JWTResponse(accessToken, newRefreshToken);
             }
         }
-        throw new AuthException("Невалидный JWT токен");
+        throw new AuthException("Invalid refresh");
     }
 
     public JWTAuthentication getAuthInfo() {

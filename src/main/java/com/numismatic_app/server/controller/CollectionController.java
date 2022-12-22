@@ -10,6 +10,7 @@ import com.numismatic_app.server.security.AuthProviderImpl;
 import com.numismatic_app.server.security.JWTAuthentication;
 import com.numismatic_app.server.service.CollectionService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +26,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/collection")
 @RequiredArgsConstructor
+@Log4j2
 public class CollectionController {
 
 
@@ -54,6 +56,28 @@ public class CollectionController {
             return  ResponseEntity.status(500).build();
         } catch (CollectionNameAlreadyIsExist e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
+    @DeleteMapping("/deletecollection")
+    public ResponseEntity<String> deleteUserCollection(@RequestParam String nameCollection){
+
+        log.info("Удалени коллекции "+nameCollection+" пользователя "+SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal().toString());
+        try {
+            collectionService.deleteCollectionFromAcc(nameCollection
+                    , SecurityContextHolder
+                            .getContext()
+                            .getAuthentication()
+                            .getPrincipal().toString());
+            return ResponseEntity.ok().body("ok");
+        } catch (CollectionNotFoundException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e){
+            log.error(e.getMessage());
+            return ResponseEntity.status(500).build();
         }
 
     }

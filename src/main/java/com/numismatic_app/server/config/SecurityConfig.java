@@ -58,7 +58,7 @@ private final JWTFilter jwtFilter;
         WebMvcConfigurer.super.addCorsMappings(registry);
         registry.addMapping("/**")
                 .allowedHeaders("*")
-                .allowedMethods("POST","GET","PUT")
+                .allowedMethods("POST","GET","PUT","DELETE")
                 .allowedOrigins("*");
     }
 

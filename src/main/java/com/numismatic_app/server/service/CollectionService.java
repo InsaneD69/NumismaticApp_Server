@@ -15,6 +15,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -74,6 +75,22 @@ public class CollectionService {
 
 
     };
+
+    public void deleteCollectionFromAcc(String nameCollection, String username) throws CollectionNotFoundException {
+
+        UserEntity user = userRepo.findByUsername(username);
+
+        CollectionEntity collectionEntity = collectionRepo.findByCollectionnameAndUser_id(nameCollection,user.getId());
+        if (collectionEntity==null){
+            throw new CollectionNotFoundException("коллекция с таким именем не существует");
+        }
+        System.out.println(collectionEntity.getPlacehash());
+        System.out.println(collectionEntity.getCollectionname());
+        System.out.println(collectionEntity.getCollectionid());
+       collectionRepo.deleteByCollectionid(collectionEntity.getCollectionid());
+
+
+    }
 
     public void updateCollectionToAcc(String nameCollection,CollectionDTO collection, String  username, String newNameCollection) throws DataStorageException, CollectionNameAlreadyIsExist, CollectionNotFoundException, IOException, ClassNotFoundException {
 
